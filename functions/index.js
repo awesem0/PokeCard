@@ -5,10 +5,11 @@ const { defineString } = require("firebase-functions/params");
 const grokApiKey = defineString("GROK_APIKEY");
 
 exports.generatePoem = functions.https.onCall(async (data, _context) => {
-    console.log('Received data:', data);
-    const prompt = data.prompt;
+    console.log('Received data:', JSON.stringify(data, null, 2));  // Debug full payload
+    const prompt = data?.prompt || data?.data?.prompt;  // Handle both direct and nested prompt
     console.log('Extracted prompt:', prompt);
     if (!prompt) {
+        console.error('Prompt missing in data:', JSON.stringify(data));
         throw new functions.https.HttpsError("invalid-argument", "Missing prompt");
     }
 
