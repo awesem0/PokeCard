@@ -51,7 +51,60 @@ in exact format: Title\nLine1\nLine2\nLine3\nLine4`
             {
                 headers: {
                     "Authorization": "Bearer " + apiKey,   
+const functions = require("firebase-functions");
+const axios = require("axios");
+
+const { defineString } = require("firebase-functions/params");
+const grokApiKey = defineString("GROK_APIKEY");
+const firebaseApiKey = defineString("APP_FIREBASE_API_KEY");
+
+exports.generatePoem = functions.https.onCall(async (data, _context) => {   
+    console.log('Received data:', data);
+    const prompt = data?.prompt || data?.data?.prompt;
+    console.log('Extracted prompt:', prompt);
+    if (!prompt) {
+        console.error('Prompt missing in data:', data);
+        throw new functions.https.HttpsError(
+            "invalid-argument",
+            "Missing prompt"
+        );
+    }
+              
+    try {
+        const apiKey = grokApiKey.value();
+        if (!apiKey) {
+            console.log('API key is missing in environment');
+            throw new functions.https.HttpsError(
+                "internal",
+                "API key configuration error"
+            );
+        }
+        console.log('Using API key:', apiKey.substring(0, 10) + '...');
+        const response = await axios.post(
+            "https://api.x.ai/v1/chat/completions",
+            {
+                model: "grok-3-latest",
+                messages: [
+                    {   
+                        role: "system",
+                        content: `You are a poetic AI. Based on the user theme
+(or if vague, like just names/dates, default to a very romantic tone),
+generate exactly a title (max 20 characters, full sentence) followed by
+exactly 4 lines of poem (each max 44 characters) in simple layman terms
+—no complex words, keep it heartfelt. Always fit the theme/tone. Output
+in exact format: Title\nLine1\nLine2\nLine3\nLine4`
+                    },
+                    {
+                        role: "user",
+                        content: "Theme: " + prompt,
+                    },
+                ],
+                max_tokens: 150,
+            },
+            {
+                headers: {
                     "Content-Type": "application/json",
+                    "Authorization": "Bearer " + apiKey
                 },
             }
         );
@@ -86,7 +139,8 @@ exports.getFirebaseConfig = functions.https.onRequest((req, res) => {
     if (allowedOrigins.includes(origin)) {
         res.set('Access-Control-Allow-Origin', origin);
     } else {
-        res.set('Access-Control-Allow-Origin', 'https://grok-poem-maker-c2ef7.web.app');
+        const url = 'https://grok-poem-maker-c2ef7.web.app';
+        res.set('Access-Control-Allow-Origin', url);
     }
     res.json({
         apiKey: firebaseApiKey.value(),
