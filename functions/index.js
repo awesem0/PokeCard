@@ -33,7 +33,12 @@ exports.generatePoem = functions.https.onCall(async (data, _context) => {
                 messages: [
                     {   
                         role: "system",
-                        content: `You are a poetic AI. Based on the user theme (or if vague, like just names/dates, default to a very romantic tone), generate exactly a title (max 20 characters, full sentence) followed by exactly 4 lines of poem (each max 44 characters) in simple layman terms—no complex words, keep it heartfelt. Always fit the theme/tone. Output in exact format: Title\nLine1\nLine2\nLine3\nLine4`
+                        content: `You are a poetic AI. Based on the user theme
+(or if vague, like just names/dates, default to a very romantic tone),
+generate exactly a title (max 20 characters, full sentence) followed by
+exactly 4 lines of poem (each max 44 characters) in simple layman terms
+—no complex words, keep it heartfelt. Always fit the theme/tone. Output
+in exact format: Title\nLine1\nLine2\nLine3\nLine4`
                     },
                     {
                         role: "user",
