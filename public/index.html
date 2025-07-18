@@ -444,1432 +444,1429 @@
                 .then(config => {
                     firebase.initializeApp(config);
                     const App = () => {
+                        const [formData, setFormData] = React.useState({
+                            borderColor: 'Yellow',
+                            backgroundColor: 'Option 1',
+                            scene: 'Option 1',
+                            backCard: 'Option 2',
+                            poemSelection: 'I LOVE YOU',
+                            poemTitle: '',
+                            poemText: '',
+                            hp: Math.floor(Math.random() * 990 + 10).toString(),
+                            leftCharacterColour: 'Angelo',
+                            leftGender: 'Male',
+                            leftEthnicity: 'White',
+                            leftEyeColor: 'Blue',
+                            leftHairStyle: 'Option 8',
+                            leftHairColor: 'Brown',
+                            leftFacialHair: 'None',
+                            leftEyewear: 'None',
+                            leftAccessories: 'None',
+                            leftApparel: 'Option 23',
+                            leftSidekick: 'Option 11',
+                            rightCharacterColour: 'Vicky',
+                            rightGender: 'Female',
+                            rightEthnicity: 'White',
+                            rightEyeColor: 'Blue',
+                            rightHairStyle: 'Option 14',
+                            rightHairColor: 'Black',
+                            rightFacialHair: 'None',
+                            rightEyewear: 'None',
+                            rightAccessories: 'None',
+                            rightApparel: 'Option 8',
+                            rightSidekick: 'Option 11'
+                        });
 
-            const [formData, setFormData] = React.useState({
-                borderColor: 'Yellow',
-                backgroundColor: 'Option 1',
-                scene: 'Option 1',
-                backCard: 'Option 2',
-                poemSelection: 'I LOVE YOU',
-                poemTitle: '',
-                poemText: '',
-                hp: Math.floor(Math.random() * 990 + 10).toString(),
-                leftCharacterColour: 'Angelo',
-                leftGender: 'Male',
-                leftEthnicity: 'White',
-                leftEyeColor: 'Blue',
-                leftHairStyle: 'Option 8',
-                leftHairColor: 'Brown',
-                leftFacialHair: 'None',
-                leftEyewear: 'None',
-                leftAccessories: 'None',
-                leftApparel: 'Option 23',
-                leftSidekick: 'Option 11',
-                rightCharacterColour: 'Vicky',
-                rightGender: 'Female',
-                rightEthnicity: 'White',
-                rightEyeColor: 'Blue',
-                rightHairStyle: 'Option 14',
-                rightHairColor: 'Black',
-                rightFacialHair: 'None',
-                rightEyewear: 'None',
-                rightAccessories: 'None',
-                rightApparel: 'Option 8',
-                rightSidekick: 'Option 11'
-            });
+                        const [showModal, setShowModal] = React.useState(false);
+                        const [isSubmitting, setIsSubmitting] = React.useState(false);
+                        const [isGeneratingPoem, setIsGeneratingPoem] = React.useState(false);
+                        const [loadedResources, setLoadedResources] = React.useState({});
+                        const [elementResources, setElementResources] = React.useState({});
+                        const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768);
 
-            const [showModal, setShowModal] = React.useState(false);
-            const [isSubmitting, setIsSubmitting] = React.useState(false);
-            const [isGeneratingPoem, setIsGeneratingPoem] = React.useState(false);
-            const [loadedResources, setLoadedResources] = React.useState({});
-            const [elementResources, setElementResources] = React.useState({});
-            const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768);
+                        React.useEffect(() => {
+                            const handleResize = () => {
+                                setIsMobile(window.innerWidth <= 768);
+                            };
+                            window.addEventListener('resize', handleResize);
+                            return () => window.removeEventListener('resize', handleResize);
+                        }, []);
 
-            React.useEffect(() => {
-                const handleResize = () => {
-                    setIsMobile(window.innerWidth <= 768);
-                };
-                window.addEventListener('resize', handleResize);
-                return () => window.removeEventListener('resize', handleResize);
-            }, []);
+                        const event_poems = {
+                            "Anniversary": ["On this day, our hearts align,", "Years of love, like vintage wine,", "Together strong, through storm and shine,", "Forever yours, forever mine."],
+                            "Birthday": ["A day to cheer, a year to grow,", "With love and joy in every glow,", "Candles flicker, wishes flow,", "Happy birthday, my heart’s tableau."],
+                            "Engagement": ["A promise made, a future near,", "With every step, I hold you dear,", "Bound by love, so crystal clear,", "Our journey starts, right here."],
+                            "I LOVE YOU": ["Three words simple, yet so true,", "Every beat belongs to you,", "In your eyes, my world’s in view,", "I love you, through and through."],
+                            "Just Because": ["No reason needed, just to say,", "You brighten up my every day,", "With you, my heart will always stay,", "Love’s pure gift, in every way."],
+                            "Valentines Day": ["Through misty trails where wild winds play,", "Our love grows strong in the softest way,", "Like petals dancing in a sunlit fray,", "We chase our dreams in this vast array."],
+                            "Wedding": ["Two souls unite, a vow so grand,", "Hand in hand, across life’s land,", "With rings we pledge, by love we stand,", "A timeless bond, forever planned."],
+                            "Get Well Soon": ["Rest and heal, take time to mend,", "My love and care will never end,", "Soon you’ll rise, strong once again,", "Get well, my dearest friend."],
+                            "New Home": ["New walls, new dreams, a place to start,", "Together we’ll make this house a heart,", "With every room, a brand new part,", "Of our love’s journey, a work of art."],
+                            "Proposal": ["A question asked, a life to share,", "Will you take this ring I bear?", "Say yes, and let our love declare,", "A future bright, beyond compare."],
+                            "First Date": ["Our first night, a spark so bright,", "Laughter shared beneath the light,", "A moment sweet, a love begun,", "Together now, two hearts as one."],
+                            "Holiday Gift": ["A gift for you this festive day,", "Wrapped with love in every way,", "Joy and cheer to light your stay,", "Happy holidays, come what may."],
+                            "Father's Day": ["Your love and strength guide us each day,", "Wisdom shared in your warm, steady way,", "Through every storm, you light our way,", "Dad, you're our hero, forever and always."],
+                            "Mother's Day": ["Your love blooms, a guiding light,", "Gentle hands mend every plight,", "Heart so warm, our safe delight,", "Mom, you're our star, shining bright."],
+                            "Congratulations": ["Your success sparks joy so grand,", "Hard work won, you take a stand,", "Bright future lies in your hand,", "Cheers to triumphs, bold and planned."],
+                            "Sweet Oath": ["Your smile ignites my heart’s flame", "Every day, I’ll call your name", "Bound by joy, we’ll never part", "Love’s adventure, a work of art"],
+                            "My Vow": ["Together we’ll soar, hearts entwined", "Through every storm, love’s light shines", "With you, my world is complete", "Forever yours, in victory sweet"]
+                        };
 
-            const event_poems = {
-                "Anniversary": ["On this day, our hearts align,", "Years of love, like vintage wine,", "Together strong, through storm and shine,", "Forever yours, forever mine."],
-                "Birthday": ["A day to cheer, a year to grow,", "With love and joy in every glow,", "Candles flicker, wishes flow,", "Happy birthday, my heart’s tableau."],
-                "Engagement": ["A promise made, a future near,", "With every step, I hold you dear,", "Bound by love, so crystal clear,", "Our journey starts, right here."],
-                "I LOVE YOU": ["Three words simple, yet so true,", "Every beat belongs to you,", "In your eyes, my world’s in view,", "I love you, through and through."],
-                "Just Because": ["No reason needed, just to say,", "You brighten up my every day,", "With you, my heart will always stay,", "Love’s pure gift, in every way."],
-                "Valentines Day": ["Through misty trails where wild winds play,", "Our love grows strong in the softest way,", "Like petals dancing in a sunlit fray,", "We chase our dreams in this vast array."],
-                "Wedding": ["Two souls unite, a vow so grand,", "Hand in hand, across life’s land,", "With rings we pledge, by love we stand,", "A timeless bond, forever planned."],
-                "Get Well Soon": ["Rest and heal, take time to mend,", "My love and care will never end,", "Soon you’ll rise, strong once again,", "Get well, my dearest friend."],
-                "New Home": ["New walls, new dreams, a place to start,", "Together we’ll make this house a heart,", "With every room, a brand new part,", "Of our love’s journey, a work of art."],
-                "Proposal": ["A question asked, a life to share,", "Will you take this ring I bear?", "Say yes, and let our love declare,", "A future bright, beyond compare."],
-                "First Date": ["Our first night, a spark so bright,", "Laughter shared beneath the light,", "A moment sweet, a love begun,", "Together now, two hearts as one."],
-                "Holiday Gift": ["A gift for you this festive day,", "Wrapped with love in every way,", "Joy and cheer to light your stay,", "Happy holidays, come what may."],
-                "Father's Day": ["Your love and strength guide us each day,", "Wisdom shared in your warm, steady way,", "Through every storm, you light our way,", "Dad, you're our hero, forever and always."],
-                "Mother's Day": ["Your love blooms, a guiding light,", "Gentle hands mend every plight,", "Heart so warm, our safe delight,", "Mom, you're our star, shining bright."],
-                "Congratulations": ["Your success sparks joy so grand,", "Hard work won, you take a stand,", "Bright future lies in your hand,", "Cheers to triumphs, bold and planned."],
-                "Sweet Oath": ["Your smile ignites my heart’s flame", "Every day, I’ll call your name", "Bound by joy, we’ll never part", "Love’s adventure, a work of art"],
-                "My Vow": ["Together we’ll soar, hearts entwined", "Through every storm, love’s light shines", "With you, my world is complete", "Forever yours, in victory sweet"]
-            };
+                        const baseBackgrounds = Array.from({length: 14}, (_, i) => {
+                            const num = i + 1;
+                            return { value: `Option ${num}`, label: `Card Colour ${num}`, key: `BACKGROUNDOPTION${num}` };
+                        });
 
-            const baseBackgrounds = Array.from({length: 14}, (_, i) => {
-                const num = i + 1;
-                return { value: `Option ${num}`, label: `Card Colour ${num}`, key: `BACKGROUNDOPTION${num}` };
-            });
+                        const baseScenes = Array.from({length: 20}, (_, i) => {
+                            const num = i + 1;
+                            return { value: `Option ${num}`, label: `Scene ${num}`, key: `SCENEOPTION${num}` };
+                        });
 
-            const baseScenes = Array.from({length: 20}, (_, i) => {
-                const num = i + 1;
-                return { value: `Option ${num}`, label: `Scene ${num}`, key: `SCENEOPTION${num}` };
-            });
+                        const baseBackCards = Array.from({length: 14}, (_, i) => {
+                            const num = i + 1;
+                            return { value: `Option ${num}`, label: `Rear Card ${num}`, key: `CARDREAROPTION${num}` };
+                        });
 
-            const baseBackCards = Array.from({length: 14}, (_, i) => {
-                const num = i + 1;
-                return { value: `Option ${num}`, label: `Rear Card ${num}`, key: `CARDREAROPTION${num}` };
-            });
+                        const baseHairStyles = [
+                            ...Array.from({length: 20}, (_, i) => {
+                                const num = i + 1;
+                                return { value: `Option ${num}`, label: `Hair Option ${num}`, key: `HAIR-OPTION${num}` };
+                            }),
+                            { value: 'No Hair', label: 'No Hair', key: 'NO HAIR' }
+                        ];
 
-            const baseHairStyles = [
-                ...Array.from({length: 20}, (_, i) => {
-                    const num = i + 1;
-                    return { value: `Option ${num}`, label: `Hair Option ${num}`, key: `HAIR-OPTION${num}` };
-                }),
-                { value: 'No Hair', label: 'No Hair', key: 'NO HAIR' }
-            ];
+                        const baseEyewear = [
+                            { value: 'None', label: 'Eyewear None' },
+                            { value: 'Blue Glasses', label: 'Eyewear Blue Glasses', key: 'BLUE GLASSES' },
+                            { value: 'Pink Glasses', label: 'Eyewear Pink Glasses', key: 'PINK GLASSES' },
+                            { value: 'Meme Glasses', label: 'Eyewear Meme Glasses', key: 'MEMEGLASSES' },
+                            { value: 'Glasses', label: 'Eyewear Glasses', key: 'GLASSES' }
+                        ];
 
-            const baseEyewear = [
-                { value: 'None', label: 'Eyewear None' },
-                { value: 'Blue Glasses', label: 'Eyewear Blue Glasses', key: 'BLUE GLASSES' },
-                { value: 'Pink Glasses', label: 'Eyewear Pink Glasses', key: 'PINK GLASSES' },
-                { value: 'Meme Glasses', label: 'Eyewear Meme Glasses', key: 'MEMEGLASSES' },
-                { value: 'Glasses', label: 'Eyewear Glasses', key: 'GLASSES' }
-            ];
+                        const baseApparel = [
+                            { value: 'Option 1', label: 'Apparel Option 1', key: 'APPARELOPTION1' },
+                            { value: 'Option 2', label: 'Apparel Option 2', key: 'APPARELOPTION2' },
+                            { value: 'Option 3', label: 'Apparel Option 3', key: 'APPARELOPTION3' },
+                            { value: 'Option 4', label: 'Apparel Option 4', key: 'APPARELOPTION4' },
+                            { value: 'Option 5', label: 'Apparel Option 5', key: 'APPARELOPTION5' },
+                            { value: 'Option 6', label: 'Apparel Option 6', key: 'APPARELOPTION6' },
+                            { value: 'Option 7', label: 'Apparel Option 7', key: 'APPARELOPTION7' },
+                            { value: 'Option 8', label: 'Apparel Option 8', key: 'APPARELOPTION8' },
+                            { value: 'Option 9', label: 'Apparel Option 9', key: 'APPARELOPTION9' },
+                            { value: 'Option 12', label: 'Apparel Option 12', key: 'APPARELOPTION12' },
+                            { value: 'Option 14', label: 'Apparel Option 14', key: 'APPARELOPTION14' },
+                            { value: 'Option 15', label: 'Apparel Option 15', key: 'APPARELOPTION15' },
+                            { value: 'Option 16', label: 'Apparel Option 16', key: 'APPARELOPTION16' },
+                            { value: 'Option 17', label: 'Apparel Option 17', key: 'APPARELOPTION17' },
+                            { value: 'Option 18', label: 'Apparel Option 18', key: 'APPARELOPTION18' },
+                            { value: 'Option 19', label: 'Apparel Option 19', key: 'APPARELOPTION19' },
+                            { value: 'Option 20', label: 'Apparel Option 20', key: 'APPARELOPTION20' },
+                            { value: 'Option 21', label: 'Apparel Option 21', key: 'APPARELOPTION21' },
+                            { value: 'Option 22', label: 'Apparel Option 22', key: 'APPARELOPTION22' },
+                            { value: 'Option 23', label: 'Apparel Option 23', key: 'APPARELOPTION23' },
+                            { value: 'Option 25', label: 'Apparel Option 25', key: 'APPARELOPTION25' },
+                            { value: 'Option 26', label: 'Apparel Option 26', key: 'APPARELOPTION26' },
+                            { value: 'Option 28', label: 'Apparel Option 28', key: 'APPARELOPTION28' },
+                            { value: 'Option 29', label: 'Apparel Option 29', key: 'APPARELOPTION29' },
+                            { value: 'Option 30', label: 'Apparel Option 30', key: 'APPARELOPTION30' },
+                            { value: 'Option 31', label: 'Apparel Option 31', key: 'APPARELOPTION31' },
+                            { value: 'Option 32', label: 'Apparel Option 32', key: 'APPARELOPTION32' },
+                            { value: 'Option 33', label: 'Apparel Option 33', key: 'APPARELOPTION33' },
+                            { value: 'Option 34', label: 'Apparel Option 34', key: 'APPARELOPTION34' },
+                            { value: 'Option 35', label: 'Apparel Option 35', key: 'APPARELOPTION35' }
+                        ];
 
-            const baseApparel = [
-                { value: 'Option 1', label: 'Apparel Option 1', key: 'APPARELOPTION1' },
-                { value: 'Option 2', label: 'Apparel Option 2', key: 'APPARELOPTION2' },
-                { value: 'Option 3', label: 'Apparel Option 3', key: 'APPARELOPTION3' },
-                { value: 'Option 4', label: 'Apparel Option 4', key: 'APPARELOPTION4' },
-                { value: 'Option 5', label: 'Apparel Option 5', key: 'APPARELOPTION5' },
-                { value: 'Option 6', label: 'Apparel Option 6', key: 'APPARELOPTION6' },
-                { value: 'Option 7', label: 'Apparel Option 7', key: 'APPARELOPTION7' },
-                { value: 'Option 8', label: 'Apparel Option 8', key: 'APPARELOPTION8' },
-                { value: 'Option 9', label: 'Apparel Option 9', key: 'APPARELOPTION9' },
-                { value: 'Option 12', label: 'Apparel Option 12', key: 'APPARELOPTION12' },
-                { value: 'Option 14', label: 'Apparel Option 14', key: 'APPARELOPTION14' },
-                { value: 'Option 15', label: 'Apparel Option 15', key: 'APPARELOPTION15' },
-                { value: 'Option 16', label: 'Apparel Option 16', key: 'APPARELOPTION16' },
-                { value: 'Option 17', label: 'Apparel Option 17', key: 'APPARELOPTION17' },
-                { value: 'Option 18', label: 'Apparel Option 18', key: 'APPARELOPTION18' },
-                { value: 'Option 19', label: 'Apparel Option 19', key: 'APPARELOPTION19' },
-                { value: 'Option 20', label: 'Apparel Option 20', key: 'APPARELOPTION20' },
-                { value: 'Option 21', label: 'Apparel Option 21', key: 'APPARELOPTION21' },
-                { value: 'Option 22', label: 'Apparel Option 22', key: 'APPARELOPTION22' },
-                { value: 'Option 23', label: 'Apparel Option 23', key: 'APPARELOPTION23' },
-                { value: 'Option 25', label: 'Apparel Option 25', key: 'APPARELOPTION25' },
-                { value: 'Option 26', label: 'Apparel Option 26', key: 'APPARELOPTION26' },
-                { value: 'Option 28', label: 'Apparel Option 28', key: 'APPARELOPTION28' },
-                { value: 'Option 29', label: 'Apparel Option 29', key: 'APPARELOPTION29' },
-                { value: 'Option 30', label: 'Apparel Option 30', key: 'APPARELOPTION30' },
-                { value: 'Option 31', label: 'Apparel Option 31', key: 'APPARELOPTION31' },
-                { value: 'Option 32', label: 'Apparel Option 32', key: 'APPARELOPTION32' },
-                { value: 'Option 33', label: 'Apparel Option 33', key: 'APPARELOPTION33' },
-                { value: 'Option 34', label: 'Apparel Option 34', key: 'APPARELOPTION34' },
-                { value: 'Option 35', label: 'Apparel Option 35', key: 'APPARELOPTION35' }
-            ];
+                        const baseSidekicks = [
+                            { value: 'None', label: 'None' },
+                            ...Array.from({length: 38}, (_, i) => {
+                                const num = i + 1;
+                                return { value: `Option ${num}`, label: `Sidekick Option ${num}`, key: `SIDEKICKOPTION${num}` };
+                            })
+                        ];
 
-            const baseSidekicks = [
-                { value: 'None', label: 'None' },
-                ...Array.from({length: 38}, (_, i) => {
-                    const num = i + 1;
-                    return { value: `Option ${num}`, label: `Sidekick Option ${num}`, key: `SIDEKICKOPTION${num}` };
-                })
-            ];
+                        const baseFacialHair = [
+                            { value: 'None', label: 'Facial Hair None' },
+                            { value: 'Option 1', label: 'Facial Hair Option 1', key: 'FACIALHAIROPTION1' },
+                            { value: 'Option 3', label: 'Facial Hair Option 3', key: 'FACIALHAIROPTION3' },
+                            { value: 'Option 4', label: 'Facial Hair Option 4', key: 'FACIALHAIROPTION4' },
+                            { value: 'Option 5', label: 'Facial Hair Option 5', key: 'FACIALHAIROPTION5' }
+                        ];
 
-            const baseFacialHair = [
-                { value: 'None', label: 'Facial Hair None' },
-                { value: 'Option 1', label: 'Facial Hair Option 1', key: 'FACIALHAIROPTION1' },
-                { value: 'Option 3', label: 'Facial Hair Option 3', key: 'FACIALHAIROPTION3' },
-                { value: 'Option 4', label: 'Facial Hair Option 4', key: 'FACIALHAIROPTION4' },
-                { value: 'Option 5', label: 'Facial Hair Option 5', key: 'FACIALHAIROPTION5' }
-            ];
+                        const baseAccessories = [
+                            { value: 'None', label: 'Accessories None' },
+                            { value: 'Cap', label: 'Accessory Cap', key: 'CAP' },
+                            { value: 'PikaKap', label: 'Accessory PikaKap', key: 'PIKAKAP' },
+                            { value: 'Garland', label: 'Accessory Garland', key: 'GARLAND' },
+                            { value: 'Tiara', label: 'Accessory Tiara', key: 'TIARA' },
+                            { value: 'TopHat', label: 'Accessory TopHat', key: 'TOPHAT' },
+                            { value: 'BeachHat', label: 'Accessory BeachHat', key: 'BEACHHAT' },
+                            { value: 'RedCap', label: 'Accessory RedCap', key: 'REDCAP' },
+                            { value: 'TruckerCap', label: 'Accessory TruckerCap', key: 'TRUCKERCAP' }
+                        ];
 
-            const baseAccessories = [
-                { value: 'None', label: 'Accessories None' },
-                { value: 'Cap', label: 'Accessory Cap', key: 'CAP' },
-                { value: 'PikaKap', label: 'Accessory PikaKap', key: 'PIKAKAP' },
-                { value: 'Garland', label: 'Accessory Garland', key: 'GARLAND' },
-                { value: 'Tiara', label: 'Accessory Tiara', key: 'TIARA' },
-                { value: 'TopHat', label: 'Accessory TopHat', key: 'TOPHAT' },
-                { value: 'BeachHat', label: 'Accessory BeachHat', key: 'BEACHHAT' },
-                { value: 'RedCap', label: 'Accessory RedCap', key: 'REDCAP' },
-                { value: 'TruckerCap', label: 'Accessory TruckerCap', key: 'TRUCKERCAP' }
-            ];
+                        React.useEffect(() => {
+                            const resources = {
+                                'CARDREAROPTION14': '1EY2oAJv6TdIKd9J7Vl3nlG0-vfWuYX10',
+                                'CARDREAROPTION13': '1_Ia-wTtcoHCatSt27Moi6ztfqS3dT5Tw',
+                                'CARDREAROPTION12': '1-P2WsDMDGtRwt_TAEirK29eUW3dMFc0N',
+                                'CARDREAROPTION11': '1s9J3JYvJrTWigsnqFxPLyVQXteUEA0dr',
+                                'CARDREAROPTION10': '1sgECZ2drb8fOo4fhNaCZV_A7BJTtLov-',
+                                'CARDREAROPTION9': '1fBuInX0yAfECzFeiOX9CGE4WIJuhNr_l',
+                                'CARDREAROPTION8': '1Ka2byWtlj_jVGqmhyKxOj-u8JAjgU4kA',
+                                'CARDREAROPTION7': '15Y7U3EjNQEeiHcZjuby70a1mttdtnKKF',
+                                'CARDREAROPTION6': '1SCyf8FuWxRN8bLABWtbVqgPCoZ80uZ8V',
+                                'CARDREAROPTION5': '1r_A1zDltkRu9COMhzoDqEayPDJ_UjaN_',
+                                'CARDREAROPTION4': '1-d8ipeDBRDlDUSdUMIHHIYpuCX3u_slh',
+                                'CARDREAROPTION3': '1QzboRmiw_QyQvSfTlUE8Jpg1HcVivQy-',
+                                'CARDREAROPTION2': '1tZYcbPstGTnOIvyyt9MRNJUDSyh0yOm9',
+                                'CARDREAROPTION1': '1wr0RVyZplRAgyTBNYC158ZV9AK4GyQEG',
+                                'SCENEOPTION20': '1Hez70o_YVo5T6wiu3Km717-aPte12Su5',
+                                'SCENEOPTION19': '15EQLMVFlyha3U6XmCTAuFZjBzpvqljDP',
+                                'SCENEOPTION18': '1QrTdIJ0bO_4nJ44terWd7knAp_nhyPtg',
+                                'SCENEOPTION17': '1BggChYL8QWW7eZ3mlC4rdr-toKiGIFbr',
+                                'SCENEOPTION16': '1hqKzaWBw-lLPylZMpKCowz9dxxlyez4w',
+                                'SCENEOPTION15': '1YtA-lKY66igpKu-1CSGLw7wv2de6jAqC',
+                                'SCENEOPTION14': '17PeY1P4cYNrP9VBSIkf4108vTgZRC2zX',
+                                'SCENEOPTION13': '1qnO4iKYfob9Wxp8GeLaf5RYt1vzDBev7',
+                                'SCENEOPTION12': '1W2JdrgyTYKpAa_b9cCPE9EACGUGTdDlS',
+                                'SCENEOPTION11': '1MGAxmLzLwHmDjhuRG8sGT0clroYw8PBF',
+                                'SCENEOPTION10': '1N2G8lh6z0KBCJj9xnOIUW9alqPGY_GEZ',
+                                'SCENEOPTION9': '1XN2Kb4EITSBf9K9L2321bp3gYNvK_LdC',
+                                'SCENEOPTION8': '1mxxeoGKfzwj9ARMr1eiRZQTk0x1hwYHj',
+                                'SCENEOPTION7': '1sa-fYKiyauAMTDyWfgcMGmQTiSuoO4QI',
+                                'SCENEOPTION6': '1xXYJG4NO6buoC2tc4di-WbpuBGRuUplk',
+                                'SCENEOPTION5': '12wrOHsYkpnZFeb-maeTr5djrYmlPy-ik',
+                                'SCENEOPTION4': '1TUsSb1JsD-Gf4Gvnc8FdD35Y1K7ZVRJF',
+                                'SCENEOPTION3': '1qd8CepZ6gsPPbCDGMONhqX7XzVK3_giO',
+                                'SCENEOPTION2': '1MR_ODh2JnfMEbVQsMNuciBoNY4eYvkx-',
+                                'SCENEOPTION1': '1QYidz-o2hTfyQhmTihhDqHG7WGlyY9i-',
+                                'BACKGROUNDOPTION14': '1ICZzgeQDfVRpjWQyBy1tjBDw_Gj9bdjI',
+                                'BACKGROUNDOPTION13': '1KiG2fkstR5ESRko5M4J3BE8yU_A-oeEc',
+                                'BACKGROUNDOPTION12': '1W0P7FYgCxBv5u_Qk456Prqtdn40dTzIu',
+                                'BACKGROUNDOPTION11': '1tChqc8g-Mi6N2LtkYxN8NHrVp0XZeu7r',
+                                'BACKGROUNDOPTION10': '1GT9Lry4KGAZL--_tO6F_mBQnLFU8yN9p',
+                                'BACKGROUNDOPTION9': '1Oo1QijSrXfhXEgZuVIJZrDqE9ILXqPsS',
+                                'BACKGROUNDOPTION8': '1K3IAu92afiq2s5Bu_GedsAumnkm39dLP',
+                                'BACKGROUNDOPTION7': '19YzOw0BZxkH4sYzouvT32wptbTnGv05e',
+                                'BACKGROUNDOPTION6': '1XL7N8q8-9vD0RftixdotcNRuNoQ1z_zk',
+                                'BACKGROUNDOPTION5': '1OubNMpQ4GptAXc_3zZSk1e2I7yDr8UM6',
+                                'BACKGROUNDOPTION4': '1HcDQ4YcNtw-SQYA2nDcQ-ysIFZx2vJo2',
+                                'BACKGROUNDOPTION3': '1M7aAZGmDUD168osGHLJtM12ePqMPRLVz',
+                                'BACKGROUNDOPTION2': '1CaUGvKCbQX0d3k882axisoB_pTjfiROH',
+                                'BACKGROUNDOPTION1': '1tN78_8vnyGIsZqd-Wo6-KWuZSv8W_3p2',
+                                'SIDEKICKNOSIDEKICK': '1MpjbcrXuFDDCRu6lUzNL-OHt9nwIwKsE',
+                                'SIDEKICKOPTION38': '1r2Rk9vxzzAGB4xMJED7-DqTgjG91Smmj',
+                                'SIDEKICKOPTION37': '1hsFCts2RaWJhws32fX_6-dtpjDCLDOM6',
+                                'SIDEKICKOPTION36': '1tleTWXl2LXOrt0Z4Cd3HzKMuCcJUvTkh',
+                                'SIDEKICKOPTION35': '1yHoZ9HYE638FVpu0n_yKSLTcmnOjD5VS',
+                                'SIDEKICKOPTION34': '1QcHWghQ5H-dJ6ymd6RPS2vj6xq5-IZAA',
+                                'SIDEKICKOPTION33': '15qEweO4-bIthrHXnIGh8G_qTTVtBIeqz',
+                                'SIDEKICKOPTION32': '1BvhJRqxBvsHv7NI2HCjZrmHK1O47S7G7',
+                                'SIDEKICKOPTION31': '15bWGtLiDQ9qVlsG3lvV1E8yM4A-sztpn',
+                                'SIDEKICKOPTION30': '1MNl4cWpDQgtrphk1vOdE964LHCcofvKl',
+                                'SIDEKICKOPTION29': '1BYoOq2PUcv3eDenYFlSXzVXwTx39634x',
+                                'SIDEKICKOPTION28': '1AG2jPQAyYrzx7p6v77AfHpa8hbrlFkBz',
+                                'SIDEKICKOPTION27': '1HHVqJWQn9Q4M7tDe6teM7PaM1kI4lC0K',
+                                'SIDEKICKOPTION26': '1h1wbJePRUPuNtcpL3z4BxkKPgg-7DaIU',
+                                'SIDEKICKOPTION25': '1KwgzTi8Iom2vem1QJU8VTEKJA-7TtXay',
+                                'SIDEKICKOPTION24': '1nYfXiwUa-bbhwa5CDOsGcjFxxPoNikHA',
+                                'SIDEKICKOPTION23': '1yVdTrnmUN91OqncLASDzjqfjzXa237-y',
+                                'SIDEKICKOPTION22': '1ZxCN91Mm5LW-XHVRLtESwAK0W3KmkDaI',
+                                'SIDEKICKOPTION21': '1GxqB1pWAO3mnn89r11wN1z_BLmfp2Kzc',
+                                'SIDEKICKOPTION20': '1JHyfVf1VjJKvTFE7bGiWJvzvaao50LLV',
+                                'SIDEKICKOPTION19': '1CD1IBnbwZO37jFC0Foevrcrmi1rVSNiy',
+                                'SIDEKICKOPTION18': '1ohRnqrK81v6hrWpX2j7HytwLAahFZX64',
+                                'SIDEKICKOPTION17': '1qpOWdFeoCGQ9zmBHB8TxIEEGKfswUyYf',
+                                'SIDEKICKOPTION16': '1aX-Fg95jFuPCOpr4Ohz4ADA-5Jcl0OgN',
+                                'SIDEKICKOPTION15': '1ZWeTxpMFzr72ie7fFTs19awKWD8pToWU',
+                                'SIDEKICKOPTION14': '1WqTWjSiFRqSZp8XzC7umGMQ5fzHzqTQE',
+                                'SIDEKICKOPTION13': '1GK0oiygbYQKrRBwa9FtdqR5eym6geNT1',
+                                'SIDEKICKOPTION12': '17HlI8bJcNt402TMULe1RHsxuk7sedvfE',
+                                'SIDEKICKOPTION11': '1sa8CHaYnvJ7-3Wje58eOKkbc1Mx3tV1w',
+                                'SIDEKICKOPTION10': '1C40fGWmNazDSdlxvDeGZROwC_SpGz70J',
+                                'SIDEKICKOPTION9': '1BDxu5BFDRSC2-Ci0oBwA1N1oDlP9Pl_2',
+                                'SIDEKICKOPTION8': '1K2osJ5jcY64cirpT5OWC2ZUuHKUvtTh-',
+                                'SIDEKICKOPTION7': '1rRuiVFH1-hbCPqfP0MgKNqzE6JBLB30x',
+                                'SIDEKICKOPTION6': '1lWA4hJa6FAdKefuMkx6vYfSlMncaXzzp',
+                                'SIDEKICKOPTION5': '1s5enB965GeGFLIuvV9P8LHvbw-HAbAPO',
+                                'SIDEKICKOPTION4': '1QQx6nSd3j1YGe-PUQMtp1RfBZnLownz1',
+                                'SIDEKICKOPTION3': '13sWhx7bV9TeNH6QkJC9wOhSSvGokE2lB',
+                                'SIDEKICKOPTION2': '10nZ8IqGZrMkzOXvsMnBY_LFiz1a3HwUo',
+                                'SIDEKICKOPTION1': '1AR3wZS6aLIy6VdJRSFJlCyOHswud4RXb',
+                                'APPARELOPTION35': '1evKGQIWnp4J7hVZCuAqxn3y-4S1PcT1P',
+                                'APPARELOPTION34': '1-xD-EOO37t0oLPQmMae354wSme8h5AvV',
+                                'APPARELOPTION33': '1DrvnfVW-z7Uf6fiXOuUkQgfN52peOf4N',
+                                'APPARELOPTION32': '11huibM9_pltkvqS1X_omJatOGYuSX91t',
+                                'APPARELOPTION31': '1hyeL9MAo6DWZ31_P8XSHEk3sJy3QmEFf',
+                                'APPARELOPTION30': '1hAWNEY0gQd3CiLm3zOnkITl9rUpgk4h1',
+                                'APPARELOPTION29': '1Sx0WbHXkE6z7F46swcFuCMKleiS8j7K_',
+                                'APPARELOPTION28': '170FK_r7SeNkOamOyoEFrNppa-h3M5WCh',
+                                'APPARELOPTION26': '1UVX7MlEoySU4PZkcoM_CSqInA7eomJPu',
+                                'APPARELOPTION25': '1vyHQgDWfORa3tX60yqy6XsCyV3JWo0mz',
+                                'APPARELOPTION23': '1UGJ_fs2jre9i2VwfT_NhGnVU2cIL09eR',
+                                'APPARELOPTION22': '1OT3zwakNd4vflEdGB0milWNAry7Z8gqu',
+                                'APPARELOPTION21': '1AM2HvC-F3W2IO4v0ZlmoxLqg1pmkOvV7',
+                                'APPARELOPTION20': '1atQg5NQXmXpj5TmBIYFgMM_cfR4fJPA2',
+                                'APPARELOPTION19': '1QmZkSTQed--D41eycBX7P8X_UaLlu8nS',
+                                'APPARELOPTION18': '14ulfBNtMZqtPOjvEBtew2KHt47LbLSF4',
+                                'APPARELOPTION17': '1Iijhy2mIigh5EvCo-l2tYQ1VtK12ikqk',
+                                'APPARELOPTION16': '1huXrMVxGbl_hK8u0b4QRgDzMtdTl6RKl',
+                                'APPARELOPTION15': '1MtymNnBnaf4J0tho_Nb7vSS8W3zzkeo_',
+                                'APPARELOPTION14': '1SLkXzOfEbqp64FoctkR-GLLMq5P_A2zF',
+                                'APPARELOPTION12': '1D9alyIaA2Q6DGl5WRuZzZDKbiLxWgNHj',
+                                'APPARELOPTION9': '1CbtQBJXlOJcRN8Ar3vdX7md_r20vs4TD',
+                                'APPARELOPTION8': '18HabC_lEP9XFNQcsXOHZh_g-NhhFvBsB',
+                                'APPARELOPTION7': '1u4nmZyWUz4xKpWazyTpt_qJDe0AvVcwP',
+                                'APPARELOPTION6': '1V33W0_wvVsKKMDr-hxAaaIfldJNt-fQ1',
+                                'APPARELOPTION5': '1cB815p9Nd_wGjrN1QXqriniK-uwxlDS0',
+                                'APPARELOPTION4': '1ZHVhg4v3s8E-d0qidYBZDV8bnXLUBkVS',
+                                'APPARELOPTION3': '1BVTXGtAW5DVIcKCKOEiikkRqwZyqO2wG',
+                                'APPARELOPTION2': '1hgKUqwAzI-Jh3_KmXymuqil66I4nBvJw',
+                                'APPARELOPTION1': '1zh9RTrv-qYgXMdo0FtQCjuE-I8k78olL',
+                                'TOPHAT': '1tanqS3OEaYxyg5nTibW-KlqLI5h75_jX',
+                                'TIARA': '19Eu8J_i1t2nq2Xz5Otegxjwipnyr60sj',
+                                'GARLAND': '1e6dHw5MNtIAtxxvhBS-odx9GnmhgtHm3',
+                                'PIKAKAP': '1w0iYgaY4uD5fnBje4DzoS0R9AfsyNCIa',
+                                'CAP': '1o5Uu_CMh-TpK2d9_55YozK1PE_Npie0n',
+                                'TRUCKERCAP': '1nrKAyV5HF8GCwM8fkY2Tlnf6DsCHC0dY',
+                                'BEACHHAT': '11QuVkGuRTSm0ZV8PaVt0WUCBJoLcMhfZ',
+                                'REDCAP': '1dpkYuGlH_V5uqSRRyou22MnDpQyHm48s',
+                                'PINK GLASSES': '1wvN2AwhdxuqtGeZhjc6jnsujCIuBbbmH',
+                                'MEMEGLASSES': '15lCCJVzaPVC4YBn43_5yJ3ShjDxvnUXF',
+                                'BLUE GLASSES': '1H2CY_1--xGneYzaZ0axW8iF20rCj9Or8',
+                                'GLASSES': '18OT3rAxA53_2aYsyE_2VVf3TOYo084C4',
+                                'FACIALHAIROPTION5': '1XeN2m_1eW6OTA_fqFWXgPIHeLkgW2Qgw',
+                                'FACIALHAIROPTION4': '18opGtVEppdncykh4QT3Y9bUYI5__eEb0',
+                                'FACIALHAIROPTION3': '1zkMYaWFdykn8sTuBaSK-Sj2krf4yi5vh',
+                                'FACIALHAIROPTION1': '1Paw1tfoiHxgYLKK7w7wgFkpAR5bPjZbr',
+                                'HAIR-OPTION20': '1GbXBoNJZlzodmogeNp-6ET-07GFZXyD2',
+                                'HAIR-OPTION19': '1UzHfRM900gN14EZaqsTPYrkySlKolo0O',
+                                'HAIR-OPTION18': '1_1dN8MzlPCCaAx0lfQlzjMjUi4e6ln6p',
+                                'HAIR-OPTION17': '1FXyf0ULx3Yrcp_0tkALu5iLoz2wlqblC',
+                                'HAIR-OPTION16': '1wVfXCXMCX9mZAFvKfHtIw5pDvD-nEXWm',
+                                'HAIR-OPTION15': '1PVjbjgm2c-bGK2omSmKtEdO0i-IWRLts',
+                                'HAIR-OPTION14': '1KUjvQ4-61fNOEdMSKQyYCtYJyOqxuETr',
+                                'HAIR-OPTION13': '1SPsLgINUczz462nllv2LJndcIuc2ca07',
+                                'HAIR-OPTION12': '19wmP9WE3wLyO7JI35lpQyao7VxxdsS1F',
+                                'HAIR-OPTION11': '1sfPCaycOET-W4tnTmVvkfK_ViyCZP6ED',
+                                'HAIR-OPTION10': '1kbrTLVRmELchdnmi6NgQMH7QpmvFQvJm',
+                                'HAIR-OPTION9': '1GyfVCiXa9bXKeooscuM-q9zBQhMVuxql',
+                                'HAIR-OPTION8': '1eVZTOKQCXwCUqcue4r9LLgTgMJXBP4vX',
+                                'HAIR-OPTION7': '1SnMCmHGjiCTqZSi6LDYtQvBpkaeDjUXt',
+                                'HAIR-OPTION6': '1P-QSOERUEvwSaeCMiaeLVh0R-ODIXdvw',
+                                'HAIR-OPTION5': '1wRNIHDzcFvaN9VfGHtLUcVecLgFpAEtE',
+                                'HAIR-OPTION4': '15NlVnOzP0f8ZoCSOpdFa6d7yi4EE7U-R',
+                                'HAIR-OPTION3': '1M_8h6qXbMpbtVMIvI-dQMx9e6VWQruzG',
+                                'HAIR-OPTION2': '1lC_T1wagiAebIYdNFFTZMJSfoGgttA8P',
+                                'HAIR-OPTION1': '1pOjKhMZmVaSmFaIRoZsgdLEnEJCFvRqB',
+                                'NO HAIR': '19ig8lxP5WNT99BB5SxRJoGKwDlAGUeTr'
+                            };
+                            setLoadedResources(resources);
+                        }, []);
 
-            React.useEffect(() => {
-                const resources = {
-                    'CARDREAROPTION14': '1EY2oAJv6TdIKd9J7Vl3nlG0-vfWuYX10',
-                    'CARDREAROPTION13': '1_Ia-wTtcoHCatSt27Moi6ztfqS3dT5Tw',
-                    'CARDREAROPTION12': '1-P2WsDMDGtRwt_TAEirK29eUW3dMFc0N',
-                    'CARDREAROPTION11': '1s9J3JYvJrTWigsnqFxPLyVQXteUEA0dr',
-                    'CARDREAROPTION10': '1sgECZ2drb8fOo4fhNaCZV_A7BJTtLov-',
-                    'CARDREAROPTION9': '1fBuInX0yAfECzFeiOX9CGE4WIJuhNr_l',
-                    'CARDREAROPTION8': '1Ka2byWtlj_jVGqmhyKxOj-u8JAjgU4kA',
-                    'CARDREAROPTION7': '15Y7U3EjNQEeiHcZjuby70a1mttdtnKKF',
-                    'CARDREAROPTION6': '1SCyf8FuWxRN8bLABWtbVqgPCoZ80uZ8V',
-                    'CARDREAROPTION5': '1r_A1zDltkRu9COMhzoDqEayPDJ_UjaN_',
-                    'CARDREAROPTION4': '1-d8ipeDBRDlDUSdUMIHHIYpuCX3u_slh',
-                    'CARDREAROPTION3': '1QzboRmiw_QyQvSfTlUE8Jpg1HcVivQy-',
-                    'CARDREAROPTION2': '1tZYcbPstGTnOIvyyt9MRNJUDSyh0yOm9',
-                    'CARDREAROPTION1': '1wr0RVyZplRAgyTBNYC158ZV9AK4GyQEG',
-                    'SCENEOPTION20': '1Hez70o_YVo5T6wiu3Km717-aPte12Su5',
-                    'SCENEOPTION19': '15EQLMVFlyha3U6XmCTAuFZjBzpvqljDP',
-                    'SCENEOPTION18': '1QrTdIJ0bO_4nJ44terWd7knAp_nhyPtg',
-                    'SCENEOPTION17': '1BggChYL8QWW7eZ3mlC4rdr-toKiGIFbr',
-                    'SCENEOPTION16': '1hqKzaWBw-lLPylZMpKCowz9dxxlyez4w',
-                    'SCENEOPTION15': '1YtA-lKY66igpKu-1CSGLw7wv2de6jAqC',
-                    'SCENEOPTION14': '17PeY1P4cYNrP9VBSIkf4108vTgZRC2zX',
-                    'SCENEOPTION13': '1qnO4iKYfob9Wxp8GeLaf5RYt1vzDBev7',
-                    'SCENEOPTION12': '1W2JdrgyTYKpAa_b9cCPE9EACGUGTdDlS',
-                    'SCENEOPTION11': '1MGAxmLzLwHmDjhuRG8sGT0clroYw8PBF',
-                    'SCENEOPTION10': '1N2G8lh6z0KBCJj9xnOIUW9alqPGY_GEZ',
-                    'SCENEOPTION9': '1XN2Kb4EITSBf9K9L2321bp3gYNvK_LdC',
-                    'SCENEOPTION8': '1mxxeoGKfzwj9ARMr1eiRZQTk0x1hwYHj',
-                    'SCENEOPTION7': '1sa-fYKiyauAMTDyWfgcMGmQTiSuoO4QI',
-                    'SCENEOPTION6': '1xXYJG4NO6buoC2tc4di-WbpuBGRuUplk',
-                    'SCENEOPTION5': '12wrOHsYkpnZFeb-maeTr5djrYmlPy-ik',
-                    'SCENEOPTION4': '1TUsSb1JsD-Gf4Gvnc8FdD35Y1K7ZVRJF',
-                    'SCENEOPTION3': '1qd8CepZ6gsPPbCDGMONhqX7XzVK3_giO',
-                    'SCENEOPTION2': '1MR_ODh2JnfMEbVQsMNuciBoNY4eYvkx-',
-                    'SCENEOPTION1': '1QYidz-o2hTfyQhmTihhDqHG7WGlyY9i-',
-                    'BACKGROUNDOPTION14': '1ICZzgeQDfVRpjWQyBy1tjBDw_Gj9bdjI',
-                    'BACKGROUNDOPTION13': '1KiG2fkstR5ESRko5M4J3BE8yU_A-oeEc',
-                    'BACKGROUNDOPTION12': '1W0P7FYgCxBv5u_Qk456Prqtdn40dTzIu',
-                    'BACKGROUNDOPTION11': '1tChqc8g-Mi6N2LtkYxN8NHrVp0XZeu7r',
-                    'BACKGROUNDOPTION10': '1GT9Lry4KGAZL--_tO6F_mBQnLFU8yN9p',
-                    'BACKGROUNDOPTION9': '1Oo1QijSrXfhXEgZuVIJZrDqE9ILXqPsS',
-                    'BACKGROUNDOPTION8': '1K3IAu92afiq2s5Bu_GedsAumnkm39dLP',
-                    'BACKGROUNDOPTION7': '19YzOw0BZxkH4sYzouvT32wptbTnGv05e',
-                    'BACKGROUNDOPTION6': '1XL7N8q8-9vD0RftixdotcNRuNoQ1z_zk',
-                    'BACKGROUNDOPTION5': '1OubNMpQ4GptAXc_3zZSk1e2I7yDr8UM6',
-                    'BACKGROUNDOPTION4': '1HcDQ4YcNtw-SQYA2nDcQ-ysIFZx2vJo2',
-                    'BACKGROUNDOPTION3': '1M7aAZGmDUD168osGHLJtM12ePqMPRLVz',
-                    'BACKGROUNDOPTION2': '1CaUGvKCbQX0d3k882axisoB_pTjfiROH',
-                    'BACKGROUNDOPTION1': '1tN78_8vnyGIsZqd-Wo6-KWuZSv8W_3p2',
-                    'SIDEKICKNOSIDEKICK': '1MpjbcrXuFDDCRu6lUzNL-OHt9nwIwKsE',
-                    'SIDEKICKOPTION38': '1r2Rk9vxzzAGB4xMJED7-DqTgjG91Smmj',
-                    'SIDEKICKOPTION37': '1hsFCts2RaWJhws32fX_6-dtpjDCLDOM6',
-                    'SIDEKICKOPTION36': '1tleTWXl2LXOrt0Z4Cd3HzKMuCcJUvTkh',
-                    'SIDEKICKOPTION35': '1yHoZ9HYE638FVpu0n_yKSLTcmnOjD5VS',
-                    'SIDEKICKOPTION34': '1QcHWghQ5H-dJ6ymd6RPS2vj6xq5-IZAA',
-                    'SIDEKICKOPTION33': '15qEweO4-bIthrHXnIGh8G_qTTVtBIeqz',
-                    'SIDEKICKOPTION32': '1BvhJRqxBvsHv7NI2HCjZrmHK1O47S7G7',
-                    'SIDEKICKOPTION31': '15bWGtLiDQ9qVlsG3lvV1E8yM4A-sztpn',
-                    'SIDEKICKOPTION30': '1MNl4cWpDQgtrphk1vOdE964LHCcofvKl',
-                    'SIDEKICKOPTION29': '1BYoOq2PUcv3eDenYFlSXzVXwTx39634x',
-                    'SIDEKICKOPTION28': '1AG2jPQAyYrzx7p6v77AfHpa8hbrlFkBz',
-                    'SIDEKICKOPTION27': '1HHVqJWQn9Q4M7tDe6teM7PaM1kI4lC0K',
-                    'SIDEKICKOPTION26': '1h1wbJePRUPuNtcpL3z4BxkKPgg-7DaIU',
-                    'SIDEKICKOPTION25': '1KwgzTi8Iom2vem1QJU8VTEKJA-7TtXay',
-                    'SIDEKICKOPTION24': '1nYfXiwUa-bbhwa5CDOsGcjFxxPoNikHA',
-                    'SIDEKICKOPTION23': '1yVdTrnmUN91OqncLASDzjqfjzXa237-y',
-                    'SIDEKICKOPTION22': '1ZxCN91Mm5LW-XHVRLtESwAK0W3KmkDaI',
-                    'SIDEKICKOPTION21': '1GxqB1pWAO3mnn89r11wN1z_BLmfp2Kzc',
-                    'SIDEKICKOPTION20': '1JHyfVf1VjJKvTFE7bGiWJvzvaao50LLV',
-                    'SIDEKICKOPTION19': '1CD1IBnbwZO37jFC0Foevrcrmi1rVSNiy',
-                    'SIDEKICKOPTION18': '1ohRnqrK81v6hrWpX2j7HytwLAahFZX64',
-                    'SIDEKICKOPTION17': '1qpOWdFeoCGQ9zmBHB8TxIEEGKfswUyYf',
-                    'SIDEKICKOPTION16': '1aX-Fg95jFuPCOpr4Ohz4ADA-5Jcl0OgN',
-                    'SIDEKICKOPTION15': '1ZWeTxpMFzr72ie7fFTs19awKWD8pToWU',
-                    'SIDEKICKOPTION14': '1WqTWjSiFRqSZp8XzC7umGMQ5fzHzqTQE',
-                    'SIDEKICKOPTION13': '1GK0oiygbYQKrRBwa9FtdqR5eym6geNT1',
-                    'SIDEKICKOPTION12': '17HlI8bJcNt402TMULe1RHsxuk7sedvfE',
-                    'SIDEKICKOPTION11': '1sa8CHaYnvJ7-3Wje58eOKkbc1Mx3tV1w',
-                    'SIDEKICKOPTION10': '1C40fGWmNazDSdlxvDeGZROwC_SpGz70J',
-                    'SIDEKICKOPTION9': '1BDxu5BFDRSC2-Ci0oBwA1N1oDlP9Pl_2',
-                    'SIDEKICKOPTION8': '1K2osJ5jcY64cirpT5OWC2ZUuHKUvtTh-',
-                    'SIDEKICKOPTION7': '1rRuiVFH1-hbCPqfP0MgKNqzE6JBLB30x',
-                    'SIDEKICKOPTION6': '1lWA4hJa6FAdKefuMkx6vYfSlMncaXzzp',
-                    'SIDEKICKOPTION5': '1s5enB965GeGFLIuvV9P8LHvbw-HAbAPO',
-                    'SIDEKICKOPTION4': '1QQx6nSd3j1YGe-PUQMtp1RfBZnLownz1',
-                    'SIDEKICKOPTION3': '13sWhx7bV9TeNH6QkJC9wOhSSvGokE2lB',
-                    'SIDEKICKOPTION2': '10nZ8IqGZrMkzOXvsMnBY_LFiz1a3HwUo',
-                    'SIDEKICKOPTION1': '1AR3wZS6aLIy6VdJRSFJlCyOHswud4RXb',
-                    'APPARELOPTION35': '1evKGQIWnp4J7hVZCuAqxn3y-4S1PcT1P',
-                    'APPARELOPTION34': '1-xD-EOO37t0oLPQmMae354wSme8h5AvV',
-                    'APPARELOPTION33': '1DrvnfVW-z7Uf6fiXOuUkQgfN52peOf4N',
-                    'APPARELOPTION32': '11huibM9_pltkvqS1X_omJatOGYuSX91t',
-                    'APPARELOPTION31': '1hyeL9MAo6DWZ31_P8XSHEk3sJy3QmEFf',
-                    'APPARELOPTION30': '1hAWNEY0gQd3CiLm3zOnkITl9rUpgk4h1',
-                    'APPARELOPTION29': '1Sx0WbHXkE6z7F46swcFuCMKleiS8j7K_',
-                    'APPARELOPTION28': '170FK_r7SeNkOamOyoEFrNppa-h3M5WCh',
-                    'APPARELOPTION26': '1UVX7MlEoySU4PZkcoM_CSqInA7eomJPu',
-                    'APPARELOPTION25': '1vyHQgDWfORa3tX60yqy6XsCyV3JWo0mz',
-                    'APPARELOPTION23': '1UGJ_fs2jre9i2VwfT_NhGnVU2cIL09eR',
-                    'APPARELOPTION22': '1OT3zwakNd4vflEdGB0milWNAry7Z8gqu',
-                    'APPARELOPTION21': '1AM2HvC-F3W2IO4v0ZlmoxLqg1pmkOvV7',
-                    'APPARELOPTION20': '1atQg5NQXmXpj5TmBIYFgMM_cfR4fJPA2',
-                    'APPARELOPTION19': '1QmZkSTQed--D41eycBX7P8X_UaLlu8nS',
-                    'APPARELOPTION18': '14ulfBNtMZqtPOjvEBtew2KHt47LbLSF4',
-                    'APPARELOPTION17': '1Iijhy2mIigh5EvCo-l2tYQ1VtK12ikqk',
-                    'APPARELOPTION16': '1huXrMVxGbl_hK8u0b4QRgDzMtdTl6RKl',
-                    'APPARELOPTION15': '1MtymNnBnaf4J0tho_Nb7vSS8W3zzkeo_',
-                    'APPARELOPTION14': '1SLkXzOfEbqp64FoctkR-GLLMq5P_A2zF',
-                    'APPARELOPTION12': '1D9alyIaA2Q6DGl5WRuZzZDKbiLxWgNHj',
-                    'APPARELOPTION9': '1CbtQBJXlOJcRN8Ar3vdX7md_r20vs4TD',
-                    'APPARELOPTION8': '18HabC_lEP9XFNQcsXOHZh_g-NhhFvBsB',
-                    'APPARELOPTION7': '1u4nmZyWUz4xKpWazyTpt_qJDe0AvVcwP',
-                    'APPARELOPTION6': '1V33W0_wvVsKKMDr-hxAaaIfldJNt-fQ1',
-                    'APPARELOPTION5': '1cB815p9Nd_wGjrN1QXqriniK-uwxlDS0',
-                    'APPARELOPTION4': '1ZHVhg4v3s8E-d0qidYBZDV8bnXLUBkVS',
-                    'APPARELOPTION3': '1BVTXGtAW5DVIcKCKOEiikkRqwZyqO2wG',
-                    'APPARELOPTION2': '1hgKUqwAzI-Jh3_KmXymuqil66I4nBvJw',
-                    'APPARELOPTION1': '1zh9RTrv-qYgXMdo0FtQCjuE-I8k78olL',
-                    'TOPHAT': '1tanqS3OEaYxyg5nTibW-KlqLI5h75_jX',
-                    'TIARA': '19Eu8J_i1t2nq2Xz5Otegxjwipnyr60sj',
-                    'GARLAND': '1e6dHw5MNtIAtxxvhBS-odx9GnmhgtHm3',
-                    'PIKAKAP': '1w0iYgaY4uD5fnBje4DzoS0R9AfsyNCIa',
-                    'CAP': '1o5Uu_CMh-TpK2d9_55YozK1PE_Npie0n',
-                    'TRUCKERCAP': '1nrKAyV5HF8GCwM8fkY2Tlnf6DsCHC0dY',
-                    'BEACHHAT': '11QuVkGuRTSm0ZV8PaVt0WUCBJoLcMhfZ',
-                    'REDCAP': '1dpkYuGlH_V5uqSRRyou22MnDpQyHm48s',
-                    'PINK GLASSES': '1wvN2AwhdxuqtGeZhjc6jnsujCIuBbbmH',
-                    'MEMEGLASSES': '15lCCJVzaPVC4YBn43_5yJ3ShjDxvnUXF',
-                    'BLUE GLASSES': '1H2CY_1--xGneYzaZ0axW8iF20rCj9Or8',
-                    'GLASSES': '18OT3rAxA53_2aYsyE_2VVf3TOYo084C4',
-                    'FACIALHAIROPTION5': '1XeN2m_1eW6OTA_fqFWXgPIHeLkgW2Qgw',
-                    'FACIALHAIROPTION4': '18opGtVEppdncykh4QT3Y9bUYI5__eEb0',
-                    'FACIALHAIROPTION3': '1zkMYaWFdykn8sTuBaSK-Sj2krf4yi5vh',
-                    'FACIALHAIROPTION1': '1Paw1tfoiHxgYLKK7w7wgFkpAR5bPjZbr',
-                    'HAIR-OPTION20': '1GbXBoNJZlzodmogeNp-6ET-07GFZXyD2',
-                    'HAIR-OPTION19': '1UzHfRM900gN14EZaqsTPYrkySlKolo0O',
-                    'HAIR-OPTION18': '1_1dN8MzlPCCaAx0lfQlzjMjUi4e6ln6p',
-                    'HAIR-OPTION17': '1FXyf0ULx3Yrcp_0tkALu5iLoz2wlqblC',
-                    'HAIR-OPTION16': '1wVfXCXMCX9mZAFvKfHtIw5pDvD-nEXWm',
-                    'HAIR-OPTION15': '1PVjbjgm2c-bGK2omSmKtEdO0i-IWRLts',
-                    'HAIR-OPTION14': '1KUjvQ4-61fNOEdMSKQyYCtYJyOqxuETr',
-                    'HAIR-OPTION13': '1SPsLgINUczz462nllv2LJndcIuc2ca07',
-                    'HAIR-OPTION12': '19wmP9WE3wLyO7JI35lpQyao7VxxdsS1F',
-                    'HAIR-OPTION11': '1sfPCaycOET-W4tnTmVvkfK_ViyCZP6ED',
-                    'HAIR-OPTION10': '1kbrTLVRmELchdnmi6NgQMH7QpmvFQvJm',
-                    'HAIR-OPTION9': '1GyfVCiXa9bXKeooscuM-q9zBQhMVuxql',
-                    'HAIR-OPTION8': '1eVZTOKQCXwCUqcue4r9LLgTgMJXBP4vX',
-                    'HAIR-OPTION7': '1SnMCmHGjiCTqZSi6LDYtQvBpkaeDjUXt',
-                    'HAIR-OPTION6': '1P-QSOERUEvwSaeCMiaeLVh0R-ODIXdvw',
-                    'HAIR-OPTION5': '1wRNIHDzcFvaN9VfGHtLUcVecLgFpAEtE',
-                    'HAIR-OPTION4': '15NlVnOzP0f8ZoCSOpdFa6d7yi4EE7U-R',
-                    'HAIR-OPTION3': '1M_8h6qXbMpbtVMIvI-dQMx9e6VWQruzG',
-                    'HAIR-OPTION2': '1lC_T1wagiAebIYdNFFTZMJSfoGgttA8P',
-                    'HAIR-OPTION1': '1pOjKhMZmVaSmFaIRoZsgdLEnEJCFvRqB',
-                    'NO HAIR': '19ig8lxP5WNT99BB5SxRJoGKwDlAGUeTr'
-                };
-                setLoadedResources(resources);
-            }, []);
+                        React.useEffect(() => {
+                            const originalCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTnYW7k6BaT_rEQ4sIsExe97Fgwaevv1TokuKFpYtpjletWVhYg6Z9eeUwTgmz5qrXClescEa9CpLrx/pub?gid=0&single=true&output=csv';
+                            fetch(originalCsvUrl)
+                                .then(response => {
+                                    if (!response.ok) throw new Error('Failed to fetch CSV');
+                                    return response.text();
+                                })
+                                .then(text => {
+                                    const rows = text.split('\n').slice(1);
+                                    const map = {};
+                                    rows.forEach(row => {
+                                        const [filename, category, url] = row.split(',');
+                                        if (url) {
+                                            const idMatch = url.match(/id=([^&]+)/);
+                                            if (idMatch) {
+                                                const key = (category ? category.trim() + '/' : '') + filename.trim();
+                                                map[key] = idMatch[1].trim();
+                                            }
+                                        }
+                                    });
+                                    setElementResources(map);
+                                })
+                                .catch(error => console.error('Error loading element CSV:', error));
+                        }, []);
 
-            React.useEffect(() => {
-                const originalCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTnYW7k6BaT_rEQ4sIsExe97Fgwaevv1TokuKFpYtpjletWVhYg6Z9eeUwTgmz5qrXClescEa9CpLrx/pub?gid=0&single=true&output=csv';
-                fetch(originalCsvUrl)
-                    .then(response => {
-                        if (!response.ok) throw new Error('Failed to fetch CSV');
-                        return response.text();
-                    })
-                    .then(text => {
-                        const rows = text.split('\n').slice(1);
-                        const map = {};
-                        rows.forEach(row => {
-                            const [filename, category, url] = row.split(',');
-                            if (url) {
-                                const idMatch = url.match(/id=([^&]+)/);
-                                if (idMatch) {
-                                    const key = (category ? category.trim() + '/' : '') + filename.trim();
-                                    map[key] = idMatch[1].trim();
+                        const [backgroundOptions, setBackgroundOptions] = React.useState([]);
+                        const [sceneOptions, setSceneOptions] = React.useState([]);
+                        const [backCardOptions, setBackCardOptions] = React.useState([]);
+                        const [hairStyleOptions, setHairStyleOptions] = React.useState([]);
+                        const [eyewearOptions, setEyewearOptions] = React.useState([]);
+                        const [apparelOptions, setApparelOptions] = React.useState([]);
+                        const [sidekickOptions, setSidekickOptions] = React.useState([]);
+                        const [facialHairOptions, setFacialHairOptions] = React.useState([]);
+                        const [accessoryOptions, setAccessoryOptions] = React.useState([]);
+
+                        React.useEffect(() => {
+                            if (Object.keys(loadedResources).length > 0) {
+                                const enhance = (base, thumbnailSize = '&sz=w170') => base.map(opt => {
+                                    if (opt.key) {
+                                        const id = loadedResources[opt.key.toUpperCase()];
+                                        return { ...opt, id, thumbnail: id ? `https://drive.google.com/thumbnail?id=${id}${thumbnailSize}` : '' };
+                                    }
+                                    return opt;
+                                });
+                                setBackgroundOptions(enhance(baseBackgrounds));
+                                setSceneOptions(enhance(baseScenes));
+                                setBackCardOptions(enhance(baseBackCards));
+                                setHairStyleOptions(enhance(baseHairStyles));
+                                setEyewearOptions(enhance(baseEyewear));
+                                setApparelOptions(enhance(baseApparel));
+                                setSidekickOptions(enhance(baseSidekicks));
+                                setFacialHairOptions(enhance(baseFacialHair));
+                                setAccessoryOptions(enhance(baseAccessories));
+                            }
+                        }, [loadedResources]);
+
+                        const canvasRef = React.useRef(null);
+
+                        const validatePoem = (text) => {
+                            const lines = text.split('\n').map(line => line.slice(0, 48));
+                            if (lines.length > 4) {
+                                console.warn('Poem exceeds 4 lines; truncating to 4 lines');
+                                return lines.slice(0, 4).join('\n');
+                            }
+                            return lines.join('\n');
+                        };
+
+                        const toTitleCase = (str) => {
+                            return str.replace(/\w\S*/g, txt => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+                        };
+
+                        const handleChange = (id, value) => {
+                            let newValue = value;
+                            let additionalUpdates = {};
+                            if (id === 'poemText') {
+                                newValue = validatePoem(value);
+                            }
+                            if (id === 'hp') {
+                                newValue = value.slice(0, 6);
+                            }
+                            if (id === 'poemSelection') {
+                                const prevSelection = formData.poemSelection;
+                                const isSwitchBetweenCustom = (prevSelection === 'Add Your Own Poem' && value === 'AI-Generated Poem') || (prevSelection === 'AI-Generated Poem' && value === 'Add Your Own Poem');
+                                if (isSwitchBetweenCustom || value === 'AI-Generated Poem' || value === 'Add Your Own Poem') {
+                                    additionalUpdates.poemTitle = '';
+                                    additionalUpdates.poemText = '';
                                 }
                             }
-                        });
-                        setElementResources(map);
-                    })
-                    .catch(error => console.error('Error loading element CSV:', error));
-            }, []);
-
-            const [backgroundOptions, setBackgroundOptions] = React.useState([]);
-            const [sceneOptions, setSceneOptions] = React.useState([]);
-            const [backCardOptions, setBackCardOptions] = React.useState([]);
-            const [hairStyleOptions, setHairStyleOptions] = React.useState([]);
-            const [eyewearOptions, setEyewearOptions] = React.useState([]);
-            const [apparelOptions, setApparelOptions] = React.useState([]);
-            const [sidekickOptions, setSidekickOptions] = React.useState([]);
-            const [facialHairOptions, setFacialHairOptions] = React.useState([]);
-            const [accessoryOptions, setAccessoryOptions] = React.useState([]);
-
-            React.useEffect(() => {
-                if (Object.keys(loadedResources).length > 0) {
-                    const enhance = (base, thumbnailSize = '&sz=w170') => base.map(opt => {
-                        if (opt.key) {
-                            const id = loadedResources[opt.key.toUpperCase()];
-                            return { ...opt, id, thumbnail: id ? `https://drive.google.com/thumbnail?id=${id}${thumbnailSize}` : '' };
-                        }
-                        return opt;
-                    });
-                    setBackgroundOptions(enhance(baseBackgrounds));
-                    setSceneOptions(enhance(baseScenes));
-                    setBackCardOptions(enhance(baseBackCards));
-                    setHairStyleOptions(enhance(baseHairStyles));
-                    setEyewearOptions(enhance(baseEyewear));
-                    setApparelOptions(enhance(baseApparel));
-                    setSidekickOptions(enhance(baseSidekicks));
-                    setFacialHairOptions(enhance(baseFacialHair));
-                    setAccessoryOptions(enhance(baseAccessories));
-                }
-            }, [loadedResources]);
-
-            const canvasRef = React.useRef(null);
-
-            const validatePoem = (text) => {
-                const lines = text.split('\n').map(line => line.slice(0, 48));
-                if (lines.length > 4) {
-                    console.warn('Poem exceeds 4 lines; truncating to 4 lines');
-                    return lines.slice(0, 4).join('\n');
-                }
-                return lines.join('\n');
-            };
-
-            const toTitleCase = (str) => {
-                return str.replace(/\w\S*/g, txt => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
-            };
-
-            const handleChange = (id, value) => {
-                let newValue = value;
-                let additionalUpdates = {};
-                if (id === 'poemText') {
-                    newValue = validatePoem(value);
-                }
-                if (id === 'hp') {
-                    newValue = value.slice(0, 6);
-                }
-                if (id === 'poemSelection') {
-                    const prevSelection = formData.poemSelection;
-                    const isSwitchBetweenCustom = (prevSelection === 'Add Your Own Poem' && value === 'AI-Generated Poem') || (prevSelection === 'AI-Generated Poem' && value === 'Add Your Own Poem');
-                    if (isSwitchBetweenCustom || value === 'AI-Generated Poem' || value === 'Add Your Own Poem') {
-                        additionalUpdates.poemTitle = '';
-                        additionalUpdates.poemText = '';
-                    }
-                }
-                setFormData(prev => ({ ...prev, [id]: newValue, ...additionalUpdates }));
-            };
-
-            const handlePoemLineChange = (index, value) => {
-                const lines = formData.poemText.split('\n');
-                lines[index] = value.slice(0, 48);
-                const newPoemText = lines.slice(0, 4).join('\n');
-                setFormData(prev => ({ ...prev, poemText: newPoemText }));
-            };
-
-            const handleSubmit = (e) => {
-                e.preventDefault();
-                setIsSubmitting(true);
-
-                const sheetScriptURL = 'https://script.google.com/macros/s/AKfycbxYSuiZJWojDqoYNfPBLzu0b7Ai4MYrLLoP96c9K1eOLzgs_lioJNEgw1fvlhScYJ2pQA/exec';
-
-                const isPersonalised = ['Add Your Own Poem', 'AI-Generated Poem'].includes(formData.poemSelection);
-                const occasionMap = {
-                    'Anniversary': '1.Anniversary',
-                    'Birthday': '2.Birthday',
-                    'Engagement': '3.Engagement',
-                    'First Date': '4.First Date',
-                    'Holiday Gift': '5.Holiday Gift',
-                    'I LOVE YOU': '6.I LOVE YOU',
-                    'Get Well Soon': '7.Get Well Soon',
-                    'Just Because': '8.Just Because',
-                    'New Home': '9.New Home',
-                    'Proposal': '10.Proposal',
-                    'Valentines Day': '11.Valentines Day',
-                    "Father's Day": '12.Father\'s Day',
-                    "Mother's Day": '13.Mother\'s Day',
-                    'Congratulations': '14.Congratulations',
-                    'My Vow': '15.My Vow',
-                    'Sweet Oath': '16.Sweet Oath'
-                };
-                const occasion = isPersonalised ? 'Add your own Poem / Select and personalise in the next section' : (occasionMap[formData.poemSelection] || formData.poemSelection);
-                const message = isPersonalised ? `${formData.poemTitle}\n${formData.poemText}` : event_poems[formData.poemSelection].join('\n');
-
-                const combinedNames = `${formData.leftCharacterColour} & ${formData.rightCharacterColour}`.trim();
-
-                const randomHP = Math.floor(Math.random() * 990 + 10);
-                const hpValue = formData.hp || randomHP;
-
-                const sheetData = {
-                    'Enter Your Order Number or Character Names : )': combinedNames || 'Unknown',
-                    'Left Character': formData.leftGender || 'Male',
-                    'Left Characters First Name': formData.leftCharacterColour || 'Unknown',
-                    'Left Character\'s eye Colour': formData.leftEyeColor || 'Blue',
-                    'Hair Style for Left Character': formData.leftHairStyle || 'Option 8',
-                    'Hair Color for Left Character': formData.leftHairColor.replace('Ginger', 'Strawberry Blond').replace('Grey_White', 'White') || 'Brown',
-                    'Eyewear for left Character': formData.leftEyewear || 'None',
-                    'Left Character\'s Apparel': formData.leftApparel || 'Option 23',
-                    'Etnicity of the Left Character': formData.leftEthnicity || 'White',
-                    'Left Characters Pokemon/Pet': formData.leftSidekick || 'Option 11',
-                    'Right Character': formData.rightGender || 'Female',
-                    'Right Characters First Name': formData.rightCharacterColour || 'Unknown',
-                    'Right Character\'s eye Colour': formData.rightEyeColor || 'Blue',
-                    'Hair Style for Right Character': formData.rightHairStyle || 'Option 14',
-                    'Hair Color for Right Character': formData.rightHairColor.replace('Ginger', 'Strawberry Blond').replace('Grey_White', 'White') || 'Black',
-                    'Eyewear for Right Character': formData.rightEyewear || 'None',
-                    'Right Characters Apparel': formData.rightApparel || 'Option 8',
-                    'Right Characters Etnicity': formData.rightEthnicity || 'White',
-                    'Right Characters Pokemon/Pet': formData.rightSidekick || 'Option 11',
-                    'Border/Card Color': formData.borderColor.replace('Orange', 'Oange') || 'Yellow',
-                    'Card Background Color': formData.backgroundColor || 'Option 1',
-                    'Scene': formData.scene || 'Option 1',
-                    'Choose Occasion/Poem': occasion || '6.I LOVE YOU',
-                    'Add your own Personalised Message as follows; A Title 4 short lines or less for your Poem': message || event_poems['I LOVE YOU'].join('\n'),
-                    'Rear/Back of Mini PokeMon Valentine Card': formData.backCard || 'Option 2',
-                    'Right Character Facial Hair': formData.rightFacialHair || 'None',
-                    'Left Character Facial Hair': formData.leftFacialHair || 'None',
-                    'Accessories for left Character': formData.leftAccessories || 'None',
-                    'Accessories for Right Character': formData.rightAccessories || 'None',
-                    'HP Value': hpValue,
-                    'Processed': ''
-                };
-
-                fetch(sheetScriptURL, {
-                    method: 'POST',
-                    body: JSON.stringify(sheetData),
-                    headers: { 'Content-Type': 'application/json' }
-                })
-                .then(response => {
-                    if (!response.ok) throw new Error(`Submission failed: ${response.statusText}`);
-                    return response.json();
-                })
-                    .then(data => {
-                    console.log('Submission response:', data);
-                    setIsSubmitting(false);
-                    setShowModal(true);
-                    document.getElementById('right-character-details').removeAttribute('open');
-                })
-                .catch(error => {
-                    console.error('Submission error:', error);
-                    setIsSubmitting(false);
-                    alert('An error occurred during submission. Please try again.');
-                    setShowModal(true);
-                });
-            };
-
-            const togglePoemInputs = () => {
-                const poemInputs = document.getElementById('poem-inputs');
-                poemInputs.style.display = ['Add Your Own Poem', 'AI-Generated Poem'].includes(formData.poemSelection) ? 'block' : 'none';
-            };
-
-            const generatePoem = async () => {
-                setIsGeneratingPoem(true);
-                if (!formData.poemTitle) {
-                    alert('Please enter a poem title (max 22 characters).');
-                    setIsGeneratingPoem(false);
-                    return;
-                }
-                const prompt = formData.poemTitle.trim();
-                console.log('Sending prompt:', prompt);  // Debug
-                try {
-                    const generatePoemFunction = firebase.functions().httpsCallable('generatePoem');
-                    const result = await generatePoemFunction({ prompt: prompt });
-                    console.log('Result received:', result);  // Debug
-                    let generated = result.data.poem.split('\n');
-                    if (generated.length === 1) {
-                        generated = result.data.poem.split('\\n');
-                    }
-                    const newTitle = generated[0].slice(0, 22);
-                    const newPoemText = validatePoem(generated.slice(1).join('\n'));
-                    setFormData(prev => ({ 
-                        ...prev, 
-                        poemTitle: newTitle,
-                        poemText: newPoemText
-                    }));
-                    console.log('Generated poem:', newPoemText);  // Debug
-                } catch (error) {
-                    alert('Error: ' + error.message);
-                    console.error('Full error:', error);
-                } finally {
-                    setIsGeneratingPoem(false);
-                }
-            };
-
-            React.useEffect(() => {
-                togglePoemInputs();
-                const cardDesign = document.getElementById('card-design-details');
-                const leftCharacter = document.getElementById('left-character-details');
-                const rightCharacter = document.getElementById('right-character-details');
-
-                const handleCardDesignClick = () => {
-                    leftCharacter.removeAttribute('open');
-                    rightCharacter.removeAttribute('open');
-                };
-                const handleLeftCharacterClick = () => {
-                    cardDesign.removeAttribute('open');
-                    rightCharacter.removeAttribute('open');
-                };
-                const handleRightCharacterClick = () => {
-                    cardDesign.removeAttribute('open');
-                    leftCharacter.removeAttribute('open');
-                };
-
-                cardDesign.querySelector('summary').addEventListener('click', handleCardDesignClick);
-                leftCharacter.querySelector('summary').addEventListener('click', handleLeftCharacterClick);
-                rightCharacter.querySelector('summary').addEventListener('click', handleRightCharacterClick);
-
-                return () => {
-                    cardDesign.querySelector('summary').removeEventListener('click', handleCardDesignClick);
-                    leftCharacter.querySelector('summary').removeEventListener('click', handleLeftCharacterClick);
-                    rightCharacter.querySelector('summary').removeEventListener('click', handleRightCharacterClick);
-                };
-            }, [formData.poemSelection]);
-
-            React.useEffect(() => {
-                const drawTexts = async () => {
-                    const fontName = 'Arimo';
-                    try {
-                        await document.fonts.load(`26px ${fontName}`);
-                    } catch (err) {
-                        console.error('Font loading failed:', err);
-                        return;
-                    }
-
-                    const canvas = canvasRef.current;
-                    if (!canvas) return;
-                    const ctx = canvas.getContext('2d');
-                    if (!ctx) return;
-
-                    const container = document.querySelector('.card-container');
-                    const containerWidth = container.offsetWidth;
-                    const scale = containerWidth / 290;
-                    canvas.width = 638 * scale;
-                    canvas.height = 1016 * scale;
-
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    let fontSize = isMobile ? 24 : 26;
-                    let effectiveScale = scale;
-                    if (isMobile) {
-                        effectiveScale = scale + (1 - scale) * 0.2;
-                    }
-                    ctx.font = `${fontSize * effectiveScale}px ${fontName}`;
-                    ctx.scale(scale, scale);
-
-                    let text_tag = '';
-                    let poem_lines = [];
-                    if (formData.poemSelection === 'Add Your Own Poem' || formData.poemSelection === 'AI-Generated Poem') {
-                        text_tag = formData.poemTitle;
-                        poem_lines = formData.poemText.split('\n').filter(line => line.trim());
-                    } else if (formData.poemSelection) {
-                        text_tag = formData.poemSelection;
-                        poem_lines = event_poems[formData.poemSelection] || event_poems["First Date"];
-                    }
-
-                    const leftName = toTitleCase(formData.leftCharacterColour || '');
-                    const rightName = toTitleCase(formData.rightCharacterColour || '');
-
-                    const randomHP = Math.floor(Math.random() * 990 + 10);
-                    const hp = (formData.hp ? formData.hp + ' HP' : randomHP + ' HP');
-
-                    const texts = [
-                        { text: text_tag, x_mm: 8.8, y_mm: 56.95, color: 'rgb(0,0,0)', align: 'left' },
-                        { text: hp, x_mm: 38.6, y_mm: 57.05, color: 'rgb(0,0,0)', align: 'left' },
-                        { text: leftName, x_start: 4.8, x_end: 18, y_mm: 4.6, color: 'rgb(180,120,0)', align: 'center' },
-                        { text: rightName, x_start: 36.3, x_end: 49.3, y_mm: 4.6, color: 'rgb(160,100,0)', align: 'center' },
-                        { text: leftName, x_start: 7.4, x_end: 20.4, y_mm: 61.95, color: 'rgb(0,0,0)', align: 'center' },
-                        { text: rightName, x_start: 32.2, x_end: 46.3, y_mm: 61.95, color: 'rgb(0,0,0)', align: 'center' }
-                    ];
-
-                    const MM_TO_PX = 300 / 25.4;
-
-                    texts.forEach(({text, x_mm, y_mm, color, align, x_start, x_end}) => {
-                        if (!text) return;
-                        ctx.fillStyle = color;
-                        const metrics = ctx.measureText(text);
-                        let x = x_mm ? x_mm * MM_TO_PX : ((x_start + x_end) / 2) * MM_TO_PX - metrics.width / 2;
-                        const y = y_mm * MM_TO_PX + metrics.actualBoundingBoxAscent;
-                        ctx.fillText(text, x, y);
-                    });
-
-                    const poem_center_x_mm = (5.7 + 48.3) / 2;
-                    const poem_center_x = poem_center_x_mm * MM_TO_PX;
-                    let poem_y_start = 69.0 * MM_TO_PX;
-                    const line_spacing = 3 * MM_TO_PX;
-                    const num_lines = poem_lines.length;
-                    if (num_lines < 4) {
-                        const total_height = line_spacing * 3;
-                        const used_height = line_spacing * (num_lines - 1);
-                        const offset = (total_height - used_height) / 2;
-                        poem_y_start += offset;
-                    }
-
-                    poem_lines.slice(0, 4).forEach((line, i) => {
-                        ctx.fillStyle = 'rgb(0,0,0)';
-                        const metrics = ctx.measureText(line);
-                        const x = poem_center_x - metrics.width / 2;
-                        const y = poem_y_start + i * line_spacing + metrics.actualBoundingBoxAscent;
-                        ctx.fillText(line, x, y);
-                    });
-                };
-
-                drawTexts();
-            }, [formData, isMobile]);
-
-            const getElementKey = (side, component, params) => {
-                let category = '';
-                let filename = '';
-                const upperSide = side.toUpperCase();
-                switch (component) {
-                    case 'apparel':
-                        category = upperSide + 'CharacterApparel';
-                        filename = params.ethnicity.toUpperCase() + upperSide + 'CharacterApparel' + params.number + '.png';
-                        break;
-                    case 'face':
-                        category = upperSide + 'FACES';
-                        filename = params.gender.toUpperCase() + params.ethnicity.toUpperCase() + upperSide + params.eyeColor.toUpperCase() + '.png';
-                        break;
-                    case 'hair':
-                        let style = params.style.replace(' ', '').toUpperCase();
-                        filename = style + params.color.toUpperCase() + upperSide + '.png';
-                        category = upperSide + 'CHARACTERWIGS';
-                        break;
-                    case 'facialHair':
-                        category = upperSide + 'FACIALHAIR';
-                        let optionNum = params.number;
-                        if (optionNum > 1) optionNum--;
-                        filename = 'OPTION' + optionNum + params.color.toUpperCase() + upperSide + '.png';
-                        break;
-                    case 'eyewear':
-                        const glassesFiles = {
-                            'Blue Glasses': 'BLUEGLASSES.png',
-                            'Pink Glasses': 'PINKGLASSES.png',
-                            'Meme Glasses': 'MEMEGLASSES.png',
-                            'Glasses': 'GLASSES.png'
+                            setFormData(prev => ({ ...prev, [id]: newValue, ...additionalUpdates }));
                         };
-                        const gfile = glassesFiles[params.value];
-                        if (gfile) {
-                            category = 'ACCESSORIES' + upperSide;
-                            filename = upperSide + gfile;
-                        }
-                        break;
-                    case 'accessories':
-                        const accFiles = {
-                            'Cap': upperSide + 'CAP.png',
-                            'PikaKap': upperSide + 'PIKAKAP.png',
-                            'Garland': 'GARLAND' + upperSide + '.png',
-                            'Tiara': 'TIARA' + upperSide + '.png',
-                            'TopHat': upperSide + 'TOPHAT.png',
-                            'BeachHat': upperSide + 'BEACHHAT.png',
-                            'RedCap': upperSide + 'REDCAP.png',
-                            'TruckerCap': upperSide + 'TRUCKERHAT.png'
+
+                        const handlePoemLineChange = (index, value) => {
+                            const lines = formData.poemText.split('\n');
+                            lines[index] = value.slice(0, 48);
+                            const newPoemText = lines.slice(0, 4).join('\n');
+                            setFormData(prev => ({ ...prev, poemText: newPoemText }));
                         };
-                        const afile = accFiles[params.value];
-                        if (afile) {
-                            category = 'ACCESSORIES' + upperSide;
-                            filename = afile;
-                        }
-                        break;
-                    case 'sidekick':
-                        category = side.charAt(0).toUpperCase() + side.slice(1).toLowerCase() + ' Characters Pokemon:Pet';
-                        filename = params.value + '.png';
-                        break;
-                    default:
-                        return null;
-                }
-                if (category && filename) {
-                    return category + '/' + filename;
-                }
-                return null;
-            };
 
-            const getThumbnailUrl = (key, size = 'w1000') => {
-                const id = elementResources[key];
-                return id ? `https://drive.google.com/thumbnail?id=${id}&sz=${size}` : '';
-            };
+                        const handleSubmit = (e) => {
+                            e.preventDefault();
+                            setIsSubmitting(true);
 
-            let leftApparelUrl = '';
-            let leftFaceUrl = '';
-            let leftHairUrl = '';
-            let leftFacialUrl = '';
-            let leftEyewearUrl = '';
-            let leftAccessoryUrl = '';
-            let leftSidekickUrl = '';
+                            const sheetScriptURL = 'https://script.google.com/macros/s/AKfycbxYSuiZJWojDqoYNfPBLzu0b7Ai4MYrLLoP96c9K1eOLzgs_lioJNEgw1fvlhScYJ2pQA/exec';
 
-            if (formData.leftEthnicity && formData.leftApparel) {
-                const number = formData.leftApparel.replace('Option ', '');
-                const key = getElementKey('LEFT', 'apparel', {ethnicity: formData.leftEthnicity, number});
-                leftApparelUrl = getThumbnailUrl(key);
-            }
+                            const isPersonalised = ['Add Your Own Poem', 'AI-Generated Poem'].includes(formData.poemSelection);
+                            const occasionMap = {
+                                'Anniversary': '1.Anniversary',
+                                'Birthday': '2.Birthday',
+                                'Engagement': '3.Engagement',
+                                'First Date': '4.First Date',
+                                'Holiday Gift': '5.Holiday Gift',
+                                'I LOVE YOU': '6.I LOVE YOU',
+                                'Get Well Soon': '7.Get Well Soon',
+                                'Just Because': '8.Just Because',
+                                'New Home': '9.New Home',
+                                'Proposal': '10.Proposal',
+                                'Valentines Day': '11.Valentines Day',
+                                "Father's Day": '12.Father\'s Day',
+                                "Mother's Day": '13.Mother\'s Day',
+                                'Congratulations': '14.Congratulations',
+                                'My Vow': '15.My Vow',
+                                'Sweet Oath': '16.Sweet Oath'
+                            };
+                            const occasion = isPersonalised ? 'Add your own Poem / Select and personalise in the next section' : (occasionMap[formData.poemSelection] || formData.poemSelection);
+                            const message = isPersonalised ? `${formData.poemTitle}\n${formData.poemText}` : event_poems[formData.poemSelection].join('\n');
 
-            if (formData.leftGender && formData.leftEthnicity && formData.leftEyeColor) {
-                const key = getElementKey('LEFT', 'face', {gender: formData.leftGender, ethnicity: formData.leftEthnicity, eyeColor: formData.leftEyeColor});
-                leftFaceUrl = getThumbnailUrl(key);
-            }
+                            const combinedNames = `${formData.leftCharacterColour} & ${formData.rightCharacterColour}`.trim();
 
-            if (formData.leftHairStyle && formData.leftHairStyle !== 'No Hair' && formData.leftHairColor) {
-                const style = formData.leftHairStyle.replace('Option ', 'OPTION');
-                const key = getElementKey('LEFT', 'hair', {style, color: formData.leftHairColor});
-                leftHairUrl = getThumbnailUrl(key);
-            }
+                            const randomHP = Math.floor(Math.random() * 990 + 10);
+                            const hpValue = formData.hp || randomHP;
 
-            if (formData.leftFacialHair && formData.leftFacialHair !== 'None' && formData.leftHairColor) {
-                let number = formData.leftFacialHair.replace('Option ', '');
-                const key = getElementKey('LEFT', 'facialHair', {number, color: formData.leftHairColor});
-                leftFacialUrl = getThumbnailUrl(key);
-            }
+                            const sheetData = {
+                                'Enter Your Order Number or Character Names : )': combinedNames || 'Unknown',
+                                'Left Character': formData.leftGender || 'Male',
+                                'Left Characters First Name': formData.leftCharacterColour || 'Unknown',
+                                'Left Character\'s eye Colour': formData.leftEyeColor || 'Blue',
+                                'Hair Style for Left Character': formData.leftHairStyle || 'Option 8',
+                                'Hair Color for Left Character': formData.leftHairColor.replace('Ginger', 'Strawberry Blond').replace('Grey_White', 'White') || 'Brown',
+                                'Eyewear for left Character': formData.leftEyewear || 'None',
+                                'Left Character\'s Apparel': formData.leftApparel || 'Option 23',
+                                'Etnicity of the Left Character': formData.leftEthnicity || 'White',
+                                'Left Characters Pokemon/Pet': formData.leftSidekick || 'Option 11',
+                                'Right Character': formData.rightGender || 'Female',
+                                'Right Characters First Name': formData.rightCharacterColour || 'Unknown',
+                                'Right Character\'s eye Colour': formData.rightEyeColor || 'Blue',
+                                'Hair Style for Right Character': formData.rightHairStyle || 'Option 14',
+                                'Hair Color for Right Character': formData.rightHairColor.replace('Ginger', 'Strawberry Blond').replace('Grey_White', 'White') || 'Black',
+                                'Eyewear for Right Character': formData.rightEyewear || 'None',
+                                'Right Characters Apparel': formData.rightApparel || 'Option 8',
+                                'Right Characters Etnicity': formData.rightEthnicity || 'White',
+                                'Right Characters Pokemon/Pet': formData.rightSidekick || 'Option 11',
+                                'Border/Card Color': formData.borderColor.replace('Orange', 'Oange') || 'Yellow',
+                                'Card Background Color': formData.backgroundColor || 'Option 1',
+                                'Scene': formData.scene || 'Option 1',
+                                'Choose Occasion/Poem': occasion || '6.I LOVE YOU',
+                                'Add your own Personalised Message as follows; A Title 4 short lines or less for your Poem': message || event_poems['I LOVE YOU'].join('\n'),
+                                'Rear/Back of Mini PokeMon Valentine Card': formData.backCard || 'Option 2',
+                                'Right Character Facial Hair': formData.rightFacialHair || 'None',
+                                'Left Character Facial Hair': formData.leftFacialHair || 'None',
+                                'Accessories for left Character': formData.leftAccessories || 'None',
+                                'Accessories for Right Character': formData.rightAccessories || 'None',
+                                'HP Value': hpValue,
+                                'Processed': ''
+                            };
 
-            if (formData.leftEyewear && formData.leftEyewear !== 'None') {
-                const key = getElementKey('LEFT', 'eyewear', {value: formData.leftEyewear});
-                leftEyewearUrl = getThumbnailUrl(key);
-            }
-
-            if (formData.leftAccessories && formData.leftAccessories !== 'None') {
-                const key = getElementKey('LEFT', 'accessories', {value: formData.leftAccessories});
-                leftAccessoryUrl = getThumbnailUrl(key);
-            }
-
-            if (formData.leftSidekick && formData.leftSidekick !== 'None' && formData.leftSidekick !== 'No Sidekick') {
-                const key = getElementKey('LEFT', 'sidekick', {value: formData.leftSidekick});
-                leftSidekickUrl = getThumbnailUrl(key);
-            }
-
-            let rightApparelUrl = '';
-            let rightFaceUrl = '';
-            let rightHairUrl = '';
-            let rightFacialUrl = '';
-            let rightEyewearUrl = '';
-            let rightAccessoryUrl = '';
-            let rightSidekickUrl = '';
-
-            if (formData.rightEthnicity && formData.rightApparel) {
-                const number = formData.rightApparel.replace('Option ', '');
-                const key = getElementKey('RIGHT', 'apparel', {ethnicity: formData.rightEthnicity, number});
-                rightApparelUrl = getThumbnailUrl(key);
-            }
-
-            if (formData.rightGender && formData.rightEthnicity && formData.rightEyeColor) {
-                const key = getElementKey('RIGHT', 'face', {gender: formData.rightGender, ethnicity: formData.rightEthnicity, eyeColor: formData.rightEyeColor});
-                rightFaceUrl = getThumbnailUrl(key);
-            }
-
-            if (formData.rightHairStyle && formData.rightHairStyle !== 'No Hair' && formData.rightHairColor) {
-                const style = formData.rightHairStyle.replace('Option ', 'OPTION');
-                const key = getElementKey('RIGHT', 'hair', {style, color: formData.rightHairColor});
-                rightHairUrl = getThumbnailUrl(key);
-            }
-
-            if (formData.rightFacialHair && formData.rightFacialHair !== 'None' && formData.rightHairColor) {
-                let number = formData.rightFacialHair.replace('Option ', '');
-                const key = getElementKey('RIGHT', 'facialHair', {number, color: formData.rightHairColor});
-                rightFacialUrl = getThumbnailUrl(key);
-            }
-
-            if (formData.rightEyewear && formData.rightEyewear !== 'None') {
-                const key = getElementKey('RIGHT', 'eyewear', {value: formData.rightEyewear});
-                rightEyewearUrl = getThumbnailUrl(key);
-            }
-
-            if (formData.rightAccessories && formData.rightAccessories !== 'None') {
-                const key = getElementKey('RIGHT', 'accessories', {value: formData.rightAccessories});
-                rightAccessoryUrl = getThumbnailUrl(key);
-            }
-
-            if (formData.rightSidekick && formData.rightSidekick !== 'None' && formData.rightSidekick !== 'No Sidekick') {
-                const key = getElementKey('RIGHT', 'sidekick', {value: formData.rightSidekick});
-                rightSidekickUrl = getThumbnailUrl(key);
-            }
-
-            const borderColors = [
-                { value: 'Yellow', label: 'Border Yellow' },
-                { value: 'Navy Blue', label: 'Border Navy Blue' },
-                { value: 'Red', label: 'Border Red' },
-                { value: 'White', label: 'Border White' },
-                { value: 'Orange', label: 'Border Orange' },
-                { value: 'Baby Blue', label: 'Border Baby Blue' }
-            ];
-
-            const poemOptions = [
-                { value: 'Add Your Own Poem', label: 'Add Your Own Poem' },
-                { value: 'AI-Generated Poem', label: 'AI-Generated' },
-                { value: 'Anniversary', label: 'Anniversary' },
-                { value: 'Birthday', label: 'Birthday' },
-                { value: 'Engagement', label: 'Engagement' },
-                { value: 'I LOVE YOU', label: 'I LOVE YOU' },
-                { value: 'Just Because', label: 'Just Because' },
-                { value: 'Valentines Day', label: 'Valentines Day' },
-                { value: 'Wedding', label: 'Wedding' },
-                { value: 'Get Well Soon', label: 'Get Well Soon' },
-                { value: 'New Home', label: 'New Home' },
-                { value: 'Proposal', label: 'Proposal' },
-                { value: 'First Date', label: 'First Date' },
-                { value: 'Holiday Gift', label: 'Holiday Gift' },
-                { value: "Father's Day", label: "Father's Day" },
-                { value: "Mother's Day", label: "Mother's Day" },
-                { value: 'Congratulations', label: 'Congratulations' },
-                { value: 'Sweet Oath', label: 'Sweet Oath' },
-                { value: 'My Vow', label: 'My Vow' }
-            ];
-
-            const genders = [
-                { value: 'Male', label: 'Male' },
-                { value: 'Female', label: 'Female' }
-            ];
-
-            const ethnicities = [
-                { value: 'Black', label: 'Black' },
-                { value: 'White', label: 'White' }
-            ];
-
-            const eyeColors = [
-                { value: 'Blue', label: 'Blue' },
-                { value: 'Brown', label: 'Brown' },
-                { value: 'Green', label: 'Green' }
-            ];
-
-            const hairColors = [
-                { value: 'Black', label: 'Black' },
-                { value: 'Blond', label: 'Blond' },
-                { value: 'Blue', label: 'Blue' },
-                { value: 'Brown', label: 'Brown' },
-                { value: 'Ginger', label: 'Strawberry Blond' },
-                { value: 'Green', label: 'Green' },
-                { value: 'Grey_White', label: 'White' },
-                { value: 'Pink', label: 'Pink' },
-                { value: 'Purple', label: 'Purple' },
-                { value: 'Red', label: 'Red' }
-            ];
-
-            const CustomSelect = ({ id, value, options, onChange, placeholder }) => {
-                const [isOpen, setIsOpen] = React.useState(false);
-                const selectedOption = options.find(opt => opt.value === value) || { value: '', label: placeholder };
-
-                const getDisplayText = (opt, id) => {
-                    if (!opt.value) return placeholder;
-                    if (id.endsWith('Gender') || id.endsWith('Ethnicity')) return opt.value;
-                    if (id.endsWith('EyeColor')) return `Eye Colour ${opt.value}`;
-                    if (id.endsWith('HairStyle')) {
-                        if (opt.value === 'No Hair') return 'No Hair';
-                        return `Hair Style ${opt.value.replace('Option ', '')}`;
-                    }
-                    if (id.endsWith('HairColor')) return `Hair Colour ${opt.label}`;
-                    if (id.endsWith('FacialHair')) {
-                        return opt.label;
-                    }
-                    if (id.endsWith('Eyewear')) {
-                        return opt.label;
-                    }
-                    if (id.endsWith('Accessories')) {
-                        return opt.label;
-                    }
-                    if (id.endsWith('Apparel')) return `Apparel ${opt.value.replace('Option ', '')}`;
-                    if (id.endsWith('Sidekick')) {
-                        if (opt.value === 'None' || opt.value === 'No Sidekick') return opt.value;
-                        return `Sidekick ${opt.value.replace('Option ', '')}`;
-                    }
-                    return opt.label || opt.value;
-                };
-
-                const toggleOpen = () => {
-                    if (isOpen) {
-                        setIsOpen(false);
-                    } else {
-                        document.dispatchEvent(new Event('closeAllDropdowns'));
-                        setIsOpen(true);
-                    }
-                };
-
-                React.useEffect(() => {
-                    const close = () => setIsOpen(false);
-                    document.addEventListener('closeAllDropdowns', close);
-                    return () => document.removeEventListener('closeAllDropdowns', close);
-                }, []);
-
-                const handleSelect = (opt) => {
-                    onChange(id, opt.value);
-                    setIsOpen(false);
-                };
-
-                React.useEffect(() => {
-                    if (window.innerWidth <= 768) {
-                        if (isOpen) {
-                            document.body.style.overflow = 'hidden';
-                        } else {
-                            document.body.style.overflow = '';
-                        }
-                        return () => {
-                            document.body.style.overflow = '';
+                            fetch(sheetScriptURL, {
+                                method: 'POST',
+                                body: JSON.stringify(sheetData),
+                                headers: { 'Content-Type': 'application/json' }
+                            })
+                            .then(response => {
+                                if (!response.ok) throw new Error(`Submission failed: ${response.statusText}`);
+                                return response.json();
+                            })
+                            .then(data => {
+                                console.log('Submission response:', data);
+                                setIsSubmitting(false);
+                                setShowModal(true);
+                                document.getElementById('right-character-details').removeAttribute('open');
+                            })
+                            .catch(error => {
+                                console.error('Submission error:', error);
+                                setIsSubmitting(false);
+                                alert('An error occurred during submission. Please try again.');
+                                setShowModal(true);
+                            });
                         };
-                    }
-                }, [isOpen]);
 
-                React.useEffect(() => {
-                    if (isMobile && isOpen && (id.endsWith('Sidekick') || id.endsWith('Apparel') || id.endsWith('HairStyle') || id === 'scene')) {
-                        const menu = document.querySelector('.custom-select-menu');
-                        if (menu) {
-                            menu.classList.add('full-height-menu');
+                        const togglePoemInputs = () => {
+                            const poemInputs = document.getElementById('poem-inputs');
+                            poemInputs.style.display = ['Add Your Own Poem', 'AI-Generated Poem'].includes(formData.poemSelection) ? 'block' : 'none';
+                        };
+
+                        const generatePoem = async () => {
+                            setIsGeneratingPoem(true);
+                            if (!formData.poemTitle) {
+                                alert('Please enter a poem title (max 22 characters).');
+                                setIsGeneratingPoem(false);
+                                return;
+                            }
+                            const prompt = formData.poemTitle.trim();
+                            console.log('Sending prompt:', prompt);  // Debug
+                            try {
+                                const generatePoemFunction = firebase.functions().httpsCallable('generatePoem');
+                                const result = await generatePoemFunction({ prompt: prompt });
+                                console.log('Result received:', result);  // Debug
+                                let generated = result.data.poem.split('\n');
+                                if (generated.length === 1) {
+                                    generated = result.data.poem.split('\\n');
+                                }
+                                const newTitle = generated[0].slice(0, 22);
+                                const newPoemText = validatePoem(generated.slice(1).join('\n'));
+                                setFormData(prev => ({ 
+                                    ...prev, 
+                                    poemTitle: newTitle,
+                                    poemText: newPoemText
+                                }));
+                                console.log('Generated poem:', newPoemText);  // Debug
+                            } catch (error) {
+                                alert('Error: ' + error.message);
+                                console.error('Full error:', error);
+                            } finally {
+                                setIsGeneratingPoem(false);
+                            }
+                        };
+
+                        React.useEffect(() => {
+                            togglePoemInputs();
+                            const cardDesign = document.getElementById('card-design-details');
+                            const leftCharacter = document.getElementById('left-character-details');
+                            const rightCharacter = document.getElementById('right-character-details');
+
+                            const handleCardDesignClick = () => {
+                                leftCharacter.removeAttribute('open');
+                                rightCharacter.removeAttribute('open');
+                            };
+                            const handleLeftCharacterClick = () => {
+                                cardDesign.removeAttribute('open');
+                                rightCharacter.removeAttribute('open');
+                            };
+                            const handleRightCharacterClick = () => {
+                                cardDesign.removeAttribute('open');
+                                leftCharacter.removeAttribute('open');
+                            };
+
+                            cardDesign.querySelector('summary').addEventListener('click', handleCardDesignClick);
+                            leftCharacter.querySelector('summary').addEventListener('click', handleLeftCharacterClick);
+                            rightCharacter.querySelector('summary').addEventListener('click', handleRightCharacterClick);
+
+                            return () => {
+                                cardDesign.querySelector('summary').removeEventListener('click', handleCardDesignClick);
+                                leftCharacter.querySelector('summary').removeEventListener('click', handleLeftCharacterClick);
+                                rightCharacter.querySelector('summary').removeEventListener('click', handleRightCharacterClick);
+                            };
+                        }, [formData.poemSelection]);
+
+                        React.useEffect(() => {
+                            const drawTexts = async () => {
+                                const fontName = 'Arimo';
+                                try {
+                                    await document.fonts.load(`26px ${fontName}`);
+                                } catch (err) {
+                                    console.error('Font loading failed:', err);
+                                    return;
+                                }
+
+                                const canvas = canvasRef.current;
+                                if (!canvas) return;
+                                const ctx = canvas.getContext('2d');
+                                if (!ctx) return;
+
+                                const container = document.querySelector('.card-container');
+                                const containerWidth = container.offsetWidth;
+                                const scale = containerWidth / 290;
+                                canvas.width = 638 * scale;
+                                canvas.height = 1016 * scale;
+
+                                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                let fontSize = isMobile ? 24 : 26;
+                                let effectiveScale = scale;
+                                if (isMobile) {
+                                    effectiveScale = scale + (1 - scale) * 0.2;
+                                }
+                                ctx.font = `${fontSize * effectiveScale}px ${fontName}`;
+                                ctx.scale(scale, scale);
+
+                                let text_tag = '';
+                                let poem_lines = [];
+                                if (formData.poemSelection === 'Add Your Own Poem' || formData.poemSelection === 'AI-Generated Poem') {
+                                    text_tag = formData.poemTitle;
+                                    poem_lines = formData.poemText.split('\n').filter(line => line.trim());
+                                } else if (formData.poemSelection) {
+                                    text_tag = formData.poemSelection;
+                                    poem_lines = event_poems[formData.poemSelection] || event_poems["First Date"];
+                                }
+
+                                const leftName = toTitleCase(formData.leftCharacterColour || '');
+                                const rightName = toTitleCase(formData.rightCharacterColour || '');
+
+                                const randomHP = Math.floor(Math.random() * 990 + 10);
+                                const hp = (formData.hp ? formData.hp + ' HP' : randomHP + ' HP');
+
+                                const texts = [
+                                    { text: text_tag, x_mm: 8.8, y_mm: 56.95, color: 'rgb(0,0,0)', align: 'left' },
+                                    { text: hp, x_mm: 38.6, y_mm: 57.05, color: 'rgb(0,0,0)', align: 'left' },
+                                    { text: leftName, x_start: 4.8, x_end: 18, y_mm: 4.6, color: 'rgb(180,120,0)', align: 'center' },
+                                    { text: rightName, x_start: 36.3, x_end: 49.3, y_mm: 4.6, color: 'rgb(160,100,0)', align: 'center' },
+                                    { text: leftName, x_start: 7.4, x_end: 20.4, y_mm: 61.95, color: 'rgb(0,0,0)', align: 'center' },
+                                    { text: rightName, x_start: 32.2, x_end: 46.3, y_mm: 61.95, color: 'rgb(0,0,0)', align: 'center' }
+                                ];
+
+                                const MM_TO_PX = 300 / 25.4;
+
+                                texts.forEach(({text, x_mm, y_mm, color, align, x_start, x_end}) => {
+                                    if (!text) return;
+                                    ctx.fillStyle = color;
+                                    const metrics = ctx.measureText(text);
+                                    let x = x_mm ? x_mm * MM_TO_PX : ((x_start + x_end) / 2) * MM_TO_PX - metrics.width / 2;
+                                    const y = y_mm * MM_TO_PX + metrics.actualBoundingBoxAscent;
+                                    ctx.fillText(text, x, y);
+                                });
+
+                                const poem_center_x_mm = (5.7 + 48.3) / 2;
+                                const poem_center_x = poem_center_x_mm * MM_TO_PX;
+                                let poem_y_start = 69.0 * MM_TO_PX;
+                                const line_spacing = 3 * MM_TO_PX;
+                                const num_lines = poem_lines.length;
+                                if (num_lines < 4) {
+                                    const total_height = line_spacing * 3;
+                                    const used_height = line_spacing * (num_lines - 1);
+                                    const offset = (total_height - used_height) / 2;
+                                    poem_y_start += offset;
+                                }
+
+                                poem_lines.slice(0, 4).forEach((line, i) => {
+                                    ctx.fillStyle = 'rgb(0,0,0)';
+                                    const metrics = ctx.measureText(line);
+                                    const x = poem_center_x - metrics.width / 2;
+                                    const y = poem_y_start + i * line_spacing + metrics.actualBoundingBoxAscent;
+                                    ctx.fillText(line, x, y);
+                                });
+                            };
+
+                            drawTexts();
+                        }, [formData, isMobile]);
+
+                        const getElementKey = (side, component, params) => {
+                            let category = '';
+                            let filename = '';
+                            const upperSide = side.toUpperCase();
+                            switch (component) {
+                                case 'apparel':
+                                    category = upperSide + 'CharacterApparel';
+                                    filename = params.ethnicity.toUpperCase() + upperSide + 'CharacterApparel' + params.number + '.png';
+                                    break;
+                                case 'face':
+                                    category = upperSide + 'FACES';
+                                    filename = params.gender.toUpperCase() + params.ethnicity.toUpperCase() + upperSide + params.eyeColor.toUpperCase() + '.png';
+                                    break;
+                                case 'hair':
+                                    let style = params.style.replace(' ', '').toUpperCase();
+                                    filename = style + params.color.toUpperCase() + upperSide + '.png';
+                                    category = upperSide + 'CHARACTERWIGS';
+                                    break;
+                                case 'facialHair':
+                                    category = upperSide + 'FACIALHAIR';
+                                    let optionNum = params.number;
+                                    if (optionNum > 1) optionNum--;
+                                    filename = 'OPTION' + optionNum + params.color.toUpperCase() + upperSide + '.png';
+                                    break;
+                                case 'eyewear':
+                                    const glassesFiles = {
+                                        'Blue Glasses': 'BLUEGLASSES.png',
+                                        'Pink Glasses': 'PINKGLASSES.png',
+                                        'Meme Glasses': 'MEMEGLASSES.png',
+                                        'Glasses': 'GLASSES.png'
+                                    };
+                                    const gfile = glassesFiles[params.value];
+                                    if (gfile) {
+                                        category = 'ACCESSORIES' + upperSide;
+                                        filename = upperSide + gfile;
+                                    }
+                                    break;
+                                case 'accessories':
+                                    const accFiles = {
+                                        'Cap': upperSide + 'CAP.png',
+                                        'PikaKap': upperSide + 'PIKAKAP.png',
+                                        'Garland': 'GARLAND' + upperSide + '.png',
+                                        'Tiara': 'TIARA' + upperSide + '.png',
+                                        'TopHat': upperSide + 'TOPHAT.png',
+                                        'BeachHat': upperSide + 'BEACHHAT.png',
+                                        'RedCap': upperSide + 'REDCAP.png',
+                                        'TruckerCap': upperSide + 'TRUCKERHAT.png'
+                                    };
+                                    const afile = accFiles[params.value];
+                                    if (afile) {
+                                        category = 'ACCESSORIES' + upperSide;
+                                        filename = afile;
+                                    }
+                                    break;
+                                case 'sidekick':
+                                    category = side.charAt(0).toUpperCase() + side.slice(1).toLowerCase() + ' Characters Pokemon:Pet';
+                                    filename = params.value + '.png';
+                                    break;
+                                default:
+                                    return null;
+                            }
+                            if (category && filename) {
+                                return category + '/' + filename;
+                            }
+                            return null;
+                        };
+
+                        const getThumbnailUrl = (key, size = 'w1000') => {
+                            const id = elementResources[key];
+                            return id ? `https://drive.google.com/thumbnail?id=${id}&sz=${size}` : '';
+                        };
+
+                        let leftApparelUrl = '';
+                        let leftFaceUrl = '';
+                        let leftHairUrl = '';
+                        let leftFacialUrl = '';
+                        let leftEyewearUrl = '';
+                        let leftAccessoryUrl = '';
+                        let leftSidekickUrl = '';
+
+                        if (formData.leftEthnicity && formData.leftApparel) {
+                            const number = formData.leftApparel.replace('Option ', '');
+                            const key = getElementKey('LEFT', 'apparel', {ethnicity: formData.leftEthnicity, number});
+                            leftApparelUrl = getThumbnailUrl(key);
                         }
-                    }
-                }, [isOpen, isMobile, id]);
 
-                const isLotsOfImages = id === 'scene' || id.endsWith('HairStyle') || id.endsWith('Apparel') || id.endsWith('Sidekick');
+                        if (formData.leftGender && formData.leftEthnicity && formData.leftEyeColor) {
+                            const key = getElementKey('LEFT', 'face', {gender: formData.leftGender, ethnicity: formData.leftEthnicity, eyeColor: formData.leftEyeColor});
+                            leftFaceUrl = getThumbnailUrl(key);
+                        }
 
-                return (
-                    <div className="custom-select" style={{ width: (formData.poemSelection === 'AI-Generated Poem' && id === 'poemSelection' && isMobile) ? '60%' : '100%' }}>
-                        <button
-                            type="button"
-                            className="custom-select-button"
-                            onClick={toggleOpen}
-                        >
-                            {getDisplayText(selectedOption, id)}
-                        </button>
-                        {isOpen && (
-                            <div className="custom-select-menu">
-                                {options.map(opt => (
-                                    <div
-                                        key={opt.value}
-                                        className="custom-option"
-                                        onClick={() => handleSelect(opt)}
+                        if (formData.leftHairStyle && formData.leftHairStyle !== 'No Hair' && formData.leftHairColor) {
+                            const style = formData.leftHairStyle.replace('Option ', 'OPTION');
+                            const key = getElementKey('LEFT', 'hair', {style, color: formData.leftHairColor});
+                            leftHairUrl = getThumbnailUrl(key);
+                        }
+
+                        if (formData.leftFacialHair && formData.leftFacialHair !== 'None' && formData.leftHairColor) {
+                            let number = formData.leftFacialHair.replace('Option ', '');
+                            const key = getElementKey('LEFT', 'facialHair', {number, color: formData.leftHairColor});
+                            leftFacialUrl = getThumbnailUrl(key);
+                        }
+
+                        if (formData.leftEyewear && formData.leftEyewear !== 'None') {
+                            const key = getElementKey('LEFT', 'eyewear', {value: formData.leftEyewear});
+                            leftEyewearUrl = getThumbnailUrl(key);
+                        }
+
+                        if (formData.leftAccessories && formData.leftAccessories !== 'None') {
+                            const key = getElementKey('LEFT', 'accessories', {value: formData.leftAccessories});
+                            leftAccessoryUrl = getThumbnailUrl(key);
+                        }
+
+                        if (formData.leftSidekick && formData.leftSidekick !== 'None' && formData.leftSidekick !== 'No Sidekick') {
+                            const key = getElementKey('LEFT', 'sidekick', {value: formData.leftSidekick});
+                            leftSidekickUrl = getThumbnailUrl(key);
+                        }
+
+                        let rightApparelUrl = '';
+                        let rightFaceUrl = '';
+                        let rightHairUrl = '';
+                        let rightFacialUrl = '';
+                        let rightEyewearUrl = '';
+                        let rightAccessoryUrl = '';
+                        let rightSidekickUrl = '';
+
+                        if (formData.rightEthnicity && formData.rightApparel) {
+                            const number = formData.rightApparel.replace('Option ', '');
+                            const key = getElementKey('RIGHT', 'apparel', {ethnicity: formData.rightEthnicity, number});
+                            rightApparelUrl = getThumbnailUrl(key);
+                        }
+
+                        if (formData.rightGender && formData.rightEthnicity && formData.rightEyeColor) {
+                            const key = getElementKey('RIGHT', 'face', {gender: formData.rightGender, ethnicity: formData.rightEthnicity, eyeColor: formData.rightEyeColor});
+                            rightFaceUrl = getThumbnailUrl(key);
+                        }
+
+                        if (formData.rightHairStyle && formData.rightHairStyle !== 'No Hair' && formData.rightHairColor) {
+                            const style = formData.rightHairStyle.replace('Option ', 'OPTION');
+                            const key = getElementKey('RIGHT', 'hair', {style, color: formData.rightHairColor});
+                            rightHairUrl = getThumbnailUrl(key);
+                        }
+
+                        if (formData.rightFacialHair && formData.rightFacialHair !== 'None' && formData.rightHairColor) {
+                            let number = formData.rightFacialHair.replace('Option ', '');
+                            const key = getElementKey('RIGHT', 'facialHair', {number, color: formData.rightHairColor});
+                            rightFacialUrl = getThumbnailUrl(key);
+                        }
+
+                        if (formData.rightEyewear && formData.rightEyewear !== 'None') {
+                            const key = getElementKey('RIGHT', 'eyewear', {value: formData.rightEyewear});
+                            rightEyewearUrl = getThumbnailUrl(key);
+                        }
+
+                        if (formData.rightAccessories && formData.rightAccessories !== 'None') {
+                            const key = getElementKey('RIGHT', 'accessories', {value: formData.rightAccessories});
+                            rightAccessoryUrl = getThumbnailUrl(key);
+                        }
+
+                        if (formData.rightSidekick && formData.rightSidekick !== 'None' && formData.rightSidekick !== 'No Sidekick') {
+                            const key = getElementKey('RIGHT', 'sidekick', {value: formData.rightSidekick});
+                            rightSidekickUrl = getThumbnailUrl(key);
+                        }
+
+                        const borderColors = [
+                            { value: 'Yellow', label: 'Border Yellow' },
+                            { value: 'Navy Blue', label: 'Border Navy Blue' },
+                            { value: 'Red', label: 'Border Red' },
+                            { value: 'White', label: 'Border White' },
+                            { value: 'Orange', label: 'Border Orange' },
+                            { value: 'Baby Blue', label: 'Border Baby Blue' }
+                        ];
+
+                        const poemOptions = [
+                            { value: 'Add Your Own Poem', label: 'Add Your Own Poem' },
+                            { value: 'AI-Generated Poem', label: 'AI-Generated' },
+                            { value: 'Anniversary', label: 'Anniversary' },
+                            { value: 'Birthday', label: 'Birthday' },
+                            { value: 'Engagement', label: 'Engagement' },
+                            { value: 'I LOVE YOU', label: 'I LOVE YOU' },
+                            { value: 'Just Because', label: 'Just Because' },
+                            { value: 'Valentines Day', label: 'Valentines Day' },
+                            { value: 'Wedding', label: 'Wedding' },
+                            { value: 'Get Well Soon', label: 'Get Well Soon' },
+                            { value: 'New Home', label: 'New Home' },
+                            { value: 'Proposal', label: 'Proposal' },
+                            { value: 'First Date', label: 'First Date' },
+                            { value: 'Holiday Gift', label: 'Holiday Gift' },
+                            { value: "Father's Day", label: "Father's Day" },
+                            { value: "Mother's Day", label: "Mother's Day" },
+                            { value: 'Congratulations', label: 'Congratulations' },
+                            { value: 'Sweet Oath', label: 'Sweet Oath' },
+                            { value: 'My Vow', label: 'My Vow' }
+                        ];
+
+                        const genders = [
+                            { value: 'Male', label: 'Male' },
+                            { value: 'Female', label: 'Female' }
+                        ];
+
+                        const ethnicities = [
+                            { value: 'Black', label: 'Black' },
+                            { value: 'White', label: 'White' }
+                        ];
+
+                        const eyeColors = [
+                            { value: 'Blue', label: 'Blue' },
+                            { value: 'Brown', label: 'Brown' },
+                            { value: 'Green', label: 'Green' }
+                        ];
+
+                        const hairColors = [
+                            { value: 'Black', label: 'Black' },
+                            { value: 'Blond', label: 'Blond' },
+                            { value: 'Blue', label: 'Blue' },
+                            { value: 'Brown', label: 'Brown' },
+                            { value: 'Ginger', label: 'Strawberry Blond' },
+                            { value: 'Green', label: 'Green' },
+                            { value: 'Grey_White', label: 'White' },
+                            { value: 'Pink', label: 'Pink' },
+                            { value: 'Purple', label: 'Purple' },
+                            { value: 'Red', label: 'Red' }
+                        ];
+
+                        const CustomSelect = ({ id, value, options, onChange, placeholder }) => {
+                            const [isOpen, setIsOpen] = React.useState(false);
+                            const selectedOption = options.find(opt => opt.value === value) || { value: '', label: placeholder };
+
+                            const getDisplayText = (opt, id) => {
+                                if (!opt.value) return placeholder;
+                                if (id.endsWith('Gender') || id.endsWith('Ethnicity')) return opt.value;
+                                if (id.endsWith('EyeColor')) return `Eye Colour ${opt.value}`;
+                                if (id.endsWith('HairStyle')) {
+                                    if (opt.value === 'No Hair') return 'No Hair';
+                                    return `Hair Style ${opt.value.replace('Option ', '')}`;
+                                }
+                                if (id.endsWith('HairColor')) return `Hair Colour ${opt.label}`;
+                                if (id.endsWith('FacialHair')) {
+                                    return opt.label;
+                                }
+                                if (id.endsWith('Eyewear')) {
+                                    return opt.label;
+                                }
+                                if (id.endsWith('Accessories')) {
+                                    return opt.label;
+                                }
+                                if (id.endsWith('Apparel')) return `Apparel ${opt.value.replace('Option ', '')}`;
+                                if (id.endsWith('Sidekick')) {
+                                    if (opt.value === 'None' || opt.value === 'No Sidekick') return opt.value;
+                                    return `Sidekick ${opt.value.replace('Option ', '')}`;
+                                }
+                                return opt.label || opt.value;
+                            };
+
+                            const toggleOpen = () => {
+                                if (isOpen) {
+                                    setIsOpen(false);
+                                } else {
+                                    document.dispatchEvent(new Event('closeAllDropdowns'));
+                                    setIsOpen(true);
+                                }
+                            };
+
+                            React.useEffect(() => {
+                                const close = () => setIsOpen(false);
+                                document.addEventListener('closeAllDropdowns', close);
+                                return () => document.removeEventListener('closeAllDropdowns', close);
+                            }, []);
+
+                            const handleSelect = (opt) => {
+                                onChange(id, opt.value);
+                                setIsOpen(false);
+                            };
+
+                            React.useEffect(() => {
+                                if (window.innerWidth <= 768) {
+                                    if (isOpen) {
+                                        document.body.style.overflow = 'hidden';
+                                    } else {
+                                        document.body.style.overflow = '';
+                                    }
+                                    return () => {
+                                        document.body.style.overflow = '';
+                                    };
+                                }
+                            }, [isOpen]);
+
+                            React.useEffect(() => {
+                                if (isMobile && isOpen && (id.endsWith('Sidekick') || id.endsWith('Apparel') || id.endsWith('HairStyle') || id === 'scene')) {
+                                    const menu = document.querySelector('.custom-select-menu');
+                                    if (menu) {
+                                        menu.classList.add('full-height-menu');
+                                    }
+                                }
+                            }, [isOpen, isMobile, id]);
+
+                            const isLotsOfImages = id === 'scene' || id.endsWith('HairStyle') || id.endsWith('Apparel') || id.endsWith('Sidekick');
+
+                            return (
+                                <div className="custom-select" style={{ width: (formData.poemSelection === 'AI-Generated Poem' && id === 'poemSelection' && isMobile) ? '60%' : '100%' }}>
+                                    <button
+                                        type="button"
+                                        className="custom-select-button"
+                                        onClick={toggleOpen}
                                     >
-                                        {opt.thumbnail ? (
-                                            <div className="iframe-container">
-                                                <img src={opt.thumbnail} alt={opt.value} loading="lazy" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} />
-                                                <span className="error">Image not found</span>
-                                            </div>
-                                        ) : (
-                                            <span className="custom-option-text">{opt.label}</span>
-                                        )}
-                                    </div>
-                                ))}
-                                {isLotsOfImages && isMobile && Array.from({length: 3}).map((_, i) => (
-                                    <div key={`empty-${i}`} className="custom-option"></div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                );
-            };
-
-            const borderMap = {
-                'Yellow': '1OvWTF7_cXFJYMaPMesR_P2kxdSwX1KNS',
-                'Navy Blue': '1otoJGCL29z6p_qzkabMmFBvRbJYtluAd',
-                'Red': '1aO-nJ3RdOxCKP_1bG4OtekaRCF6UVnFh',
-                'White': '1yemAEqrAUlDM5bngB7L7_l_Mwhhp0RkV',
-                'Orange': '1YCsyifaB4SrqxG9sA7MuPZsGDblaE7BJ',
-                'Baby Blue': '1LTwxk-ChGL5_bP1uS3i-Wjb8HCkZxiMQ'
-            };
-
-            const borderUrl = formData.borderColor ? `https://drive.google.com/thumbnail?id=${borderMap[formData.borderColor]}&sz=w1000` : '';
-
-            const backgroundKey = 'CARDBACKGROUNDOPTIONS/CARDBACKGROUNDOPTION' + formData.backgroundColor.replace('Option ', '') + '.png';
-            const backgroundUrl = getThumbnailUrl(backgroundKey);
-
-            const sceneKey = 'SCENE/SCENEOPTION' + formData.scene.replace('Option ', '') + '.png';
-            const sceneUrl = getThumbnailUrl(sceneKey);
-
-            const fourthLayerUrl = `https://drive.google.com/thumbnail?id=1NMwGf9jcvJhVOuyDs7Y_8t14ux_sYHe3&sz=w1000`;
-
-            const speechBubbleUrl = `https://drive.google.com/thumbnail?id=104iyXLDkU3wNQZdCT01-EIl1Q6EaCk2Y&sz=w1000`;
-
-            const backCardKey = 'REAR CARDS/POKEMON REAR' + formData.backCard.replace('Option ', '') + '.png';
-            const backCardUrl = getThumbnailUrl(backCardKey);
-
-            const adjustHairStyles = ['Option 13', 'Option 15', 'Option 16', 'Option 18', 'Option 19'];
-
-            const leftHairTop = adjustHairStyles.includes(formData.leftHairStyle) ? 'calc(24.85% + 3px)' : '24.85%';
-            const rightHairTop = adjustHairStyles.includes(formData.rightHairStyle) ? 'calc(24.85% + 3px)' : '24.85%';
-
-            const poemTitlePlaceholder = formData.poemSelection === 'AI-Generated Poem' ? 'Theme or Poem Details' : 'Poem Title';
-
-            const poemLines = formData.poemText.split('\n').slice(0, 4);
-
-            return (
-                <div>
-                    <h1 className="text-3xl font-bold text-center mb-8" style={{ marginLeft: '76px' }}>Poke Card Maker</h1>
-                    <div className="container">
-                        <div className="left-panel">
-                            <div className="dropdown-group">
-                                <details id="card-design-details">
-                                    <summary className="emoji-label">Card Design</summary>
-                                    <CustomSelect
-                                        id="borderColor"
-                                        value={formData.borderColor}
-                                        options={borderColors}
-                                        onChange={handleChange}
-                                        placeholder="Border Color"
-                                    />
-                                    <CustomSelect
-                                        id="backgroundColor"
-                                        value={formData.backgroundColor}
-                                        options={backgroundOptions}
-                                        onChange={handleChange}
-                                        placeholder="Card Colour"
-                                    />
-                                    <CustomSelect
-                                        id="scene"
-                                        value={formData.scene}
-                                        options={sceneOptions}
-                                        onChange={handleChange}
-                                        placeholder="Scene"
-                                    />
-                                    {isMobile ? (
-                                        <input
-                                            id="hp"
-                                            type="text"
-                                            placeholder="Choose your HP (optional)"
-                                            value={formData.hp}
-                                            onChange={(e) => handleChange('hp', e.target.value)}
-                                            style={{ marginBottom: '10px' }}
-                                        />
-                                    ) : (
-                                        <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
-                                            <input
-                                                id="hp"
-                                                type="text"
-                                                placeholder="Choose your HP (optional)"
-                                                value={formData.hp}
-                                                onChange={(e) => handleChange('hp', e.target.value)}
-                                                style={{ flex: '1', height: '38px' }}
-                                            />
-                                            <button
-                                                type="button"
-                                                onClick={() => setFormData(prev => ({ ...prev, hp: Math.floor(Math.random() * 990 + 10).toString() }))}
-                                                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-10 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-                                                style={{ height: '38px' }}
-                                            >
-                                                Random HP
-                                            </button>
+                                        {getDisplayText(selectedOption, id)}
+                                    </button>
+                                    {isOpen && (
+                                        <div className="custom-select-menu">
+                                            {options.map(opt => (
+                                                <div
+                                                    key={opt.value}
+                                                    className="custom-option"
+                                                    onClick={() => handleSelect(opt)}
+                                                >
+                                                    {opt.thumbnail ? (
+                                                        <div className="iframe-container">
+                                                            <img src={opt.thumbnail} alt={opt.value} loading="lazy" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} />
+                                                            <span className="error">Image not found</span>
+                                                        </div>
+                                                    ) : (
+                                                        <span className="custom-option-text">{opt.label}</span>
+                                                    )}
+                                                </div>
+                                            ))}
+                                            {isLotsOfImages && isMobile && Array.from({length: 3}).map((_, i) => (
+                                                <div key={`empty-${i}`} className="custom-option"></div>
+                                            ))}
                                         </div>
                                     )}
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
-                                        <CustomSelect
-                                            id="poemSelection"
-                                            value={formData.poemSelection}
-                                            options={poemOptions}
-                                            onChange={handleChange}
-                                            placeholder="Select a Poem"
-                                            className={formData.poemSelection === 'AI-Generated Poem' && isMobile ? 'ai-generated-select' : ''}
-                                        />
-                                        {formData.poemSelection === 'AI-Generated Poem' && isMobile && (
-                                            <button
-                                                type="button"
-                                                onClick={generatePoem}
-                                                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 ai-generate-button"
-                                                disabled={isGeneratingPoem}
-                                                style={{ height: '38px' }}
-                                            >
-                                                {isGeneratingPoem ? (
-                                                    <div className="loading-spinner"></div>
+                                </div>
+                            );
+                        };
+
+                        const borderMap = {
+                            'Yellow': '1OvWTF7_cXFJYMaPMesR_P2kxdSwX1KNS',
+                            'Navy Blue': '1otoJGCL29z6p_qzkabMmFBvRbJYtluAd',
+                            'Red': '1aO-nJ3RdOxCKP_1bG4OtekaRCF6UVnFh',
+                            'White': '1yemAEqrAUlDM5bngB7L7_l_Mwhhp0RkV',
+                            'Orange': '1YCsyifaB4SrqxG9sA7MuPZsGDblaE7BJ',
+                            'Baby Blue': '1LTwxk-ChGL5_bP1uS3i-Wjb8HCkZxiMQ'
+                        };
+
+                        const borderUrl = formData.borderColor ? `https://drive.google.com/thumbnail?id=${borderMap[formData.borderColor]}&sz=w1000` : '';
+
+                        const backgroundKey = 'CARDBACKGROUNDOPTIONS/CARDBACKGROUNDOPTION' + formData.backgroundColor.replace('Option ', '') + '.png';
+                        const backgroundUrl = getThumbnailUrl(backgroundKey);
+
+                        const sceneKey = 'SCENE/SCENEOPTION' + formData.scene.replace('Option ', '') + '.png';
+                        const sceneUrl = getThumbnailUrl(sceneKey);
+
+                        const fourthLayerUrl = `https://drive.google.com/thumbnail?id=1NMwGf9jcvJhVOuyDs7Y_8t14ux_sYHe3&sz=w1000`;
+
+                        const speechBubbleUrl = `https://drive.google.com/thumbnail?id=104iyXLDkU3wNQZdCT01-EIl1Q6EaCk2Y&sz=w1000`;
+
+                        const backCardKey = 'REAR CARDS/POKEMON REAR' + formData.backCard.replace('Option ', '') + '.png';
+                        const backCardUrl = getThumbnailUrl(backCardKey);
+
+                        const adjustHairStyles = ['Option 13', 'Option 15', 'Option 16', 'Option 18', 'Option 19'];
+
+                        const leftHairTop = adjustHairStyles.includes(formData.leftHairStyle) ? 'calc(24.85% + 3px)' : '24.85%';
+                        const rightHairTop = adjustHairStyles.includes(formData.rightHairStyle) ? 'calc(24.85% + 3px)' : '24.85%';
+
+                        const poemTitlePlaceholder = formData.poemSelection === 'AI-Generated Poem' ? 'Theme or Poem Details' : 'Poem Title';
+
+                        const poemLines = formData.poemText.split('\n').slice(0, 4);
+
+                        return (
+                            <div>
+                                <h1 className="text-3xl font-bold text-center mb-8" style={{ marginLeft: '76px' }}>Poke Card Maker</h1>
+                                <div className="container">
+                                    <div className="left-panel">
+                                        <div className="dropdown-group">
+                                            <details id="card-design-details">
+                                                <summary className="emoji-label">Card Design</summary>
+                                                <CustomSelect
+                                                    id="borderColor"
+                                                    value={formData.borderColor}
+                                                    options={borderColors}
+                                                    onChange={handleChange}
+                                                    placeholder="Border Color"
+                                                />
+                                                <CustomSelect
+                                                    id="backgroundColor"
+                                                    value={formData.backgroundColor}
+                                                    options={backgroundOptions}
+                                                    onChange={handleChange}
+                                                    placeholder="Card Colour"
+                                                />
+                                                <CustomSelect
+                                                    id="scene"
+                                                    value={formData.scene}
+                                                    options={sceneOptions}
+                                                    onChange={handleChange}
+                                                    placeholder="Scene"
+                                                />
+                                                {isMobile ? (
+                                                    <input
+                                                        id="hp"
+                                                        type="text"
+                                                        placeholder="Choose your HP (optional)"
+                                                        value={formData.hp}
+                                                        onChange={(e) => handleChange('hp', e.target.value)}
+                                                        style={{ marginBottom: '10px' }}
+                                                    />
                                                 ) : (
-                                                    'Generate'
+                                                    <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
+                                                        <input
+                                                            id="hp"
+                                                            type="text"
+                                                            placeholder="Choose your HP (optional)"
+                                                            value={formData.hp}
+                                                            onChange={(e) => handleChange('hp', e.target.value)}
+                                                            style={{ flex: '1', height: '38px' }}
+                                                        />
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setFormData(prev => ({ ...prev, hp: Math.floor(Math.random() * 990 + 10).toString() }))}
+                                                            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-10 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                                                            style={{ height: '38px' }}
+                                                        >
+                                                            Random HP
+                                                        </button>
+                                                    </div>
                                                 )}
-                                            </button>
-                                        )}
-                                    </div>
-                                    <div id="poem-inputs" style={{ marginBottom: '10px' }}>
-                                        <div className={isMobile ? '' : 'generate-poem-container'}>
-                                            <input
-                                                id="poemTitle"
-                                                type="text"
-                                                placeholder={poemTitlePlaceholder}
-                                                maxLength={formData.poemSelection === 'AI-Generated Poem' ? undefined : "22"}
-                                                value={formData.poemTitle}
-                                                onChange={(e) => handleChange(e.target.id, e.target.value)}
-                                                className={isMobile ? 'poem-title-input' : ''}
-                                                style={{ marginBottom: '10px' }}
-                                            />
-                                            {formData.poemSelection === 'AI-Generated Poem' && !isMobile && (
-                                                <button
-                                                    type="button"
-                                                    onClick={generatePoem}
-                                                    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-                                                    disabled={isGeneratingPoem}
-                                                    style={{ height: '38px' }}
-                                                >
-                                                    {isGeneratingPoem ? (
-                                                        <div className="loading-spinner"></div>
-                                                    ) : (
-                                                        'Generate'
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+                                                    <CustomSelect
+                                                        id="poemSelection"
+                                                        value={formData.poemSelection}
+                                                        options={poemOptions}
+                                                        onChange={handleChange}
+                                                        placeholder="Select a Poem"
+                                                        className={formData.poemSelection === 'AI-Generated Poem' && isMobile ? 'ai-generated-select' : ''}
+                                                    />
+                                                    {formData.poemSelection === 'AI-Generated Poem' && isMobile && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={generatePoem}
+                                                            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 ai-generate-button"
+                                                            disabled={isGeneratingPoem}
+                                                            style={{ height: '38px' }}
+                                                        >
+                                                            {isGeneratingPoem ? (
+                                                                <div className="loading-spinner"></div>
+                                                            ) : (
+                                                                'Generate'
+                                                            )}
+                                                        </button>
                                                     )}
-                                                </button>
-                                            )}
-                                        </div>
-                                        {formData.poemSelection === 'Add Your Own Poem' && (
-                                            isMobile ? (
-                                                <>
-                                                    {['Line 1', 'Line 2', 'Line 3', 'Line 4'].map((placeholder, index) => (
-                                                        <textarea
-                                                            key={index}
-                                                            placeholder={placeholder}
-                                                            maxLength="48"
-                                                            rows="2"
-                                                            value={poemLines[index] || ''}
-                                                            onChange={(e) => handlePoemLineChange(index, e.target.value)}
-                                                            className="poem-line-textarea"
+                                                </div>
+                                                <div id="poem-inputs" style={{ marginBottom: '10px' }}>
+                                                    <div className={isMobile ? '' : 'generate-poem-container'}>
+                                                        <input
+                                                            id="poemTitle"
+                                                            type="text"
+                                                            placeholder={poemTitlePlaceholder}
+                                                            maxLength={formData.poemSelection === 'AI-Generated Poem' ? undefined : "22"}
+                                                            value={formData.poemTitle}
+                                                            onChange={(e) => handleChange(e.target.id, e.target.value)}
+                                                            className={isMobile ? 'poem-title-input' : ''}
                                                             style={{ marginBottom: '10px' }}
                                                         />
-                                                    ))}
-                                                </>
-                                            ) : (
-                                                <textarea
-                                                    id="poemText"
-                                                    placeholder="Poem"
-                                                    rows="4"
-                                                    maxLength="195"
-                                                    value={formData.poemText}
+                                                        {formData.poemSelection === 'AI-Generated Poem' && !isMobile && (
+                                                            <button
+                                                                type="button"
+                                                                onClick={generatePoem}
+                                                                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                                                                disabled={isGeneratingPoem}
+                                                                style={{ height: '38px' }}
+                                                            >
+                                                                {isGeneratingPoem ? (
+                                                                    <div className="loading-spinner"></div>
+                                                                ) : (
+                                                                    'Generate'
+                                                                )}
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                    {formData.poemSelection === 'Add Your Own Poem' && (
+                                                        isMobile ? (
+                                                            <>
+                                                                {['Line 1', 'Line 2', 'Line 3', 'Line 4'].map((placeholder, index) => (
+                                                                    <textarea
+                                                                        key={index}
+                                                                        placeholder={placeholder}
+                                                                        maxLength="48"
+                                                                        rows="2"
+                                                                        value={poemLines[index] || ''}
+                                                                        onChange={(e) => handlePoemLineChange(index, e.target.value)}
+                                                                        className="poem-line-textarea"
+                                                                        style={{ marginBottom: '10px' }}
+                                                                    />
+                                                                ))}
+                                                            </>
+                                                        ) : (
+                                                            <textarea
+                                                                id="poemText"
+                                                                placeholder="Poem"
+                                                                rows="4"
+                                                                maxLength="195"
+                                                                value={formData.poemText}
+                                                                onChange={(e) => handleChange(e.target.id, e.target.value)}
+                                                                style={{ marginBottom: '10px' }}
+                                                            ></textarea>
+                                                        )
+                                                    )}
+                                                </div>
+                                                <CustomSelect
+                                                    id="backCard"
+                                                    value={formData.backCard}
+                                                    options={backCardOptions}
+                                                    onChange={handleChange}
+                                                    placeholder="Rear Card"
+                                                />
+                                            </details>
+                                        </div>
+                                        <div className="dropdown-group">
+                                            <details id="left-character-details">
+                                                <summary className="emoji-label">Left Character</summary>
+                                                <input
+                                                    id="leftCharacterColour"
+                                                    type="text"
+                                                    placeholder="Character"
+                                                    value={formData.leftCharacterColour}
                                                     onChange={(e) => handleChange(e.target.id, e.target.value)}
-                                                    style={{ marginBottom: '10px' }}
-                                                ></textarea>
-                                            )
+                                                    style={{ fontSize: '1rem' }}
+                                                />
+                                                <CustomSelect
+                                                    id="leftGender"
+                                                    value={formData.leftGender}
+                                                    options={genders}
+                                                    onChange={handleChange}
+                                                    placeholder="Gender"
+                                                />
+                                                <CustomSelect
+                                                    id="leftEthnicity"
+                                                    value={formData.leftEthnicity}
+                                                    options={ethnicities}
+                                                    onChange={handleChange}
+                                                    placeholder="Ethnicity"
+                                                />
+                                                <CustomSelect
+                                                    id="leftEyeColor"
+                                                    value={formData.leftEyeColor}
+                                                    options={eyeColors}
+                                                    onChange={handleChange}
+                                                    placeholder="Eye Color"
+                                                />
+                                                <CustomSelect
+                                                    id="leftHairStyle"
+                                                    value={formData.leftHairStyle}
+                                                    options={hairStyleOptions}
+                                                    onChange={handleChange}
+                                                    placeholder="Hair Style"
+                                                />
+                                                <CustomSelect
+                                                    id="leftHairColor"
+                                                    value={formData.leftHairColor}
+                                                    options={hairColors}
+                                                    onChange={handleChange}
+                                                    placeholder="Hair Color"
+                                                />
+                                                <CustomSelect
+                                                    id="leftFacialHair"
+                                                    value={formData.leftFacialHair}
+                                                    options={facialHairOptions}
+                                                    onChange={handleChange}
+                                                    placeholder="Facial Hair"
+                                                />
+                                                <CustomSelect
+                                                    id="leftEyewear"
+                                                    value={formData.leftEyewear}
+                                                    options={eyewearOptions}
+                                                    onChange={handleChange}
+                                                    placeholder="Eyewear"
+                                                />
+                                                <CustomSelect
+                                                    id="leftAccessories"
+                                                    value={formData.leftAccessories}
+                                                    options={accessoryOptions}
+                                                    onChange={handleChange}
+                                                    placeholder="Accessories"
+                                                />
+                                                <CustomSelect
+                                                    id="leftApparel"
+                                                    value={formData.leftApparel}
+                                                    options={apparelOptions}
+                                                    onChange={handleChange}
+                                                    placeholder="Apparel"
+                                                />
+                                                <CustomSelect
+                                                    id="leftSidekick"
+                                                    value={formData.leftSidekick}
+                                                    options={sidekickOptions}
+                                                    onChange={handleChange}
+                                                    placeholder="Sidekick"
+                                                />
+                                            </details>
+                                        </div>
+                                        <div className="dropdown-group">
+                                            <details id="right-character-details">
+                                                <summary className="emoji-label">Right Character</summary>
+                                                <input
+                                                    id="rightCharacterColour"
+                                                    type="text"
+                                                    placeholder="Character"
+                                                    value={formData.rightCharacterColour}
+                                                    onChange={(e) => handleChange(e.target.id, e.target.value)}
+                                                    style={{ fontSize: '1rem' }}
+                                                />
+                                                <CustomSelect
+                                                    id="rightGender"
+                                                    value={formData.rightGender}
+                                                    options={genders}
+                                                    onChange={handleChange}
+                                                    placeholder="Gender"
+                                                />
+                                                <CustomSelect
+                                                    id="rightEthnicity"
+                                                    value={formData.rightEthnicity}
+                                                    options={ethnicities}
+                                                    onChange={handleChange}
+                                                    placeholder="Ethnicity"
+                                                />
+                                                <CustomSelect
+                                                    id="rightEyeColor"
+                                                    value={formData.rightEyeColor}
+                                                    options={eyeColors}
+                                                    onChange={handleChange}
+                                                    placeholder="Eye Color"
+                                                />
+                                                <CustomSelect
+                                                    id="rightHairStyle"
+                                                    value={formData.rightHairStyle}
+                                                    options={hairStyleOptions}
+                                                    onChange={handleChange}
+                                                    placeholder="Hair Style"
+                                                />
+                                                <CustomSelect
+                                                    id="rightHairColor"
+                                                    value={formData.rightHairColor}
+                                                    options={hairColors}
+                                                    onChange={handleChange}
+                                                    placeholder="Hair Color"
+                                                />
+                                                <CustomSelect
+                                                    id="rightFacialHair"
+                                                    value={formData.rightFacialHair}
+                                                    options={facialHairOptions}
+                                                    onChange={handleChange}
+                                                    placeholder="Facial Hair"
+                                                />
+                                                <CustomSelect
+                                                    id="rightEyewear"
+                                                    value={formData.rightEyewear}
+                                                    options={eyewearOptions}
+                                                    onChange={handleChange}
+                                                    placeholder="Eyewear"
+                                                />
+                                                <CustomSelect
+                                                    id="rightAccessories"
+                                                    value={formData.rightAccessories}
+                                                    options={accessoryOptions}
+                                                    onChange={handleChange}
+                                                    placeholder="Accessories"
+                                                />
+                                                <CustomSelect
+                                                    id="rightApparel"
+                                                    value={formData.rightApparel}
+                                                    options={apparelOptions}
+                                                    onChange={handleChange}
+                                                    placeholder="Apparel"
+                                                />
+                                                <CustomSelect
+                                                    id="rightSidekick"
+                                                    value={formData.rightSidekick}
+                                                    options={sidekickOptions}
+                                                    onChange={handleChange}
+                                                    placeholder="Sidekick"
+                                                />
+                                            </details>
+                                        </div>
+                                        <div className="submit-container">
+                                            <button
+                                                onClick={handleSubmit}
+                                                disabled={isSubmitting}
+                                                className={`bg-blue-900 text-white px-16 py-4 text-lg rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 w-full text-center ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-800'}`}
+                                            >
+                                                {isSubmitting ? (
+                                                    <div className="loading-spinner"></div>
+                                                ) : (
+                                                    'SUBMIT'
+                                                )}
+                                            </button>
+                                        </div>
+                                        {showModal && (
+                                            <div className="modal">
+                                                <div className="modal-content">
+                                                    <h2 className="text-2xl font-bold mb-4">Pokémon Card Power-Up!</h2>
+                                                    <p className="mb-4">Thanks for crafting your Pokémon-powered card! I'll start working on it faster than a Pikachu's Thunderbolt!</p>
+                                                    <button
+                                                        onClick={() => setShowModal(false)}
+                                                        className="bg-blue-900 text-white px-8 py-2 rounded-md hover:bg-blue-800"
+                                                    >
+                                                        OK
+                                                    </button>
+                                                </div>
+                                            </div>
                                         )}
                                     </div>
-                                    <CustomSelect
-                                        id="backCard"
-                                        value={formData.backCard}
-                                        options={backCardOptions}
-                                        onChange={handleChange}
-                                        placeholder="Rear Card"
-                                    />
-                                </details>
-                            </div>
-                            <div className="dropdown-group">
-                                <details id="left-character-details">
-                                    <summary className="emoji-label">Left Character</summary>
-                                    <input
-                                        id="leftCharacterColour"
-                                        type="text"
-                                        placeholder="Character"
-                                        value={formData.leftCharacterColour}
-                                        onChange={(e) => handleChange(e.target.id, e.target.value)}
-                                        style={{ fontSize: '1rem' }}
-                                    />
-                                    <CustomSelect
-                                        id="leftGender"
-                                        value={formData.leftGender}
-                                        options={genders}
-                                        onChange={handleChange}
-                                        placeholder="Gender"
-                                    />
-                                    <CustomSelect
-                                        id="leftEthnicity"
-                                        value={formData.leftEthnicity}
-                                        options={ethnicities}
-                                        onChange={handleChange}
-                                        placeholder="Ethnicity"
-                                    />
-                                    <CustomSelect
-                                        id="leftEyeColor"
-                                        value={formData.leftEyeColor}
-                                        options={eyeColors}
-                                        onChange={handleChange}
-                                        placeholder="Eye Color"
-                                    />
-                                    <CustomSelect
-                                        id="leftHairStyle"
-                                        value={formData.leftHairStyle}
-                                        options={hairStyleOptions}
-                                        onChange={handleChange}
-                                        placeholder="Hair Style"
-                                    />
-                                    <CustomSelect
-                                        id="leftHairColor"
-                                        value={formData.leftHairColor}
-                                        options={hairColors}
-                                        onChange={handleChange}
-                                        placeholder="Hair Color"
-                                    />
-                                    <CustomSelect
-                                        id="leftFacialHair"
-                                        value={formData.leftFacialHair}
-                                        options={facialHairOptions}
-                                        onChange={handleChange}
-                                        placeholder="Facial Hair"
-                                    />
-                                    <CustomSelect
-                                        id="leftEyewear"
-                                        value={formData.leftEyewear}
-                                        options={eyewearOptions}
-                                        onChange={handleChange}
-                                        placeholder="Eyewear"
-                                    />
-                                    <CustomSelect
-                                        id="leftAccessories"
-                                        value={formData.leftAccessories}
-                                        options={accessoryOptions}
-                                        onChange={handleChange}
-                                        placeholder="Accessories"
-                                    />
-                                    <CustomSelect
-                                        id="leftApparel"
-                                        value={formData.leftApparel}
-                                        options={apparelOptions}
-                                        onChange={handleChange}
-                                        placeholder="Apparel"
-                                    />
-                                    <CustomSelect
-                                        id="leftSidekick"
-                                        value={formData.leftSidekick}
-                                        options={sidekickOptions}
-                                        onChange={handleChange}
-                                        placeholder="Sidekick"
-                                    />
-                                </details>
-                            </div>
-                            <div className="dropdown-group">
-                                <details id="right-character-details">
-                                    <summary className="emoji-label">Right Character</summary>
-                                    <input
-                                        id="rightCharacterColour"
-                                        type="text"
-                                        placeholder="Character"
-                                        value={formData.rightCharacterColour}
-                                        onChange={(e) => handleChange(e.target.id, e.target.value)}
-                                        style={{ fontSize: '1rem' }}
-                                    />
-                                    <CustomSelect
-                                        id="rightGender"
-                                        value={formData.rightGender}
-                                        options={genders}
-                                        onChange={handleChange}
-                                        placeholder="Gender"
-                                    />
-                                    <CustomSelect
-                                        id="rightEthnicity"
-                                        value={formData.rightEthnicity}
-                                        options={ethnicities}
-                                        onChange={handleChange}
-                                        placeholder="Ethnicity"
-                                    />
-                                    <CustomSelect
-                                        id="rightEyeColor"
-                                        value={formData.rightEyeColor}
-                                        options={eyeColors}
-                                        onChange={handleChange}
-                                        placeholder="Eye Color"
-                                    />
-                                    <CustomSelect
-                                        id="rightHairStyle"
-                                        value={formData.rightHairStyle}
-                                        options={hairStyleOptions}
-                                        onChange={handleChange}
-                                        placeholder="Hair Style"
-                                    />
-                                    <CustomSelect
-                                        id="rightHairColor"
-                                        value={formData.rightHairColor}
-                                        options={hairColors}
-                                        onChange={handleChange}
-                                        placeholder="Hair Color"
-                                    />
-                                    <CustomSelect
-                                        id="rightFacialHair"
-                                        value={formData.rightFacialHair}
-                                        options={facialHairOptions}
-                                        onChange={handleChange}
-                                        placeholder="Facial Hair"
-                                    />
-                                    <CustomSelect
-                                        id="rightEyewear"
-                                        value={formData.rightEyewear}
-                                        options={eyewearOptions}
-                                        onChange={handleChange}
-                                        placeholder="Eyewear"
-                                    />
-                                    <CustomSelect
-                                        id="rightAccessories"
-                                        value={formData.rightAccessories}
-                                        options={accessoryOptions}
-                                        onChange={handleChange}
-                                        placeholder="Accessories"
-                                    />
-                                    <CustomSelect
-                                        id="rightApparel"
-                                        value={formData.rightApparel}
-                                        options={apparelOptions}
-                                        onChange={handleChange}
-                                        placeholder="Apparel"
-                                    />
-                                    <CustomSelect
-                                        id="rightSidekick"
-                                        value={formData.rightSidekick}
-                                        options={sidekickOptions}
-                                        onChange={handleChange}
-                                        placeholder="Sidekick"
-                                    />
-                                </details>
-                            </div>
-                            <div className="submit-container">
-                                <button
-                                    onClick={handleSubmit}
-                                    disabled={isSubmitting}
-                                    className={`bg-blue-900 text-white px-16 py-4 text-lg rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 w-full text-center ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-800'}`}
-                                >
-                                    {isSubmitting ? (
-                                        <div className="loading-spinner"></div>
-                                    ) : (
-                                        'SUBMIT'
-                                    )}
-                                </button>
-                            </div>
-                            {showModal && (
-                                <div className="modal">
-                                    <div className="modal-content">
-                                        <h2 className="text-2xl font-bold mb-4">Pokémon Card Power-Up!</h2>
-                                        <p className="mb-4">Thanks for crafting your Pokémon-powered card! I'll start working on it faster than a Pikachu's Thunderbolt!</p>
-                                        <button
-                                            onClick={() => setShowModal(false)}
-                                            className="bg-blue-900 text-white px-8 py-2 rounded-md hover:bg-blue-800"
-                                        >
-                                            OK
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                        <div className="right-panel">
-                            <div className="card-container">
-                                <div className="card card-top">
-                                    <div style={{position: 'relative', width: '100%', height: '100%'}}>
-                                        {borderUrl && <img src={borderUrl} alt="Border" style={{position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1}} />}
-                                        {backgroundUrl && <img src={backgroundUrl} alt="Background" style={{position: 'absolute', left: '5.55%', top: '3.49%', width: '88.89%', height: '93.02%', zIndex: 2}} />}
-                                        {sceneUrl && <img src={sceneUrl} alt="Scene" style={{position: 'absolute', left: '50%', top: '9.53%', transform: 'translateX(-50%)', width: '81.5%', height: 'auto', zIndex: 3}} />}
-                                        {leftFaceUrl && <img src={leftFaceUrl} alt="Left Face" style={{position: 'absolute', left: '7.79%', top: '24.85%', width: '47.78%', height: 'auto', zIndex: 5}} />}
-                                        {rightFaceUrl && <img src={rightFaceUrl} alt="Right Face" style={{position: 'absolute', left: '43.79%', top: '24.85%', width: '47.78%', height: 'auto', zIndex: 5}} />}
-                                        {leftFacialUrl && <img src={leftFacialUrl} alt="Left Facial Hair" style={{position: 'absolute', left: '7.79%', top: '24.85%', width: '47.78%', height: 'auto', zIndex: 6}} />}
-                                        {rightFacialUrl && <img src={rightFacialUrl} alt="Right Facial Hair" style={{position: 'absolute', left: '43.79%', top: '24.85%', width: '47.78%', height: 'auto', zIndex: 6}} />}
-                                        {leftHairUrl && <img src={leftHairUrl} alt="Left Hair" style={{position: 'absolute', left: '7.79%', top: leftHairTop, width: '47.78%', height: 'auto', zIndex: 7}} />}
-                                        {rightHairUrl && <img src={rightHairUrl} alt="Right Hair" style={{position: 'absolute', left: '43.79%', top: rightHairTop, width: '47.78%', height: 'auto', zIndex: 7}} />}
-                                        {leftEyewearUrl && <img src={leftEyewearUrl} alt="Left Eyewear" style={{position: 'absolute', left: '7.79%', top: '24.85%', width: '47.78%', height: 'auto', zIndex: 8}} />}
-                                        {rightEyewearUrl && <img src={rightEyewearUrl} alt="Right Eyewear" style={{position: 'absolute', left: '43.79%', top: '24.85%', width: '47.78%', height: 'auto', zIndex: 8}} />}
-                                        {leftAccessoryUrl && <img src={leftAccessoryUrl} alt="Left Accessory" style={{position: 'absolute', left: '7.79%', top: '24.85%', width: '47.78%', height: 'auto', zIndex: 9}} />}
-                                        {rightAccessoryUrl && <img src={rightAccessoryUrl} alt="Right Accessory" style={{position: 'absolute', left: '43.79%', top: '24.85%', width: '47.78%', height: 'auto', zIndex: 9}} />}
-                                        {leftApparelUrl && <img src={leftApparelUrl} alt="Left Apparel" style={{position: 'absolute', left: '7.79%', top: '24.63%', width: '47.78%', height: 'auto', zIndex: 10}} />}
-                                        {rightApparelUrl && <img src={rightApparelUrl} alt="Right Apparel" style={{position: 'absolute', left: '43.79%', top: '24.63%', width: '47.78%', height: 'auto', zIndex: 10}} />}
-                                        <img src={fourthLayerUrl} alt="Frame" style={{position: 'absolute', left: '50%', top: '3.14%', transform: 'translateX(-50%)', width: '84%', height: 'auto', zIndex: 11}} />
-                                        {leftSidekickUrl && <img src={leftSidekickUrl} alt="Left Sidekick" style={{position: 'absolute', left: '11.45%', top: '50.44%', width: '20.6%', height: 'auto', zIndex: 12}} />}
-                                        {rightSidekickUrl && <img src={rightSidekickUrl} alt="Right Sidekick" style={{position: 'absolute', left: '68.55%', top: '50.44%', width: '20.6%', height: 'auto', zIndex: 12}} />}
-                                        <img src={speechBubbleUrl} alt="Speech Bubble" style={{position: 'absolute', left: '45.45%', top: '33.33%', width: '9.09%', height: 'auto', zIndex: 13}} />
-                                        <canvas ref={canvasRef} className="canvas-style" style={{position: 'absolute', top: 0, left: 0, zIndex: 14}}></canvas>
-                                    </div>
-                                    <div className="watermark-container">
-                                        {Array.from({length: 9}).map((_, i) => (
-                                            <div key={i} className="watermark" style={{top: `${Math.floor(i / 3) * 33}%`, left: `${(i % 3) * 33}%`}}>
-                                                Preview Only
+                                    <div className="right-panel">
+                                        <div className="card-container">
+                                            <div className="card card-top">
+                                                <div style={{position: 'relative', width: '100%', height: '100%'}}>
+                                                    {borderUrl && <img src={borderUrl} alt="Border" style={{position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1}} />}
+                                                    {backgroundUrl && <img src={backgroundUrl} alt="Background" style={{position: 'absolute', left: '5.55%', top: '3.49%', width: '88.89%', height: '93.02%', zIndex: 2}} />}
+                                                    {sceneUrl && <img src={sceneUrl} alt="Scene" style={{position: 'absolute', left: '50%', top: '9.53%', transform: 'translateX(-50%)', width: '81.5%', height: 'auto', zIndex: 3}} />}
+                                                    {leftFaceUrl && <img src={leftFaceUrl} alt="Left Face" style={{position: 'absolute', left: '7.79%', top: '24.85%', width: '47.78%', height: 'auto', zIndex: 5}} />}
+                                                    {rightFaceUrl && <img src={rightFaceUrl} alt="Right Face" style={{position: 'absolute', left: '43.79%', top: '24.85%', width: '47.78%', height: 'auto', zIndex: 5}} />}
+                                                    {leftFacialUrl && <img src={leftFacialUrl} alt="Left Facial Hair" style={{position: 'absolute', left: '7.79%', top: '24.85%', width: '47.78%', height: 'auto', zIndex: 6}} />}
+                                                    {rightFacialUrl && <img src={rightFacialUrl} alt="Right Facial Hair" style={{position: 'absolute', left: '43.79%', top: '24.85%', width: '47.78%', height: 'auto', zIndex: 6}} />}
+                                                    {leftHairUrl && <img src={leftHairUrl} alt="Left Hair" style={{position: 'absolute', left: '7.79%', top: leftHairTop, width: '47.78%', height: 'auto', zIndex: 7}} />}
+                                                    {rightHairUrl && <img src={rightHairUrl} alt="Right Hair" style={{position: 'absolute', left: '43.79%', top: rightHairTop, width: '47.78%', height: 'auto', zIndex: 7}} />}
+                                                    {leftEyewearUrl && <img src={leftEyewearUrl} alt="Left Eyewear" style={{position: 'absolute', left: '7.79%', top: '24.85%', width: '47.78%', height: 'auto', zIndex: 8}} />}
+                                                    {rightEyewearUrl && <img src={rightEyewearUrl} alt="Right Eyewear" style={{position: 'absolute', left: '43.79%', top: '24.85%', width: '47.78%', height: 'auto', zIndex: 8}} />}
+                                                    {leftAccessoryUrl && <img src={leftAccessoryUrl} alt="Left Accessory" style={{position: 'absolute', left: '7.79%', top: '24.85%', width: '47.78%', height: 'auto', zIndex: 9}} />}
+                                                    {rightAccessoryUrl && <img src={rightAccessoryUrl} alt="Right Accessory" style={{position: 'absolute', left: '43.79%', top: '24.85%', width: '47.78%', height: 'auto', zIndex: 9}} />}
+                                                    {leftApparelUrl && <img src={leftApparelUrl} alt="Left Apparel" style={{position: 'absolute', left: '7.79%', top: '24.63%', width: '47.78%', height: 'auto', zIndex: 10}} />}
+                                                    {rightApparelUrl && <img src={rightApparelUrl} alt="Right Apparel" style={{position: 'absolute', left: '43.79%', top: '24.63%', width: '47.78%', height: 'auto', zIndex: 10}} />}
+                                                    <img src={fourthLayerUrl} alt="Frame" style={{position: 'absolute', left: '50%', top: '3.14%', transform: 'translateX(-50%)', width: '84%', height: 'auto', zIndex: 11}} />
+                                                    {leftSidekickUrl && <img src={leftSidekickUrl} alt="Left Sidekick" style={{position: 'absolute', left: '11.45%', top: '50.44%', width: '20.6%', height: 'auto', zIndex: 12}} />}
+                                                    {rightSidekickUrl && <img src={rightSidekickUrl} alt="Right Sidekick" style={{position: 'absolute', left: '68.55%', top: '50.44%', width: '20.6%', height: 'auto', zIndex: 12}} />}
+                                                    <img src={speechBubbleUrl} alt="Speech Bubble" style={{position: 'absolute', left: '45.45%', top: '33.33%', width: '9.09%', height: 'auto', zIndex: 13}} />
+                                                    <canvas ref={canvasRef} className="canvas-style" style={{position: 'absolute', top: 0, left: 0, zIndex: 14}}></canvas>
+                                                </div>
+                                                <div className="watermark-container">
+                                                    {Array.from({length: 9}).map((_, i) => (
+                                                        <div key={i} className="watermark" style={{top: `${Math.floor(i / 3) * 33}%`, left: `${(i % 3) * 33}%`}}>
+                                                            Preview Only
+                                                        </div>
+                                                    ))}
+                                                </div>
                                             </div>
-                                        ))}
+                                            <div className="card card-bottom">
+                                                <img src={backCardUrl} alt="Bottom Card" style={{width: '100%', height: '100%'}} />
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="card card-bottom">
-                                    <img src={backCardUrl} alt="Bottom Card" style={{width: '100%', height: '100%'}} />
-                                </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            );
-        };
-
-        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+                        );
+                    };
+                    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+                }).catch(error => {
+                    console.error('Error fetching config:', error);
                 });
-            }).catch(error => {
-                console.error('Error fetching config:', error);
-            });
-        }; 
-            </script>
+        };
+    </script>
 </body>
 </html>
