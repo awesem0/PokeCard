@@ -5,8 +5,8 @@ const { defineString } = require("firebase-functions/params");
 const grokApiKey = defineString("GROK_APIKEY");
 
 exports.generatePoem = functions.https.onCall(async (data, _context) => {
-    console.log('Received data:', data);  // Log raw data
-    const prompt = data?.prompt || data?.data?.prompt;  // Handle nested prompt
+    console.log('Received data:', data);
+    const prompt = data?.prompt || data?.data?.prompt;
     console.log('Extracted prompt:', prompt);
     if (!prompt) {
         console.error('Prompt missing in data:', data);
@@ -31,7 +31,7 @@ exports.generatePoem = functions.https.onCall(async (data, _context) => {
                         "simple layman terms—no complex words, keep it heartfelt and sweet): " +
                         "generate exactly a title (max 20 characters, full words only, no truncation) " +
                         "followed by exactly 4 lines of poem (each max 44 characters, can be shorter). " +
-                        "Always fit the theme/tone. Output in exact format: Title\\nLine1\\nLine2\\nLine3\\nLine4.",
+                        "Always fit the theme/tone. Output in exact format: Title\nLine1\nLine2\nLine3\nLine4.",
                 },
                 {
                     role: "user",
@@ -46,7 +46,7 @@ exports.generatePoem = functions.https.onCall(async (data, _context) => {
             },
         });
 
-        const poem = response.data.choices[0].message.content.trim();
+        const poem = response.data.choices[0].message.content.trim().replace(/\\n/g, '\n').replace(/\//g, '\n');
         console.log('Parsed poem:', poem);
         if (!poem) {
             throw new functions.https.HttpsError("internal", "Empty poem response from API");
