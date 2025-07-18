@@ -5,11 +5,11 @@ const { defineString } = require("firebase-functions/params");
 const grokApiKey = defineString("GROK_APIKEY");
 
 exports.generatePoem = functions.https.onCall(async (data, _context) => {
-    console.log('Received data:', JSON.stringify(data, null, 2));  // Debug full payload
-    const prompt = data?.prompt || data?.data?.prompt;  // Handle both direct and nested prompt
+    console.log('Received data:', data);  // Log raw data
+    const prompt = data?.prompt || data?.data?.prompt;  // Handle nested prompt
     console.log('Extracted prompt:', prompt);
     if (!prompt) {
-        console.error('Prompt missing in data:', JSON.stringify(data));
+        console.error('Prompt missing in data:', data);
         throw new functions.https.HttpsError("invalid-argument", "Missing prompt");
     }
 
@@ -46,7 +46,6 @@ exports.generatePoem = functions.https.onCall(async (data, _context) => {
             },
         });
 
-        console.log('API response:', JSON.stringify(response.data, null, 2));
         const poem = response.data.choices[0].message.content.trim();
         console.log('Parsed poem:', poem);
         if (!poem) {
@@ -54,7 +53,7 @@ exports.generatePoem = functions.https.onCall(async (data, _context) => {
         }
         return { poem };
     } catch (error) {
-        console.log('API error:', error.response ? JSON.stringify(error.response.data) : error.message);
+        console.error('API error:', error.message);
         throw new functions.https.HttpsError("internal", "API call failed: " + error.message);
     }
 });
