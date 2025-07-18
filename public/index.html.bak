@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Grok Poem Maker</title>
+</head>
+<body>
+    <h1>AI Poem Maker</h1>
+    <input type="text" id="prompt" placeholder="Enter poem topic (e.g., 'love in the rain')">
+    <button id="generateBtn">Generate Poem</button>
+    <pre id="poem"></pre>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-functions-compat.js"></script>
+    <script>
+        window.onload = () => {
+            console.log('Script loaded');  // Debug: Confirm script runs
+            fetch('https://us-central1-grok-poem-maker-c2ef7.cloudfunctions.net/getFirebaseConfig')
+                .then(response => response.json())
+                .then(config => {
+                    firebase.initializeApp(config);
+                    const generateBtn = document.getElementById('generateBtn');
+                    console.log('Button found:', generateBtn);  // Debug: Confirm button
+                    generateBtn.addEventListener('click', async () => {
+                        const promptInput = document.getElementById('prompt');
+                        console.log('Input found:', promptInput);  // Debug: Confirm input
+                        const raw = promptInput.value;
+                        const prompt = raw.trim();
+                        console.log('Raw input value:', raw);  // Debug raw
+                        console.log('Trimmed prompt:', prompt);  // Debug trimmed
+                        if (!prompt) return alert('Enter a prompt!');
+                        console.log('Sending prompt to backend:', prompt);  // Debug sent
+                        try {
+                            const generatePoemFunction = firebase.functions().httpsCallable('generatePoem');
+                            console.log('Calling function with:', { prompt: prompt });  // Debug call
+                            const result = await generatePoemFunction({ prompt: prompt });
+                            console.log('Result received:', result);  // Debug full result
+                            const poemElement = document.getElementById('poem');
+                            poemElement.innerText = result.data.poem || 'No poem returned';
+                            console.log('Poem set to element:', poemElement.innerText);  // Debug set
+                        } catch (error) {
+                            alert('Error: ' + error.message);
+                            console.error('Full error:', error);  // Debug full
+                        }
+                    });
+                })
+                .catch(error => console.error('Error fetching config:', error));
+        };
+    </script>
+</body>
+</html>
