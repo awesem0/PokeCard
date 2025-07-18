@@ -86,8 +86,7 @@ exports.getFirebaseConfig = functions.https.onRequest((req, res) => {
     if (allowedOrigins.includes(origin)) {
         res.set('Access-Control-Allow-Origin', origin);
     } else {
-        const url = 'https://grok-poem-maker-c2ef7.web.app';
-        res.set('Access-Control-Allow-Origin', url);
+        res.set('Access-Control-Allow-Origin', 'https://grok-poem-maker-c2ef7.web.app');
     }
     res.json({
         apiKey: firebaseApiKey.value(),
