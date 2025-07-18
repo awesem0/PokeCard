@@ -39,20 +39,4 @@
                         console.log('Sending prompt to backend:', prompt);  // Debug sent
                         try {
                             const generatePoemFunction = firebase.functions().httpsCallable('generatePoem');
-                            console.log('Calling function with:', { prompt: prompt });  // Debug call
-                            const result = await generatePoemFunction({ prompt: prompt });
-                            console.log('Result received:', result);  // Debug full result
-                            const poemElement = document.getElementById('poem');
-                            poemElement.innerText = result.data.poem || 'No poem returned';
-                            console.log('Poem set to element:', poemElement.innerText);  // Debug set
-                        } catch (error) {
-                            alert('Error: ' + error.message);
-                            console.error('Full error:', error);  // Debug full
-                        }
-                    });
-                })
-                .catch(error => console.error('Error fetching config:', error));
-        };
-    </script>
-</body>
-</html>
+                            console.log('Calling function with:', { prompt: prompt
