@@ -15,10 +15,17 @@
     <script>
         window.onload = () => {
             console.log('Script loaded');  // Debug: Confirm script runs
-            fetch('https://us-central1-grok-poem-maker-c2ef7.cloudfunctions.net/getFirebaseConfig')
+            const isLocal = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost';
+            const configUrl = isLocal
+                ? 'http://127.0.0.1:5001/grok-poem-maker-c2ef7/us-central1/getFirebaseConfig'
+                : 'https://us-central1-grok-poem-maker-c2ef7.cloudfunctions.net/getFirebaseConfig';
+            fetch(configUrl)
                 .then(response => response.json())
                 .then(config => {
                     firebase.initializeApp(config);
+                    if (isLocal) {
+                        firebase.functions().useEmulator('127.0.0.1', 5001);
+                    }
                     const generateBtn = document.getElementById('generateBtn');
                     console.log('Button found:', generateBtn);  // Debug: Confirm button
                     generateBtn.addEventListener('click', async () => {
