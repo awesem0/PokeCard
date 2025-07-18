@@ -3,6 +3,7 @@ const axios = require("axios");
 
 const { defineString } = require("firebase-functions/params");
 const grokApiKey = defineString("GROK_APIKEY");
+const firebaseApiKey = defineString("APP_FIREBASE_API_KEY");
 
 exports.generatePoem = functions.https.onCall(async (data, _context) => {   
     console.log('Received data:', data);
@@ -85,11 +86,10 @@ exports.getFirebaseConfig = functions.https.onRequest((req, res) => {
     if (allowedOrigins.includes(origin)) {
         res.set('Access-Control-Allow-Origin', origin);
     } else {
-        res.set('Access-Control-Allow-Origin',
-                'https://grok-poem-maker-c2ef7.web.app');
+        res.set('Access-Control-Allow-Origin', 'https://grok-poem-maker-c2ef7.web.app');
     }
     res.json({
-        apiKey: "AIzaSyDu3yDU8k4H59HARfzr6QlIxT52Q3aniS8",
+        apiKey: firebaseApiKey.value(),
         authDomain: "grok-poem-maker-c2ef7.firebaseapp.com",
         projectId: "grok-poem-maker-c2ef7",
         storageBucket: "grok-poem-maker-c2ef7.firebasestorage.app",
