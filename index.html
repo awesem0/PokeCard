@@ -286,14 +286,12 @@
             }
             .header-logo {
                 display: block;
-                margin: 20px auto 0;
+                margin: 20px auto;
                 width: 400px;
                 max-width: 90%;
                 height: auto;
             }
-            .header-text {
-                display: none;
-            }
+            .header-text { display: none; }
         }
         @media (max-width: 768px) {
             html, body {
@@ -441,20 +439,17 @@
                 width: calc(100vw - 60px);
                 height: 50px;
             }
-            .header-logo {
-                display: none;
-            }
-            .header-text {
-                display: block;
-            }
+            .header-logo { display: none; }
         }
     </style>
 </head>
 <body>
+    <img src="https://drive.google.com/thumbnail?id=1qimhoAEb8uvd5UL-XcRlR5UxFl3lrH5q&sz=w1000" 
+         alt="Poke Card Maker Logo" class="header-logo">
     <div id="root"></div>
     <script type="text/babel" data-presets="env,react" data-plugins="transform-modules-commonjs">
         window.onload = () => {
-            console.log('Script loaded');
+            console.log('Script loaded'); // Debug: Confirm script runs
             fetch('https://us-central1-grok-poem-maker-c2ef7.cloudfunctions.net/getFirebaseConfig')
                 .then(response => response.json())
                 .then(config => {
@@ -527,7 +522,7 @@
                             const num = i + 1;
                             return { value: `Option ${num}`, label: `Card Colour ${num}`, key: `BACKGROUNDOPTION${num}` };
                         });
-                        const baseScenes = Array.from({length: 89}, (_, i) => {
+                        const baseScenes = Array.from({length: 20}, (_, i) => {
                             const num = i + 1;
                             return { value: `Option ${num}`, label: `Scene ${num}`, key: `SCENEOPTION${num}` };
                         });
@@ -604,94 +599,26 @@
                         ];
                         React.useEffect(() => {
                             const resources = {
-                                'SCENEOPTION1': '1QYidz-o2hTfyQhmTihhDqHG7WGlyY9i-',
-                                'SCENEOPTION2': '1MR_ODh2JnfMEbVQsMNuciBoNY4eYvkx-',
-                                'SCENEOPTION3': '1qd8CepZ6gsPPbCDGMONhqX7XzVK3_giO',
-                                'SCENEOPTION4': '1TUsSb1JsD-Gf4Gvnc8FdD35Y1K7ZVRJF',
-                                'SCENEOPTION5': '12wrOHsYkpnZFeb-maeTr5djrYmlPy-ik',
-                                'SCENEOPTION6': '1xXYJG4NO6buoC2tc4di-WbpuBGRuUplk',
-                                'SCENEOPTION7': '1sa-fYKiyauAMTDyWfgcMGmQTiSuoO4QI',
-                                'SCENEOPTION8': '1mxxeoGKfzwj9ARMr1eiRZQTk0x1hwYHj',
-                                'SCENEOPTION9': '1XN2Kb4EITSBf9K9L2321bp3gYNvK_LdC',
-                                'SCENEOPTION10': '1N2G8lh6z0KBCJj9xnOIUW9alqPGY_GEZ',
-                                'SCENEOPTION11': '1MGAxmLzLwHmDjhuRG8sGT0clroYw8PBF',
-                                'SCENEOPTION12': '1W2JdrgyTYKpAa_b9cCPE9EACGUGTdDlS',
-                                'SCENEOPTION13': '1qnO4iKYfob9Wxp8GeLaf5RYt1vzDBev7',
-                                'SCENEOPTION14': '17PeY1P4cYNrP9VBSIkf4108vTgZRC2zX',
-                                'SCENEOPTION15': '1YtA-lKY66igpKu-1CSGLw7wv2de6jAqC',
-                                'SCENEOPTION16': '1hqKzaWBw-lLPylZMpKCowz9dxxlyez4w',
-                                'SCENEOPTION17': '1BggChYL8QWW7eZ3mlC4rdr-toKiGIFbr',
-                                'SCENEOPTION18': '1QrTdIJ0bO_4nJ44terWd7knAp_nhyPtg',
-                                'SCENEOPTION19': '15EQLMVFlyha3U6XmCTAuFZjBzpvqljDP',
                                 'SCENEOPTION20': '1Hez70o_YVo5T6wiu3Km717-aPte12Su5',
-                                'SCENEOPTION22': '1Gp_wyfgZBqioyGyxdwvjHF3hGwBIgoAU',
-                                'SCENEOPTION23': '1XXuyTZmig0lVQGo1THOiLWktveo5mLWp',
-                                'SCENEOPTION24': '1se-VORci3RkMby9bVUAyYNUbxolPWb_R',
-                                'SCENEOPTION25': '1E_qdD_STVVKe_FeJT8KVPs2PnliGuS3n',
-                                'SCENEOPTION26': '1RK6TYR26bhyzEtZzdyy6NMx2qwfMVD-O',
-                                'SCENEOPTION27': '1kf9_xUwFK1QKiV5hBPlr2CKg3BlAi1GD',
-                                'SCENEOPTION28': '1ysSE9dZX8S3qwLxbdRgYKkycD5nferJH',
-                                'SCENEOPTION29': '1-tUCyyNmlS46roKThm8wEiyxpZ2xLAk4',
-                                'SCENEOPTION30': '1fjg-yUOlEkAW3zzZ7h4J6mRB71C898rb',
-                                'SCENEOPTION31': '14chEJtNZDLT1fGb_buFUs01i2eETwNUL',
-                                'SCENEOPTION32': '1lX9GX3ZAnd_k0IJbBmpo5b0iayO_bEt2',
-                                'SCENEOPTION33': '1kHlcWyhwSPQGzuqIibEnGbaz6cSkmBiC',
-                                'SCENEOPTION34': '1MqbRXMNJDPDmemdwxH8cXqbDTUFUyLui',
-                                'SCENEOPTION35': '1kgg97OEieetXhPPxiQkTV60HLOwNxKTH',
-                                'SCENEOPTION36': '1xk6NlkikuTcl2a-Mf5Yun4iHsD--S8h7',
-                                'SCENEOPTION37': '1EFHOOC5aUrZNTk9h2wfgL-27imOl5-VY',
-                                'SCENEOPTION38': '1Fpph0cQmIAAQN3Y_sQC4IVi3-XrF01p0',
-                                'SCENEOPTION39': '14uQMtcNtH7Y2ZDpofifIJP0qD8S3YZ1k',
-                                'SCENEOPTION40': '1Ik2qgVyCbdKzNPVfq7Tla1z9z-6-RjZi',
-                                'SCENEOPTION41': '1WP_DOnvEbiXKMLN5i4MPiCUWiDPfV8pV',
-                                'SCENEOPTION42': '15qoNoTh4X_apfvSVU9NGrsH5p-QqmpmA',
-                                'SCENEOPTION43': '13aV1dUxyfEtiZrFz6MITqGhlxWJ750QK',
-                                'SCENEOPTION44': '1APWmnaBjr_nVFNovsAh5S8KkWde6YpvO',
-                                'SCENEOPTION45': '1aoezTVS4buTlnv2txubRalB6fpflgvFk',
-                                'SCENEOPTION46': '1mnnphgONfttkKMoPx57Tev6na_anZ3vj',
-                                'SCENEOPTION47': '1lTlsw3-tN7T3nAuKPXJyldzsx8hsHHgy',
-                                'SCENEOPTION48': '1BEipJlALiJQx3JSb7lalsHEJ_K2sDOcF',
-                                'SCENEOPTION49': '1VkcqOe_qh2xkJ2rSI--tpvJO9Jx-3AcC',
-                                'SCENEOPTION50': '1dmYQDUxoaDta2X_nPDOCKWJR2R1otaUX',
-                                'SCENEOPTION51': '16odhKFmniaX_IJeQy046RWxgbVlqEoB5',
-                                'SCENEOPTION52': '1bP1rN3MRFXdBBhc7KOsDJHgDKTOU7f6C',
-                                'SCENEOPTION53': '1BaNMp7fWi0JKI1RadHpIB1pk14grzUDo',
-                                'SCENEOPTION54': '1sPbZmAzoPVlo7rONaoxuWmx3mGVl0Aqk',
-                                'SCENEOPTION55': '1a5rl1jkTo-mc_aGdkw6klmOlnRFSiLfK',
-                                'SCENEOPTION56': '1u-qgORVPp_ZvYA6bRUjSPgB4kKjsLL5d',
-                                'SCENEOPTION57': '1nGXzruc308NzqH1JwTI_ksOJCQ9dcC8t',
-                                'SCENEOPTION58': '1gInT7yuWywv27L0GwlIzKl4v3HpiLwtu',
-                                'SCENEOPTION59': '1AghMqktPj6fK8OAhdYj2CPxOl58GeSpH',
-                                'SCENEOPTION60': '1QKlmGf7p2gPW5IekUm89NLdXGEs1Jixz',
-                                'SCENEOPTION61': '1rwK55HyBXBx7naG8xUN9-OthizzW-wbM',
-                                'SCENEOPTION62': '1Or7CX5O0CAOdRY9ygDPXhnpcS_8D5iYZ',
-                                'SCENEOPTION63': '1Dbi92oepo1e-G-VsL9pQbm6gf_fgWq7p',
-                                'SCENEOPTION64': '1aHfnmIzSM1plH7DrT_nsZ2jqyGBFSjRN',
-                                'SCENEOPTION65': '1zYKNFc2EiX3S8wJJENpPJ4xjy4t55Us6',
-                                'SCENEOPTION66': '1-UUe5EQpjaDQoS3LKPoxxqgqg5HjJvbp',
-                                'SCENEOPTION67': '1kqUIKn_4Sp3k179GKcK0-e--MMulE44q',
-                                'SCENEOPTION68': '1Ek1CmY9dfxy7W8qft1T8RJELcONnYSoH',
-                                'SCENEOPTION69': '13-oZnbuF_ZD5ll4gDEdTSI2ygP6tJflR',
-                                'SCENEOPTION70': '1Sw-8YfOktgX2y0g9poRQwu3LtokX4sdX',
-                                'SCENEOPTION71': '1PdLMNaeGeh3ySK2TXA34pIr9Hm9miR_N',
-                                'SCENEOPTION72': '1Mez-3wbdkmfRqYvk9hNi9cG2pnK7zHtl',
-                                'SCENEOPTION73': '14pPd3oLtk6XivPSCpIYphXqqcmMx-wh4',
-                                'SCENEOPTION74': '1DhOHvicSJAuvTeOSed3FowDzHW6n54f_',
-                                'SCENEOPTION75': '1mvlXyAL4XVJSxr5TL7pqXm4owzaanCdf',
-                                'SCENEOPTION76': '16XQxrWiy4bUVsaZ5S7QtCTgcolPlFmix',
-                                'SCENEOPTION77': '1Z9wbC1yccI_kANRlCWkTOSibe59tkloc',
-                                'SCENEOPTION78': '1jr7d71Da8Yn9WvMTwFonc01K1jmt3X6l',
-                                'SCENEOPTION79': '1yDNJnPvYfberImRNz6_Je_SvZblJ94Ke',
-                                'SCENEOPTION80': '1BYSoxeWWMLHQtoq_d2Iq7_UIOA3uKIYd',
-                                'SCENEOPTION81': '17Erv21F3Ww-WY-m3j5FISJ4Z50TlQ-So',
-                                'SCENEOPTION82': '1oDR05_OziqH63ZybW2KZbp5WYIcV-N4m',
-                                'SCENEOPTION83': '15VaUsD2cLXx7K8QEv9X6a4i1OV1hw9Yg',
-                                'SCENEOPTION84': '1Xt0gFnZVgqI75yplo8LZfwVdl2syc2Ze',
-                                'SCENEOPTION85': '1UUFFjE8xInvjLaWj2zXno0pCWmeVLrzi',
-                                'SCENEOPTION86': '1R0dgE7cTzRpmF948gCJOjceg346wt0JH',
-                                'SCENEOPTION87': '1KxpdipiLNs2BOnwSnOLq3M3uHugewJwz',
-                                'SCENEOPTION88': '1nnDnny2-accusxMQZAiniD4Ssh_HP5T0',
-                                'SCENEOPTION89': '1jBlue8s0IvZW78ZoagOwgh77FfJ4bUiM',
+                                'SCENEOPTION19': '15EQLMVFlyha3U6XmCTAuFZjBzpvqljDP',
+                                'SCENEOPTION18': '1QrTdIJ0bO_4nJ44terWd7knAp_nhyPtg',
+                                'SCENEOPTION17': '1BggChYL8QWW7eZ3mlC4rdr-toKiGIFbr',
+                                'SCENEOPTION16': '1hqKzaWBw-lLPylZMpKCowz9dxxlyez4w',
+                                'SCENEOPTION15': '1YtA-lKY66igpKu-1CSGLw7wv2de6jAqC',
+                                'SCENEOPTION14': '17PeY1P4cYNrP9VBSIkf4108vTgZRC2zX',
+                                'SCENEOPTION13': '1qnO4iKYfob9Wxp8GeLaf5RYt1vzDBev7',
+                                'SCENEOPTION12': '1W2JdrgyTYKpAa_b9cCPE9EACGUGTdDlS',
+                                'SCENEOPTION11': '1MGAxmLzLwHmDjhuRG8sGT0clroYw8PBF',
+                                'SCENEOPTION10': '1N2G8lh6z0KBCJj9xnOIUW9alqPGY_GEZ',
+                                'SCENEOPTION9': '1XN2Kb4EITSBf9K9L2321bp3gYNvK_LdC',
+                                'SCENEOPTION8': '1mxxeoGKfzwj9ARMr1eiRZQTk0x1hwYHj',
+                                'SCENEOPTION7': '1sa-fYKiyauAMTDyWfgcMGmQTiSuoO4QI',
+                                'SCENEOPTION6': '1xXYJG4NO6buoC2tc4di-WbpuBGRuUplk',
+                                'SCENEOPTION5': '12wrOHsYkpnZFeb-maeTr5djrYmlPy-ik',
+                                'SCENEOPTION4': '1TUsSb1JsD-Gf4Gvnc8FdD35Y1K7ZVRJF',
+                                'SCENEOPTION3': '1qd8CepZ6gsPPbCDGMONhqX7XzVK3_giO',
+                                'SCENEOPTION2': '1MR_ODh2JnfMEbVQsMNuciBoNY4eYvkx-',
+                                'SCENEOPTION1': '1QYidz-o2hTfyQhmTihhDqHG7WGlyY9i-',
                                 'BACKGROUNDOPTION14': '1ICZzgeQDfVRpjWQyBy1tjBDw_Gj9bdjI',
                                 'BACKGROUNDOPTION13': '1KiG2fkstR5ESRko5M4J3BE8yU_A-oeEc',
                                 'BACKGROUNDOPTION12': '1W0P7FYgCxBv5u_Qk456Prqtdn40dTzIu',
@@ -904,10 +831,9 @@
                             setFormData(prev => ({ ...prev, poemText: newPoemText }));
                         };
                         const handleSubmit = (e) => {
-                            e.preventDefault;
-                            if (isSubmitting) return;
+                            e.preventDefault();
                             setIsSubmitting(true);
-                            const sheetScriptURL = 'https://us-central1-grok-poem-maker-c2ef7.cloudfunctions.net/proxyToGoogleSheets';
+                        const sheetScriptURL = 'https://us-central1-grok-poem-maker-c2ef7.cloudfunctions.net/proxyToGoogleSheets';
                             const isPersonalised = ['Add Your Own Poem', 'AI-Generated Poem'].includes(formData.poemSelection);
                             const occasionMap = {
                                 'Anniversary': '1.Anniversary',
@@ -1447,7 +1373,6 @@
                         const poemLines = formData.poemText.split('\n').slice(0, 4);
                         return (
                             <div>
-                                <h1 className="header-text text-3xl font-bold text-center mb-8" style={{ marginLeft: '76px' }}>Poke Card Maker</h1>
                                 <div className="container">
                                     <div className="left-panel">
                                         <div className="dropdown-group">
@@ -1770,7 +1695,7 @@
                                             <div className="modal">
                                                 <div className="modal-content">
                                                     <h2 className="text-2xl font-bold mb-4">Pokémon Card Power-Up!</h2>
-                                                    <p className="mb-4">Thanks for crafting your Poké-powered card! I'll match your card to your order using the couple's names : )</p>
+                                                    <p className="mb-4">Thanks for crafting your Pokémon-powered card! I'll start working on it faster than a Pikachu's Thunderbolt!</p>
                                                     <button
                                                         onClick={() => setShowModal(false)}
                                                         className="bg-blue-900 text-white px-8 py-2 rounded-md hover:bg-blue-800"
