@@ -444,10 +444,9 @@
     </style>
 </head>
 <body>
-    <div id="root"></div>
-    <h1 class="header-text text-3xl font-bold text-center mb-8" style="margin-left: 76px;">Poke Card Maker</h1>
     <img src="https://drive.google.com/thumbnail?id=1qimhoAEb8uvd5UL-XcRlR5UxFl3lrH5q&sz=w1000" 
          alt="Poke Card Maker Logo" class="header-logo">
+    <div id="root"></div>
     <script type="text/babel" data-presets="env,react" data-plugins="transform-modules-commonjs">
         window.onload = () => {
             console.log('Script loaded'); // Debug: Confirm script runs
@@ -833,7 +832,6 @@
                         };
                         const handleSubmit = (e) => {
                             e.preventDefault();
-                            if (isSubmitting) return;
                             setIsSubmitting(true);
                         const sheetScriptURL = 'https://us-central1-grok-poem-maker-c2ef7.cloudfunctions.net/proxyToGoogleSheets';
                             const isPersonalised = ['Add Your Own Poem', 'AI-Generated Poem'].includes(formData.poemSelection);
@@ -1697,7 +1695,7 @@
                                             <div className="modal">
                                                 <div className="modal-content">
                                                     <h2 className="text-2xl font-bold mb-4">Pokémon Card Power-Up!</h2>
-                                                    <p className="mb-4">Thanks for crafting your Poké-powered card! I'll match your card to your order using the couple's names. </p>
+                                                    <p className="mb-4">Thanks for crafting your Pokémon-powered card! I'll start working on it faster than a Pikachu's Thunderbolt!</p>
                                                     <button
                                                         onClick={() => setShowModal(false)}
                                                         className="bg-blue-900 text-white px-8 py-2 rounded-md hover:bg-blue-800"
