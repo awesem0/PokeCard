@@ -284,6 +284,13 @@
             .generate-poem-container button {
                 flex-shrink: 0;
             }
+            .header-logo {
+                display: block;
+                margin: 20px auto;
+                width: 400px;
+                max-width: 90%;
+                height: auto;
+            }
         }
         @media (max-width: 768px) {
             html, body {
@@ -431,11 +438,17 @@
                 width: calc(100vw - 60px);
                 height: 50px;
             }
+            .header-logo { display: none; }
         }
     </style>
 </head>
 <body>
     <div id="root"></div>
+
+    <h1 className="text-3xl font-bold text-center mb-8" style={{ marginLeft: '76px' }}>Poke Card Maker</h1>
+    <img src="https://drive.google.com/thumbnail?id=1qimhoAEb8uvd5UL-XcRlR5UxFl3lrH5q&sz=w1000" 
+         alt="Poke Card Maker Logo" class="header-logo">
+
     <script type="text/babel" data-presets="env,react" data-plugins="transform-modules-commonjs">
         window.onload = () => {
             console.log('Script loaded'); // Debug: Confirm script runs
@@ -821,6 +834,7 @@
                         };
                         const handleSubmit = (e) => {
                             e.preventDefault();
+                            if (isSubmitting) return;
                             setIsSubmitting(true);
                         const sheetScriptURL = 'https://us-central1-grok-poem-maker-c2ef7.cloudfunctions.net/proxyToGoogleSheets';
                             const isPersonalised = ['Add Your Own Poem', 'AI-Generated Poem'].includes(formData.poemSelection);
@@ -1362,7 +1376,6 @@
                         const poemLines = formData.poemText.split('\n').slice(0, 4);
                         return (
                             <div>
-                                <h1 className="text-3xl font-bold text-center mb-8" style={{ marginLeft: '76px' }}>Poke Card Maker</h1>
                                 <div className="container">
                                     <div className="left-panel">
                                         <div className="dropdown-group">
