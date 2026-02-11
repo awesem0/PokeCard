@@ -323,7 +323,7 @@
                 max-width: none;
                 width: 100%;
                 min-width: auto;
-                padding-top: 10px; /* Adjusted to reduce gap */
+                padding-top: calc(10px + 3mm); /* Adjusted to reduce gap */
             }
             .card-container {
                 width: min(90vw, calc((50vh - 20px) * 290 / 462 * 1.106));
@@ -372,7 +372,7 @@
                 display: grid;
                 grid-template-columns: repeat(3, 1fr);
                 gap: 0;
-                padding: 0 0 1cm 0;
+                padding: 1cm 0 1cm 0;
                 box-sizing: border-box;
                 border-radius: 10px 10px 0 0;
                 border-left: none;
@@ -444,7 +444,7 @@
     </style>
 </head>
 <body>
-    <img src="https://drive.google.com/thumbnail?id=1qimhoAEb8uvd5UL-XcRlR5UxFl3lrH5q&sz=w1000" 
+    <img src="https://drive.google.com/thumbnail?id=1qimhoAEb8uvd5UL-XcRlR5UxFl3lrH5q&sz=w1000"
          alt="Poke Card Maker Logo" class="header-logo">
     <div id="root"></div>
     <script type="text/babel" data-presets="env,react" data-plugins="transform-modules-commonjs">
