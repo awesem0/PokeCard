@@ -291,6 +291,7 @@
                 max-width: 90%;
                 height: auto;
             }
+            .header-text { display: none; }
         }
         @media (max-width: 768px) {
             html, body {
@@ -444,11 +445,9 @@
 </head>
 <body>
     <div id="root"></div>
-
-    <h1 className="text-3xl font-bold text-center mb-8" style={{ marginLeft: '76px' }}>Poke Card Maker</h1>
+    <h1 class="header-text text-3xl font-bold text-center mb-8" style="margin-left: 76px;">Poke Card Maker</h1>
     <img src="https://drive.google.com/thumbnail?id=1qimhoAEb8uvd5UL-XcRlR5UxFl3lrH5q&sz=w1000" 
          alt="Poke Card Maker Logo" class="header-logo">
-
     <script type="text/babel" data-presets="env,react" data-plugins="transform-modules-commonjs">
         window.onload = () => {
             console.log('Script loaded'); // Debug: Confirm script runs
