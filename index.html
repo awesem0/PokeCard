@@ -438,7 +438,7 @@
     <div id="root"></div>
     <script type="text/babel" data-presets="env,react" data-plugins="transform-modules-commonjs">
         window.onload = () => {
-            console.log('Script loaded');  // Debug: Confirm script runs
+            console.log('Script loaded'); // Debug: Confirm script runs
             fetch('https://us-central1-grok-poem-maker-c2ef7.cloudfunctions.net/getFirebaseConfig')
                 .then(response => response.json())
                 .then(config => {
@@ -448,7 +448,6 @@
                             borderColor: 'Yellow',
                             backgroundColor: 'Option 1',
                             scene: 'Option 1',
-                            backCard: 'Option 2',
                             poemSelection: 'I LOVE YOU',
                             poemTitle: '',
                             poemText: '',
@@ -476,14 +475,12 @@
                             rightApparel: 'Option 8',
                             rightSidekick: 'Option 11'
                         });
-
                         const [showModal, setShowModal] = React.useState(false);
                         const [isSubmitting, setIsSubmitting] = React.useState(false);
                         const [isGeneratingPoem, setIsGeneratingPoem] = React.useState(false);
                         const [loadedResources, setLoadedResources] = React.useState({});
                         const [elementResources, setElementResources] = React.useState({});
                         const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768);
-
                         React.useEffect(() => {
                             const handleResize = () => {
                                 setIsMobile(window.innerWidth <= 768);
@@ -491,7 +488,6 @@
                             window.addEventListener('resize', handleResize);
                             return () => window.removeEventListener('resize', handleResize);
                         }, []);
-
                         const event_poems = {
                             "Anniversary": ["On this day, our hearts align,", "Years of love, like vintage wine,", "Together strong, through storm and shine,", "Forever yours, forever mine."],
                             "Birthday": ["A day to cheer, a year to grow,", "With love and joy in every glow,", "Candles flicker, wishes flow,", "Happy birthday, my heart’s tableau."],
@@ -511,22 +507,14 @@
                             "Sweet Oath": ["Your smile ignites my heart’s flame", "Every day, I’ll call your name", "Bound by joy, we’ll never part", "Love’s adventure, a work of art"],
                             "My Vow": ["Together we’ll soar, hearts entwined", "Through every storm, love’s light shines", "With you, my world is complete", "Forever yours, in victory sweet"]
                         };
-
                         const baseBackgrounds = Array.from({length: 14}, (_, i) => {
                             const num = i + 1;
                             return { value: `Option ${num}`, label: `Card Colour ${num}`, key: `BACKGROUNDOPTION${num}` };
                         });
-
                         const baseScenes = Array.from({length: 20}, (_, i) => {
                             const num = i + 1;
                             return { value: `Option ${num}`, label: `Scene ${num}`, key: `SCENEOPTION${num}` };
                         });
-
-                        const baseBackCards = Array.from({length: 14}, (_, i) => {
-                            const num = i + 1;
-                            return { value: `Option ${num}`, label: `Rear Card ${num}`, key: `CARDREAROPTION${num}` };
-                        });
-
                         const baseHairStyles = [
                             ...Array.from({length: 20}, (_, i) => {
                                 const num = i + 1;
@@ -534,7 +522,6 @@
                             }),
                             { value: 'No Hair', label: 'No Hair', key: 'NO HAIR' }
                         ];
-
                         const baseEyewear = [
                             { value: 'None', label: 'Eyewear None' },
                             { value: 'Blue Glasses', label: 'Eyewear Blue Glasses', key: 'BLUE GLASSES' },
@@ -542,7 +529,6 @@
                             { value: 'Meme Glasses', label: 'Eyewear Meme Glasses', key: 'MEMEGLASSES' },
                             { value: 'Glasses', label: 'Eyewear Glasses', key: 'GLASSES' }
                         ];
-
                         const baseApparel = [
                             { value: 'Option 1', label: 'Apparel Option 1', key: 'APPARELOPTION1' },
                             { value: 'Option 2', label: 'Apparel Option 2', key: 'APPARELOPTION2' },
@@ -575,7 +561,6 @@
                             { value: 'Option 34', label: 'Apparel Option 34', key: 'APPARELOPTION34' },
                             { value: 'Option 35', label: 'Apparel Option 35', key: 'APPARELOPTION35' }
                         ];
-
                         const baseSidekicks = [
                             { value: 'None', label: 'None' },
                             ...Array.from({length: 38}, (_, i) => {
@@ -583,7 +568,6 @@
                                 return { value: `Option ${num}`, label: `Sidekick Option ${num}`, key: `SIDEKICKOPTION${num}` };
                             })
                         ];
-
                         const baseFacialHair = [
                             { value: 'None', label: 'Facial Hair None' },
                             { value: 'Option 1', label: 'Facial Hair Option 1', key: 'FACIALHAIROPTION1' },
@@ -591,7 +575,6 @@
                             { value: 'Option 4', label: 'Facial Hair Option 4', key: 'FACIALHAIROPTION4' },
                             { value: 'Option 5', label: 'Facial Hair Option 5', key: 'FACIALHAIROPTION5' }
                         ];
-
                         const baseAccessories = [
                             { value: 'None', label: 'Accessories None' },
                             { value: 'Cap', label: 'Accessory Cap', key: 'CAP' },
@@ -603,23 +586,8 @@
                             { value: 'RedCap', label: 'Accessory RedCap', key: 'REDCAP' },
                             { value: 'TruckerCap', label: 'Accessory TruckerCap', key: 'TRUCKERCAP' }
                         ];
-
                         React.useEffect(() => {
                             const resources = {
-                                'CARDREAROPTION14': '1EY2oAJv6TdIKd9J7Vl3nlG0-vfWuYX10',
-                                'CARDREAROPTION13': '1_Ia-wTtcoHCatSt27Moi6ztfqS3dT5Tw',
-                                'CARDREAROPTION12': '1-P2WsDMDGtRwt_TAEirK29eUW3dMFc0N',
-                                'CARDREAROPTION11': '1s9J3JYvJrTWigsnqFxPLyVQXteUEA0dr',
-                                'CARDREAROPTION10': '1sgECZ2drb8fOo4fhNaCZV_A7BJTtLov-',
-                                'CARDREAROPTION9': '1fBuInX0yAfECzFeiOX9CGE4WIJuhNr_l',
-                                'CARDREAROPTION8': '1Ka2byWtlj_jVGqmhyKxOj-u8JAjgU4kA',
-                                'CARDREAROPTION7': '15Y7U3EjNQEeiHcZjuby70a1mttdtnKKF',
-                                'CARDREAROPTION6': '1SCyf8FuWxRN8bLABWtbVqgPCoZ80uZ8V',
-                                'CARDREAROPTION5': '1r_A1zDltkRu9COMhzoDqEayPDJ_UjaN_',
-                                'CARDREAROPTION4': '1-d8ipeDBRDlDUSdUMIHHIYpuCX3u_slh',
-                                'CARDREAROPTION3': '1QzboRmiw_QyQvSfTlUE8Jpg1HcVivQy-',
-                                'CARDREAROPTION2': '1tZYcbPstGTnOIvyyt9MRNJUDSyh0yOm9',
-                                'CARDREAROPTION1': '1wr0RVyZplRAgyTBNYC158ZV9AK4GyQEG',
                                 'SCENEOPTION20': '1Hez70o_YVo5T6wiu3Km717-aPte12Su5',
                                 'SCENEOPTION19': '15EQLMVFlyha3U6XmCTAuFZjBzpvqljDP',
                                 'SCENEOPTION18': '1QrTdIJ0bO_4nJ44terWd7knAp_nhyPtg',
@@ -763,7 +731,6 @@
                             };
                             setLoadedResources(resources);
                         }, []);
-
                         React.useEffect(() => {
                             const originalCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTnYW7k6BaT_rEQ4sIsExe97Fgwaevv1TokuKFpYtpjletWVhYg6Z9eeUwTgmz5qrXClescEa9CpLrx/pub?gid=0&single=true&output=csv';
                             fetch(originalCsvUrl)
@@ -788,17 +755,14 @@
                                 })
                                 .catch(error => console.error('Error loading element CSV:', error));
                         }, []);
-
                         const [backgroundOptions, setBackgroundOptions] = React.useState([]);
                         const [sceneOptions, setSceneOptions] = React.useState([]);
-                        const [backCardOptions, setBackCardOptions] = React.useState([]);
                         const [hairStyleOptions, setHairStyleOptions] = React.useState([]);
                         const [eyewearOptions, setEyewearOptions] = React.useState([]);
                         const [apparelOptions, setApparelOptions] = React.useState([]);
                         const [sidekickOptions, setSidekickOptions] = React.useState([]);
                         const [facialHairOptions, setFacialHairOptions] = React.useState([]);
                         const [accessoryOptions, setAccessoryOptions] = React.useState([]);
-
                         React.useEffect(() => {
                             if (Object.keys(loadedResources).length > 0) {
                                 const enhance = (base, thumbnailSize = '&sz=w170') => base.map(opt => {
@@ -810,7 +774,6 @@
                                 });
                                 setBackgroundOptions(enhance(baseBackgrounds));
                                 setSceneOptions(enhance(baseScenes));
-                                setBackCardOptions(enhance(baseBackCards));
                                 setHairStyleOptions(enhance(baseHairStyles));
                                 setEyewearOptions(enhance(baseEyewear));
                                 setApparelOptions(enhance(baseApparel));
@@ -819,9 +782,7 @@
                                 setAccessoryOptions(enhance(baseAccessories));
                             }
                         }, [loadedResources]);
-
                         const canvasRef = React.useRef(null);
-
                         const validatePoem = (text) => {
                             const lines = text.split('\n').map(line => line.slice(0, 48));
                             if (lines.length > 4) {
@@ -830,11 +791,9 @@
                             }
                             return lines.join('\n');
                         };
-
                         const toTitleCase = (str) => {
                             return str.replace(/\w\S*/g, txt => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
                         };
-
                         const handleChange = (id, value) => {
                             let newValue = value;
                             let additionalUpdates = {};
@@ -854,20 +813,16 @@
                             }
                             setFormData(prev => ({ ...prev, [id]: newValue, ...additionalUpdates }));
                         };
-
                         const handlePoemLineChange = (index, value) => {
                             const lines = formData.poemText.split('\n');
                             lines[index] = value.slice(0, 48);
                             const newPoemText = lines.slice(0, 4).join('\n');
                             setFormData(prev => ({ ...prev, poemText: newPoemText }));
                         };
-
                         const handleSubmit = (e) => {
                             e.preventDefault();
                             setIsSubmitting(true);
-
                         const sheetScriptURL = 'https://us-central1-grok-poem-maker-c2ef7.cloudfunctions.net/proxyToGoogleSheets';
-
                             const isPersonalised = ['Add Your Own Poem', 'AI-Generated Poem'].includes(formData.poemSelection);
                             const occasionMap = {
                                 'Anniversary': '1.Anniversary',
@@ -889,12 +844,9 @@
                             };
                             const occasion = isPersonalised ? 'Add your own Poem / Select and personalise in the next section' : (occasionMap[formData.poemSelection] || formData.poemSelection);
                             const message = isPersonalised ? `${formData.poemTitle}\n${formData.poemText}` : event_poems[formData.poemSelection].join('\n');
-
                             const combinedNames = `${formData.leftCharacterColour} & ${formData.rightCharacterColour}`.trim();
-
                             const randomHP = Math.floor(Math.random() * 990 + 10);
                             const hpValue = formData.hp || randomHP;
-
                             const sheetData = {
                                 'Enter Your Order Number or Character Names : )': combinedNames || 'Unknown',
                                 'Left Character': formData.leftGender || 'Male',
@@ -920,7 +872,7 @@
                                 'Scene': formData.scene || 'Option 1',
                                 'Choose Occasion/Poem': occasion || '6.I LOVE YOU',
                                 'Add your own Personalised Message as follows; A Title 4 short lines or less for your Poem': message || event_poems['I LOVE YOU'].join('\n'),
-                                'Rear/Back of Mini PokeMon Valentine Card': formData.backCard || 'Option 2',
+                                'Rear/Back of Mini PokeMon Valentine Card': 'Fixed',
                                 'Right Character Facial Hair': formData.rightFacialHair || 'None',
                                 'Left Character Facial Hair': formData.leftFacialHair || 'None',
                                 'Accessories for left Character': formData.leftAccessories || 'None',
@@ -928,7 +880,6 @@
                                 'HP Value': hpValue,
                                 'Processed': ''
                             };
-
                             fetch(sheetScriptURL, {
                                 method: 'POST',
                                 body: JSON.stringify(sheetData),
@@ -951,12 +902,10 @@
                                 setShowModal(true);
                             });
                         };
-
                         const togglePoemInputs = () => {
                             const poemInputs = document.getElementById('poem-inputs');
                             poemInputs.style.display = ['Add Your Own Poem', 'AI-Generated Poem'].includes(formData.poemSelection) ? 'block' : 'none';
                         };
-
                         const generatePoem = async () => {
                             setIsGeneratingPoem(true);
                             if (!formData.poemTitle) {
@@ -965,23 +914,23 @@
                                 return;
                             }
                             const prompt = formData.poemTitle.trim();
-                            console.log('Sending prompt:', prompt);  // Debug
+                            console.log('Sending prompt:', prompt); // Debug
                             try {
                                 const generatePoemFunction = firebase.functions().httpsCallable('generatePoem');
                                 const result = await generatePoemFunction({ prompt: prompt });
-                                console.log('Result received:', result);  // Debug
+                                console.log('Result received:', result); // Debug
                                 let generated = result.data.poem.split('\n');
                                 if (generated.length === 1) {
                                     generated = result.data.poem.split('\\n');
                                 }
                                 const newTitle = generated[0].slice(0, 22);
                                 const newPoemText = validatePoem(generated.slice(1).join('\n'));
-                                setFormData(prev => ({ 
-                                    ...prev, 
+                                setFormData(prev => ({
+                                    ...prev,
                                     poemTitle: newTitle,
                                     poemText: newPoemText
                                 }));
-                                console.log('Generated poem:', newPoemText);  // Debug
+                                console.log('Generated poem:', newPoemText); // Debug
                             } catch (error) {
                                 alert('Error: ' + error.message);
                                 console.error('Full error:', error);
@@ -989,13 +938,11 @@
                                 setIsGeneratingPoem(false);
                             }
                         };
-
                         React.useEffect(() => {
                             togglePoemInputs();
                             const cardDesign = document.getElementById('card-design-details');
                             const leftCharacter = document.getElementById('left-character-details');
                             const rightCharacter = document.getElementById('right-character-details');
-
                             const handleCardDesignClick = () => {
                                 leftCharacter.removeAttribute('open');
                                 rightCharacter.removeAttribute('open');
@@ -1008,18 +955,15 @@
                                 cardDesign.removeAttribute('open');
                                 leftCharacter.removeAttribute('open');
                             };
-
                             cardDesign.querySelector('summary').addEventListener('click', handleCardDesignClick);
                             leftCharacter.querySelector('summary').addEventListener('click', handleLeftCharacterClick);
                             rightCharacter.querySelector('summary').addEventListener('click', handleRightCharacterClick);
-
                             return () => {
                                 cardDesign.querySelector('summary').removeEventListener('click', handleCardDesignClick);
                                 leftCharacter.querySelector('summary').removeEventListener('click', handleLeftCharacterClick);
                                 rightCharacter.querySelector('summary').removeEventListener('click', handleRightCharacterClick);
                             };
                         }, [formData.poemSelection]);
-
                         React.useEffect(() => {
                             const drawTexts = async () => {
                                 const fontName = 'Arimo';
@@ -1029,18 +973,15 @@
                                     console.error('Font loading failed:', err);
                                     return;
                                 }
-
                                 const canvas = canvasRef.current;
                                 if (!canvas) return;
                                 const ctx = canvas.getContext('2d');
                                 if (!ctx) return;
-
                                 const container = document.querySelector('.card-container');
                                 const containerWidth = container.offsetWidth;
                                 const scale = containerWidth / 290;
                                 canvas.width = 638 * scale;
                                 canvas.height = 1016 * scale;
-
                                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                                 let fontSize = isMobile ? 24 : 26;
                                 let effectiveScale = scale;
@@ -1049,7 +990,6 @@
                                 }
                                 ctx.font = `${fontSize * effectiveScale}px ${fontName}`;
                                 ctx.scale(scale, scale);
-
                                 let text_tag = '';
                                 let poem_lines = [];
                                 if (formData.poemSelection === 'Add Your Own Poem' || formData.poemSelection === 'AI-Generated Poem') {
@@ -1059,13 +999,10 @@
                                     text_tag = formData.poemSelection;
                                     poem_lines = event_poems[formData.poemSelection] || event_poems["First Date"];
                                 }
-
                                 const leftName = toTitleCase(formData.leftCharacterColour || '');
                                 const rightName = toTitleCase(formData.rightCharacterColour || '');
-
                                 const randomHP = Math.floor(Math.random() * 990 + 10);
                                 const hp = (formData.hp ? formData.hp + ' HP' : randomHP + ' HP');
-
                                 const texts = [
                                     { text: text_tag, x_mm: 8.8, y_mm: 56.95, color: 'rgb(0,0,0)', align: 'left' },
                                     { text: hp, x_mm: 38.6, y_mm: 57.05, color: 'rgb(0,0,0)', align: 'left' },
@@ -1074,9 +1011,7 @@
                                     { text: leftName, x_start: 7.4, x_end: 20.4, y_mm: 61.95, color: 'rgb(0,0,0)', align: 'center' },
                                     { text: rightName, x_start: 32.2, x_end: 46.3, y_mm: 61.95, color: 'rgb(0,0,0)', align: 'center' }
                                 ];
-
                                 const MM_TO_PX = 300 / 25.4;
-
                                 texts.forEach(({text, x_mm, y_mm, color, align, x_start, x_end}) => {
                                     if (!text) return;
                                     ctx.fillStyle = color;
@@ -1085,7 +1020,6 @@
                                     const y = y_mm * MM_TO_PX + metrics.actualBoundingBoxAscent;
                                     ctx.fillText(text, x, y);
                                 });
-
                                 const poem_center_x_mm = (5.7 + 48.3) / 2;
                                 const poem_center_x = poem_center_x_mm * MM_TO_PX;
                                 let poem_y_start = 69.0 * MM_TO_PX;
@@ -1097,7 +1031,6 @@
                                     const offset = (total_height - used_height) / 2;
                                     poem_y_start += offset;
                                 }
-
                                 poem_lines.slice(0, 4).forEach((line, i) => {
                                     ctx.fillStyle = 'rgb(0,0,0)';
                                     const metrics = ctx.measureText(line);
@@ -1106,10 +1039,8 @@
                                     ctx.fillText(line, x, y);
                                 });
                             };
-
                             drawTexts();
                         }, [formData, isMobile]);
-
                         const getElementKey = (side, component, params) => {
                             let category = '';
                             let filename = '';
@@ -1176,12 +1107,10 @@
                             }
                             return null;
                         };
-
                         const getThumbnailUrl = (key, size = 'w1000') => {
                             const id = elementResources[key];
                             return id ? `https://drive.google.com/thumbnail?id=${id}&sz=${size}` : '';
                         };
-
                         let leftApparelUrl = '';
                         let leftFaceUrl = '';
                         let leftHairUrl = '';
@@ -1189,45 +1118,37 @@
                         let leftEyewearUrl = '';
                         let leftAccessoryUrl = '';
                         let leftSidekickUrl = '';
-
                         if (formData.leftEthnicity && formData.leftApparel) {
                             const number = formData.leftApparel.replace('Option ', '');
                             const key = getElementKey('LEFT', 'apparel', {ethnicity: formData.leftEthnicity, number});
                             leftApparelUrl = getThumbnailUrl(key);
                         }
-
                         if (formData.leftGender && formData.leftEthnicity && formData.leftEyeColor) {
                             const key = getElementKey('LEFT', 'face', {gender: formData.leftGender, ethnicity: formData.leftEthnicity, eyeColor: formData.leftEyeColor});
                             leftFaceUrl = getThumbnailUrl(key);
                         }
-
                         if (formData.leftHairStyle && formData.leftHairStyle !== 'No Hair' && formData.leftHairColor) {
                             const style = formData.leftHairStyle.replace('Option ', 'OPTION');
                             const key = getElementKey('LEFT', 'hair', {style, color: formData.leftHairColor});
                             leftHairUrl = getThumbnailUrl(key);
                         }
-
                         if (formData.leftFacialHair && formData.leftFacialHair !== 'None' && formData.leftHairColor) {
                             let number = formData.leftFacialHair.replace('Option ', '');
                             const key = getElementKey('LEFT', 'facialHair', {number, color: formData.leftHairColor});
                             leftFacialUrl = getThumbnailUrl(key);
                         }
-
                         if (formData.leftEyewear && formData.leftEyewear !== 'None') {
                             const key = getElementKey('LEFT', 'eyewear', {value: formData.leftEyewear});
                             leftEyewearUrl = getThumbnailUrl(key);
                         }
-
                         if (formData.leftAccessories && formData.leftAccessories !== 'None') {
                             const key = getElementKey('LEFT', 'accessories', {value: formData.leftAccessories});
                             leftAccessoryUrl = getThumbnailUrl(key);
                         }
-
                         if (formData.leftSidekick && formData.leftSidekick !== 'None' && formData.leftSidekick !== 'No Sidekick') {
                             const key = getElementKey('LEFT', 'sidekick', {value: formData.leftSidekick});
                             leftSidekickUrl = getThumbnailUrl(key);
                         }
-
                         let rightApparelUrl = '';
                         let rightFaceUrl = '';
                         let rightHairUrl = '';
@@ -1235,45 +1156,37 @@
                         let rightEyewearUrl = '';
                         let rightAccessoryUrl = '';
                         let rightSidekickUrl = '';
-
                         if (formData.rightEthnicity && formData.rightApparel) {
                             const number = formData.rightApparel.replace('Option ', '');
                             const key = getElementKey('RIGHT', 'apparel', {ethnicity: formData.rightEthnicity, number});
                             rightApparelUrl = getThumbnailUrl(key);
                         }
-
                         if (formData.rightGender && formData.rightEthnicity && formData.rightEyeColor) {
                             const key = getElementKey('RIGHT', 'face', {gender: formData.rightGender, ethnicity: formData.rightEthnicity, eyeColor: formData.rightEyeColor});
                             rightFaceUrl = getThumbnailUrl(key);
                         }
-
                         if (formData.rightHairStyle && formData.rightHairStyle !== 'No Hair' && formData.rightHairColor) {
                             const style = formData.rightHairStyle.replace('Option ', 'OPTION');
                             const key = getElementKey('RIGHT', 'hair', {style, color: formData.rightHairColor});
                             rightHairUrl = getThumbnailUrl(key);
                         }
-
                         if (formData.rightFacialHair && formData.rightFacialHair !== 'None' && formData.rightHairColor) {
                             let number = formData.rightFacialHair.replace('Option ', '');
                             const key = getElementKey('RIGHT', 'facialHair', {number, color: formData.rightHairColor});
                             rightFacialUrl = getThumbnailUrl(key);
                         }
-
                         if (formData.rightEyewear && formData.rightEyewear !== 'None') {
                             const key = getElementKey('RIGHT', 'eyewear', {value: formData.rightEyewear});
                             rightEyewearUrl = getThumbnailUrl(key);
                         }
-
                         if (formData.rightAccessories && formData.rightAccessories !== 'None') {
                             const key = getElementKey('RIGHT', 'accessories', {value: formData.rightAccessories});
                             rightAccessoryUrl = getThumbnailUrl(key);
                         }
-
                         if (formData.rightSidekick && formData.rightSidekick !== 'None' && formData.rightSidekick !== 'No Sidekick') {
                             const key = getElementKey('RIGHT', 'sidekick', {value: formData.rightSidekick});
                             rightSidekickUrl = getThumbnailUrl(key);
                         }
-
                         const borderColors = [
                             { value: 'Yellow', label: 'Border Yellow' },
                             { value: 'Navy Blue', label: 'Border Navy Blue' },
@@ -1282,7 +1195,6 @@
                             { value: 'Orange', label: 'Border Orange' },
                             { value: 'Baby Blue', label: 'Border Baby Blue' }
                         ];
-
                         const poemOptions = [
                             { value: 'Add Your Own Poem', label: 'Add Your Own Poem' },
                             { value: 'AI-Generated Poem', label: 'AI-Generated' },
@@ -1304,23 +1216,19 @@
                             { value: 'Sweet Oath', label: 'Sweet Oath' },
                             { value: 'My Vow', label: 'My Vow' }
                         ];
-
                         const genders = [
                             { value: 'Male', label: 'Male' },
                             { value: 'Female', label: 'Female' }
                         ];
-
                         const ethnicities = [
                             { value: 'Black', label: 'Black' },
                             { value: 'White', label: 'White' }
                         ];
-
                         const eyeColors = [
                             { value: 'Blue', label: 'Blue' },
                             { value: 'Brown', label: 'Brown' },
                             { value: 'Green', label: 'Green' }
                         ];
-
                         const hairColors = [
                             { value: 'Black', label: 'Black' },
                             { value: 'Blond', label: 'Blond' },
@@ -1333,12 +1241,13 @@
                             { value: 'Purple', label: 'Purple' },
                             { value: 'Red', label: 'Red' }
                         ];
-
                         const CustomSelect = ({ id, value, options, onChange, placeholder }) => {
                             const [isOpen, setIsOpen] = React.useState(false);
                             const selectedOption = options.find(opt => opt.value === value) || { value: '', label: placeholder };
-
                             const getDisplayText = (opt, id) => {
+                                if (id === 'poemSelection') {
+                                    return 'CHANGE POEM';
+                                }
                                 if (!opt.value) return placeholder;
                                 if (id.endsWith('Gender') || id.endsWith('Ethnicity')) return opt.value;
                                 if (id.endsWith('EyeColor')) return `Eye Colour ${opt.value}`;
@@ -1347,15 +1256,9 @@
                                     return `Hair Style ${opt.value.replace('Option ', '')}`;
                                 }
                                 if (id.endsWith('HairColor')) return `Hair Colour ${opt.label}`;
-                                if (id.endsWith('FacialHair')) {
-                                    return opt.label;
-                                }
-                                if (id.endsWith('Eyewear')) {
-                                    return opt.label;
-                                }
-                                if (id.endsWith('Accessories')) {
-                                    return opt.label;
-                                }
+                                if (id.endsWith('FacialHair')) return opt.label;
+                                if (id.endsWith('Eyewear')) return opt.label;
+                                if (id.endsWith('Accessories')) return opt.label;
                                 if (id.endsWith('Apparel')) return `Apparel ${opt.value.replace('Option ', '')}`;
                                 if (id.endsWith('Sidekick')) {
                                     if (opt.value === 'None' || opt.value === 'No Sidekick') return opt.value;
@@ -1363,7 +1266,6 @@
                                 }
                                 return opt.label || opt.value;
                             };
-
                             const toggleOpen = () => {
                                 if (isOpen) {
                                     setIsOpen(false);
@@ -1372,18 +1274,15 @@
                                     setIsOpen(true);
                                 }
                             };
-
                             React.useEffect(() => {
                                 const close = () => setIsOpen(false);
                                 document.addEventListener('closeAllDropdowns', close);
                                 return () => document.removeEventListener('closeAllDropdowns', close);
                             }, []);
-
                             const handleSelect = (opt) => {
                                 onChange(id, opt.value);
                                 setIsOpen(false);
                             };
-
                             React.useEffect(() => {
                                 if (window.innerWidth <= 768) {
                                     if (isOpen) {
@@ -1396,7 +1295,6 @@
                                     };
                                 }
                             }, [isOpen]);
-
                             React.useEffect(() => {
                                 if (isMobile && isOpen && (id.endsWith('Sidekick') || id.endsWith('Apparel') || id.endsWith('HairStyle') || id === 'scene')) {
                                     const menu = document.querySelector('.custom-select-menu');
@@ -1405,9 +1303,7 @@
                                     }
                                 }
                             }, [isOpen, isMobile, id]);
-
                             const isLotsOfImages = id === 'scene' || id.endsWith('HairStyle') || id.endsWith('Apparel') || id.endsWith('Sidekick');
-
                             return (
                                 <div className="custom-select" style={{ width: (formData.poemSelection === 'AI-Generated Poem' && id === 'poemSelection' && isMobile) ? '60%' : '100%' }}>
                                     <button
@@ -1443,7 +1339,6 @@
                                 </div>
                             );
                         };
-
                         const borderMap = {
                             'Yellow': '1OvWTF7_cXFJYMaPMesR_P2kxdSwX1KNS',
                             'Navy Blue': '1otoJGCL29z6p_qzkabMmFBvRbJYtluAd',
@@ -1452,31 +1347,19 @@
                             'Orange': '1YCsyifaB4SrqxG9sA7MuPZsGDblaE7BJ',
                             'Baby Blue': '1LTwxk-ChGL5_bP1uS3i-Wjb8HCkZxiMQ'
                         };
-
                         const borderUrl = formData.borderColor ? `https://drive.google.com/thumbnail?id=${borderMap[formData.borderColor]}&sz=w1000` : '';
-
                         const backgroundKey = 'CARDBACKGROUNDOPTIONS/CARDBACKGROUNDOPTION' + formData.backgroundColor.replace('Option ', '') + '.png';
                         const backgroundUrl = getThumbnailUrl(backgroundKey);
-
                         const sceneKey = 'SCENE/SCENEOPTION' + formData.scene.replace('Option ', '') + '.png';
                         const sceneUrl = getThumbnailUrl(sceneKey);
-
                         const fourthLayerUrl = `https://drive.google.com/thumbnail?id=1NMwGf9jcvJhVOuyDs7Y_8t14ux_sYHe3&sz=w1000`;
-
                         const speechBubbleUrl = `https://drive.google.com/thumbnail?id=104iyXLDkU3wNQZdCT01-EIl1Q6EaCk2Y&sz=w1000`;
-
-                        const backCardKey = 'REAR CARDS/POKEMON REAR' + formData.backCard.replace('Option ', '') + '.png';
-                        const backCardUrl = getThumbnailUrl(backCardKey);
-
+                        const backCardUrl = `https://drive.google.com/thumbnail?id=1DFeSwVxxS6cWZ7gug7O6b9FMrbl8wBWi&sz=w1000`;
                         const adjustHairStyles = ['Option 13', 'Option 15', 'Option 16', 'Option 18', 'Option 19'];
-
                         const leftHairTop = adjustHairStyles.includes(formData.leftHairStyle) ? 'calc(24.85% + 3px)' : '24.85%';
                         const rightHairTop = adjustHairStyles.includes(formData.rightHairStyle) ? 'calc(24.85% + 3px)' : '24.85%';
-
                         const poemTitlePlaceholder = formData.poemSelection === 'AI-Generated Poem' ? 'Theme or Poem Details' : 'Poem Title';
-
                         const poemLines = formData.poemText.split('\n').slice(0, 4);
-
                         return (
                             <div>
                                 <h1 className="text-3xl font-bold text-center mb-8" style={{ marginLeft: '76px' }}>Poke Card Maker</h1>
@@ -1617,13 +1500,6 @@
                                                         )
                                                     )}
                                                 </div>
-                                                <CustomSelect
-                                                    id="backCard"
-                                                    value={formData.backCard}
-                                                    options={backCardOptions}
-                                                    onChange={handleChange}
-                                                    placeholder="Rear Card"
-                                                />
                                             </details>
                                         </div>
                                         <div className="dropdown-group">
@@ -1830,7 +1706,7 @@
                                                     {leftFaceUrl && <img src={leftFaceUrl} alt="Left Face" style={{position: 'absolute', left: '7.79%', top: '24.85%', width: '47.78%', height: 'auto', zIndex: 5}} />}
                                                     {rightFaceUrl && <img src={rightFaceUrl} alt="Right Face" style={{position: 'absolute', left: '43.79%', top: '24.85%', width: '47.78%', height: 'auto', zIndex: 5}} />}
                                                     {leftFacialUrl && <img src={leftFacialUrl} alt="Left Facial Hair" style={{position: 'absolute', left: '7.79%', top: '24.85%', width: '47.78%', height: 'auto', zIndex: 15}} />}
-                                                    {rightFacialUrl && <img src={rightFacialUrl} alt="Right Facial Hair" style={{position: 'absolute', left: '43.79%', top: '24.85%', width: '47.78%', height: 'auto', zIndex: 15}} />}     
+                                                    {rightFacialUrl && <img src={rightFacialUrl} alt="Right Facial Hair" style={{position: 'absolute', left: '43.79%', top: '24.85%', width: '47.78%', height: 'auto', zIndex: 15}} />}
                                                     {leftHairUrl && <img src={leftHairUrl} alt="Left Hair" style={{position: 'absolute', left: '7.79%', top: leftHairTop, width: '47.78%', height: 'auto', zIndex: 7}} />}
                                                     {rightHairUrl && <img src={rightHairUrl} alt="Right Hair" style={{position: 'absolute', left: '43.79%', top: rightHairTop, width: '47.78%', height: 'auto', zIndex: 7}} />}
                                                     {leftEyewearUrl && <img src={leftEyewearUrl} alt="Left Eyewear" style={{position: 'absolute', left: '7.79%', top: '24.85%', width: '47.78%', height: 'auto', zIndex: 8}} />}
