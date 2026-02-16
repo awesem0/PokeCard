@@ -857,7 +857,7 @@
                             const message = isPersonalised ? `${formData.poemTitle}\n${formData.poemText}` : event_poems[formData.poemSelection].join('\n');
                             const combinedNames = `${formData.leftCharacterColour} & ${formData.rightCharacterColour}`.trim();
                             const randomHP = Math.floor(Math.random() * 990 + 10);
-                            const hpValue = formData.hp || randomHP;
+                            const hpValue = "'" + (formData.hp || randomHP.toString());
                             const sheetData = {
                                 'Enter Your Order Number or Character Names : )': combinedNames || 'Unknown',
                                 'Left Character': formData.leftGender || 'Male',
