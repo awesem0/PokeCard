@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="manifest.json">
     <title>Poke Card Maker</title>
     <link href="https://fonts.googleapis.com/css2?family=Arimo&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap" rel="stylesheet">
@@ -378,7 +378,7 @@
     <img src="assets/misc/logo.png"
          alt="Poke Card Maker Logo" class="header-logo">
     <div id="root"></div>
-    <script type="text/babel" data-presets="env,react" data-plugins="transform-modules-commonjs">
+    <script type="text/babel" data-presets="env,react">
         const LOADED_RESOURCES = {
     'SCENEOPTION20': 'assets/thumbs/sceneoption20.png',
     'SCENEOPTION19': 'assets/thumbs/sceneoption19.png',
@@ -534,8 +534,7 @@
         const SPEECH_BUBBLE_URL = 'assets/misc/speech_buble.png';
         const BACK_CARD_URL = 'assets/misc/back_card.png';
 
-        window.onload = () => {
-            const App = () => {
+        const App = () => {
                 const [formData, setFormData] = React.useState({
                     borderColor: 'Yellow',
                     backgroundColor: 'Option 1',
@@ -1291,8 +1290,7 @@
                     </div>
                 );
             };
-            ReactDOM.createRoot(document.getElementById('root')).render(<App />);
-        };
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
     </script>
 </body>
 </html>
