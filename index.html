@@ -653,7 +653,7 @@
                 }, []);
 
                 React.useEffect(() => {
-                    fetch('assets/element_map.json')
+                    fetch('assets/element_map.json?v=2')
                         .then(r => r.json())
                         .then(data => setElementResources(data))
                         .catch(e => console.error('Failed to load element map:', e));
