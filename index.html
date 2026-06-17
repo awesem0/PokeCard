@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="manifest" href="/manifest.json">
+    <title>Poke Card Maker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Arimo&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        html, body {
+            font-family: 'Arimo', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            justify-content: center;
+            align-items: center;
+        }
+        .left-panel {
+            flex: 2;
+            min-width: 300px;
+            max-width: 518px;
+        }
+        .right-panel {
+            width: 300px;
+            margin: 0 auto;
+            margin-left: 76px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+        .card-container {
+            position: relative;
+            width: 290px;
+            height: 462px;
+        }
+        .card {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .card-top { z-index: 2; }
+        .card-bottom {
+            z-index: 1;
+            top: calc(76 / 462 * 100%);
+            left: calc(76 / 290 * 100%);
+            transform: translate(20%, -20%);
+        }
+        .watermark-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 13;
+            pointer-events: none;
+        }
+        .watermark {
+            position: absolute;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 3rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        details {
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            width: 518px;
+        }
+        summary {
+            font-family: 'Arimo', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        .dropdown-group { margin-bottom: 20px; }
+        .dropdown-group h3 {
+            font-family: 'Arimo', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+        select, input, textarea {
+            width: 100%;
+            padding: 8px;
+            font-family: 'Arimo', sans-serif;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            height: 38px;
+            box-sizing: border-box;
+        }
+        textarea { height: auto; resize: vertical; }
+        .emoji-label::before {
+            content: '🎨 ';
+            font-family: 'Noto Color Emoji', sans-serif;
+        }
+        #poem-inputs { display: none; }
+        .submit-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .submit-container button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .custom-select {
+            position: relative;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .custom-select-button {
+            width: 100%;
+            padding: 8px;
+            font-family: 'Arimo', sans-serif;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background: white;
+            text-align: left;
+            height: 38px;
+            display: flex;
+            align-items: center;
+        }
+        .custom-select-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            max-height: 500px;
+            overflow-y: auto;
+            z-index: 1001;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0;
+            padding: 0;
+        }
+        .custom-option {
+            width: 170px;
+            height: 135px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            cursor: pointer;
+            position: relative;
+            pointer-events: auto;
+        }
+        .custom-option:hover { background: #f0f0f0; }
+        .iframe-container {
+            width: 170px;
+            height: 135px;
+            overflow: hidden;
+            position: relative;
+            border: none;
+            outline: none;
+        }
+        .iframe-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        .custom-option-text { padding: 8px; font-size: 1rem; }
+        .error {
+            color: red;
+            display: none;
+            text-align: center;
+            font-size: 0.8rem;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .modal {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        .modal-content {
+            background: white;
+            padding: 0px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+        .canvas-style { width: 290px; height: 462px; }
+        .error-message {
+            color: red;
+            font-size: 0.9rem;
+            margin-top: -5px;
+            margin-bottom: 10px;
+        }
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 24px; height: 24px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes dropdown {
+            0% { opacity: 0; transform: translateY(-20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        @media (min-width: 769px) {
+            .modal { align-items: flex-start; }
+            .modal-content {
+                margin-top: 100px;
+                animation: dropdown 0.5s ease;
+            }
+            .header-logo {
+                display: block;
+                margin: 20px auto;
+                width: 400px;
+                max-width: 90%;
+                height: auto;
+            }
+            .header-text { display: none; }
+        }
+        @media (max-width: 768px) {
+            html, body { scroll-behavior: smooth; }
+            .custom-select-menu { scroll-behavior: smooth; }
+            .container {
+                flex-direction: column;
+                padding-top: 50vh;
+                gap: 0;
+                padding-bottom: calc(100vh / 7);
+            }
+            .right-panel {
+                width: 100%;
+                height: calc(50vh + 7mm);
+                margin: 0;
+                margin-left: 0;
+                position: fixed !important;
+                top: 0; left: 0;
+                z-index: 10;
+                background-color: #f4f4f4;
+                padding-top: 10px;
+                padding-bottom: 7mm;
+            }
+            .left-panel {
+                max-width: none;
+                width: 100%;
+                min-width: auto;
+                padding-top: calc(10px + 6mm);
+            }
+            .card-container {
+                width: min(90vw, calc((50vh - 20px) * 290 / 462 * 1.106));
+                height: auto;
+                aspect-ratio: 290 / 462;
+                margin: 6mm auto 0 auto;
+            }
+            .card-bottom {
+                top: calc(76 / 462 * 100%);
+                left: calc(76 / 290 * 100%);
+                transform: translate(20%, -20%);
+            }
+            .custom-select, select, input, textarea {
+                width: calc(100vw - 60px);
+                font-size: 1rem;
+                margin: 0 auto;
+                display: block;
+                margin-bottom: 10px;
+            }
+            details {
+                width: calc(100vw - 40px);
+                margin: 0 auto;
+            }
+            summary, .dropdown-group h3 {
+                font-size: 1rem;
+                font-weight: bold;
+            }
+            .dropdown-group { margin-bottom: 10px; }
+            details {
+                margin-bottom: 5px;
+                padding: 5px;
+            }
+            .custom-select-menu {
+                position: fixed;
+                top: auto; bottom: 0;
+                left: 0; right: 0;
+                width: 100vw;
+                height: 66vh;
+                max-height: none;
+                overflow-y: auto;
+                z-index: 1001;
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 0;
+                padding: 2cm 0 1cm 0;
+                box-sizing: border-box;
+                border-radius: 10px 10px 0 0;
+                border-left: none;
+                border-right: none;
+                border-bottom: none;
+                -webkit-overflow-scrolling: touch;
+            }
+            .custom-option {
+                width: 100%;
+                height: auto;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0;
+            }
+            .iframe-container {
+                width: 100%;
+                height: auto;
+            }
+            .iframe-container img {
+                width: 100%;
+                height: auto;
+                object-fit: contain;
+            }
+            .custom-option-text { font-size: 1rem; }
+            h1 { margin-left: 0 !important; }
+            .canvas-style { width: 100%; height: 100%; }
+            .watermark { font-size: 1.5rem; }
+            .hp-container {
+                display: flex;
+                gap: 10px;
+                margin-bottom: 10px;
+            }
+            .hp-input { flex: 1; width: auto; }
+            .submit-container button { height: 38px; }
+            .full-height-menu { height: 100vh !important; }
+            .poem-title-input { width: calc(100vw - 60px); }
+            .poem-line-textarea {
+                width: calc(100vw - 60px);
+                height: 50px;
+            }
+            .header-logo { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <img src="assets/misc/logo.png"
+         alt="Poke Card Maker Logo" class="header-logo">
+    <div id="root"></div>
+    <script type="text/babel" data-presets="env,react" data-plugins="transform-modules-commonjs">
+        const LOADED_RESOURCES = {
+    'SCENEOPTION20': 'assets/thumbs/sceneoption20.png',
+    'SCENEOPTION19': 'assets/thumbs/sceneoption19.png',
+    'SCENEOPTION18': 'assets/thumbs/sceneoption18.png',
+    'SCENEOPTION17': 'assets/thumbs/sceneoption17.png',
+    'SCENEOPTION16': 'assets/thumbs/sceneoption16.png',
+    'SCENEOPTION15': 'assets/thumbs/sceneoption15.png',
+    'SCENEOPTION14': 'assets/thumbs/sceneoption14.png',
+    'SCENEOPTION13': 'assets/thumbs/sceneoption13.png',
+    'SCENEOPTION12': 'assets/thumbs/sceneoption12.png',
+    'SCENEOPTION11': 'assets/thumbs/sceneoption11.png',
+    'SCENEOPTION10': 'assets/thumbs/sceneoption10.png',
+    'SCENEOPTION9': 'assets/thumbs/sceneoption9.png',
+    'SCENEOPTION8': 'assets/thumbs/sceneoption8.png',
+    'SCENEOPTION7': 'assets/thumbs/sceneoption7.png',
+    'SCENEOPTION6': 'assets/thumbs/sceneoption6.png',
+    'SCENEOPTION5': 'assets/thumbs/sceneoption5.png',
+    'SCENEOPTION4': 'assets/thumbs/sceneoption4.png',
+    'SCENEOPTION3': 'assets/thumbs/sceneoption3.png',
+    'SCENEOPTION2': 'assets/thumbs/sceneoption2.png',
+    'SCENEOPTION1': 'assets/thumbs/sceneoption1.png',
+    'BACKGROUNDOPTION14': 'assets/thumbs/backgroundoption14.png',
+    'BACKGROUNDOPTION13': 'assets/thumbs/backgroundoption13.png',
+    'BACKGROUNDOPTION12': 'assets/thumbs/backgroundoption12.png',
+    'BACKGROUNDOPTION11': 'assets/thumbs/backgroundoption11.png',
+    'BACKGROUNDOPTION10': 'assets/thumbs/backgroundoption10.png',
+    'BACKGROUNDOPTION9': 'assets/thumbs/backgroundoption9.png',
+    'BACKGROUNDOPTION8': 'assets/thumbs/backgroundoption8.png',
+    'BACKGROUNDOPTION7': 'assets/thumbs/backgroundoption7.png',
+    'BACKGROUNDOPTION6': 'assets/thumbs/backgroundoption6.png',
+    'BACKGROUNDOPTION5': 'assets/thumbs/backgroundoption5.png',
+    'BACKGROUNDOPTION4': 'assets/thumbs/backgroundoption4.png',
+    'BACKGROUNDOPTION3': 'assets/thumbs/backgroundoption3.png',
+    'BACKGROUNDOPTION2': 'assets/thumbs/backgroundoption2.png',
+    'BACKGROUNDOPTION1': 'assets/thumbs/backgroundoption1.png',
+    'SIDEKICKNOSIDEKICK': 'assets/thumbs/sidekicknosidekick.png',
+    'SIDEKICKOPTION38': 'assets/thumbs/sidekickoption38.png',
+    'SIDEKICKOPTION37': 'assets/thumbs/sidekickoption37.png',
+    'SIDEKICKOPTION36': 'assets/thumbs/sidekickoption36.png',
+    'SIDEKICKOPTION35': 'assets/thumbs/sidekickoption35.png',
+    'SIDEKICKOPTION34': 'assets/thumbs/sidekickoption34.png',
+    'SIDEKICKOPTION33': 'assets/thumbs/sidekickoption33.png',
+    'SIDEKICKOPTION32': 'assets/thumbs/sidekickoption32.png',
+    'SIDEKICKOPTION31': 'assets/thumbs/sidekickoption31.png',
+    'SIDEKICKOPTION30': 'assets/thumbs/sidekickoption30.png',
+    'SIDEKICKOPTION29': 'assets/thumbs/sidekickoption29.png',
+    'SIDEKICKOPTION28': 'assets/thumbs/sidekickoption28.png',
+    'SIDEKICKOPTION27': 'assets/thumbs/sidekickoption27.png',
+    'SIDEKICKOPTION26': 'assets/thumbs/sidekickoption26.png',
+    'SIDEKICKOPTION25': 'assets/thumbs/sidekickoption25.png',
+    'SIDEKICKOPTION24': 'assets/thumbs/sidekickoption24.png',
+    'SIDEKICKOPTION23': 'assets/thumbs/sidekickoption23.png',
+    'SIDEKICKOPTION22': 'assets/thumbs/sidekickoption22.png',
+    'SIDEKICKOPTION21': 'assets/thumbs/sidekickoption21.png',
+    'SIDEKICKOPTION20': 'assets/thumbs/sidekickoption20.png',
+    'SIDEKICKOPTION19': 'assets/thumbs/sidekickoption19.png',
+    'SIDEKICKOPTION18': 'assets/thumbs/sidekickoption18.png',
+    'SIDEKICKOPTION17': 'assets/thumbs/sidekickoption17.png',
+    'SIDEKICKOPTION16': 'assets/thumbs/sidekickoption16.png',
+    'SIDEKICKOPTION15': 'assets/thumbs/sidekickoption15.png',
+    'SIDEKICKOPTION14': 'assets/thumbs/sidekickoption14.png',
+    'SIDEKICKOPTION13': 'assets/thumbs/sidekickoption13.png',
+    'SIDEKICKOPTION12': 'assets/thumbs/sidekickoption12.png',
+    'SIDEKICKOPTION11': 'assets/thumbs/sidekickoption11.png',
+    'SIDEKICKOPTION10': 'assets/thumbs/sidekickoption10.png',
+    'SIDEKICKOPTION9': 'assets/thumbs/sidekickoption9.png',
+    'SIDEKICKOPTION8': 'assets/thumbs/sidekickoption8.png',
+    'SIDEKICKOPTION7': 'assets/thumbs/sidekickoption7.png',
+    'SIDEKICKOPTION6': 'assets/thumbs/sidekickoption6.png',
+    'SIDEKICKOPTION5': 'assets/thumbs/sidekickoption5.png',
+    'SIDEKICKOPTION4': 'assets/thumbs/sidekickoption4.png',
+    'SIDEKICKOPTION3': 'assets/thumbs/sidekickoption3.png',
+    'SIDEKICKOPTION2': 'assets/thumbs/sidekickoption2.png',
+    'SIDEKICKOPTION1': 'assets/thumbs/sidekickoption1.png',
+    'APPARELOPTION35': 'assets/thumbs/appareloption35.png',
+    'APPARELOPTION34': 'assets/thumbs/appareloption34.png',
+    'APPARELOPTION33': 'assets/thumbs/appareloption33.png',
+    'APPARELOPTION32': 'assets/thumbs/appareloption32.png',
+    'APPARELOPTION31': 'assets/thumbs/appareloption31.png',
+    'APPARELOPTION30': 'assets/thumbs/appareloption30.png',
+    'APPARELOPTION29': 'assets/thumbs/appareloption29.png',
+    'APPARELOPTION28': 'assets/thumbs/appareloption28.png',
+    'APPARELOPTION26': 'assets/thumbs/appareloption26.png',
+    'APPARELOPTION25': 'assets/thumbs/appareloption25.png',
+    'APPARELOPTION23': 'assets/thumbs/appareloption23.png',
+    'APPARELOPTION22': 'assets/thumbs/appareloption22.png',
+    'APPARELOPTION21': 'assets/thumbs/appareloption21.png',
+    'APPARELOPTION20': 'assets/thumbs/appareloption20.png',
+    'APPARELOPTION19': 'assets/thumbs/appareloption19.png',
+    'APPARELOPTION18': 'assets/thumbs/appareloption18.png',
+    'APPARELOPTION17': 'assets/thumbs/appareloption17.png',
+    'APPARELOPTION16': 'assets/thumbs/appareloption16.png',
+    'APPARELOPTION15': 'assets/thumbs/appareloption15.png',
+    'APPARELOPTION14': 'assets/thumbs/appareloption14.png',
+    'APPARELOPTION12': 'assets/thumbs/appareloption12.png',
+    'APPARELOPTION9': 'assets/thumbs/appareloption9.png',
+    'APPARELOPTION8': 'assets/thumbs/appareloption8.png',
+    'APPARELOPTION7': 'assets/thumbs/appareloption7.png',
+    'APPARELOPTION6': 'assets/thumbs/appareloption6.png',
+    'APPARELOPTION5': 'assets/thumbs/appareloption5.png',
+    'APPARELOPTION4': 'assets/thumbs/appareloption4.png',
+    'APPARELOPTION3': 'assets/thumbs/appareloption3.png',
+    'APPARELOPTION2': 'assets/thumbs/appareloption2.png',
+    'APPARELOPTION1': 'assets/thumbs/appareloption1.png',
+    'TOPHAT': 'assets/thumbs/tophat.png',
+    'TIARA': 'assets/thumbs/tiara.png',
+    'GARLAND': 'assets/thumbs/garland.png',
+    'PIKAKAP': 'assets/thumbs/pikakap.png',
+    'CAP': 'assets/thumbs/cap.png',
+    'TRUCKERCAP': 'assets/thumbs/truckercap.png',
+    'BEACHHAT': 'assets/thumbs/beachhat.png',
+    'REDCAP': 'assets/thumbs/redcap.png',
+    'PINK GLASSES': 'assets/thumbs/pink_glasses.png',
+    'MEMEGLASSES': 'assets/thumbs/memeglasses.png',
+    'BLUE GLASSES': 'assets/thumbs/blue_glasses.png',
+    'GLASSES': 'assets/thumbs/glasses.png',
+    'FACIALHAIROPTION5': 'assets/thumbs/facialhairoption5.png',
+    'FACIALHAIROPTION4': 'assets/thumbs/facialhairoption4.png',
+    'FACIALHAIROPTION3': 'assets/thumbs/facialhairoption3.png',
+    'FACIALHAIROPTION1': 'assets/thumbs/facialhairoption1.png',
+    'HAIR-OPTION20': 'assets/thumbs/hair-option20.png',
+    'HAIR-OPTION19': 'assets/thumbs/hair-option19.png',
+    'HAIR-OPTION18': 'assets/thumbs/hair-option18.png',
+    'HAIR-OPTION17': 'assets/thumbs/hair-option17.png',
+    'HAIR-OPTION16': 'assets/thumbs/hair-option16.png',
+    'HAIR-OPTION15': 'assets/thumbs/hair-option15.png',
+    'HAIR-OPTION14': 'assets/thumbs/hair-option14.png',
+    'HAIR-OPTION13': 'assets/thumbs/hair-option13.png',
+    'HAIR-OPTION12': 'assets/thumbs/hair-option12.png',
+    'HAIR-OPTION11': 'assets/thumbs/hair-option11.png',
+    'HAIR-OPTION10': 'assets/thumbs/hair-option10.png',
+    'HAIR-OPTION9': 'assets/thumbs/hair-option9.png',
+    'HAIR-OPTION8': 'assets/thumbs/hair-option8.png',
+    'HAIR-OPTION7': 'assets/thumbs/hair-option7.png',
+    'HAIR-OPTION6': 'assets/thumbs/hair-option6.png',
+    'HAIR-OPTION5': 'assets/thumbs/hair-option5.png',
+    'HAIR-OPTION4': 'assets/thumbs/hair-option4.png',
+    'HAIR-OPTION3': 'assets/thumbs/hair-option3.png',
+    'HAIR-OPTION2': 'assets/thumbs/hair-option2.png',
+    'HAIR-OPTION1': 'assets/thumbs/hair-option1.png',
+    'NO HAIR': 'assets/thumbs/no_hair.png',
+};
+        const BORDER_LOCAL_MAP = {
+    'Yellow': 'assets/misc/1STLAYERYELLOW.png',
+    'Navy Blue': 'assets/misc/1STLAYERBLUE.png',
+    'Red': 'assets/misc/1STLAYERRED.png',
+    'White': 'assets/misc/1STLAYERWHITE.png',
+    'Orange': 'assets/misc/1STLAYERORANGE.png',
+    'Baby Blue': 'assets/misc/1STLAYERBABYBLUE.png',
+};
+
+        const FOURTH_LAYER_URL = 'assets/misc/4THLAYER.png';
+        const SPEECH_BUBBLE_URL = 'assets/misc/speech_buble.png';
+        const BACK_CARD_URL = 'assets/misc/back_card.png';
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const App = () => {
+                const [formData, setFormData] = React.useState({
+                    borderColor: 'Yellow',
+                    backgroundColor: 'Option 1',
+                    scene: 'Option 1',
+                    poemSelection: 'I LOVE YOU',
+                    poemTitle: '',
+                    poemText: '',
+                    hp: Math.floor(Math.random() * 990 + 10).toString(),
+                    leftCharacterColour: 'Angelo',
+                    leftGender: 'Male',
+                    leftEthnicity: 'White',
+                    leftEyeColor: 'Blue',
+                    leftHairStyle: 'Option 8',
+                    leftHairColor: 'Brown',
+                    leftFacialHair: 'None',
+                    leftEyewear: 'None',
+                    leftAccessories: 'None',
+                    leftApparel: 'Option 23',
+                    leftSidekick: 'Option 11',
+                    rightCharacterColour: 'Vicky',
+                    rightGender: 'Female',
+                    rightEthnicity: 'White',
+                    rightEyeColor: 'Blue',
+                    rightHairStyle: 'Option 14',
+                    rightHairColor: 'Black',
+                    rightFacialHair: 'None',
+                    rightEyewear: 'None',
+                    rightAccessories: 'None',
+                    rightApparel: 'Option 8',
+                    rightSidekick: 'Option 11'
+                });
+                const [showModal, setShowModal] = React.useState(false);
+                const [isSubmitting, setIsSubmitting] = React.useState(false);
+                const [elementResources, setElementResources] = React.useState({});
+                const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768);
+
+                React.useEffect(() => {
+                    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+                    window.addEventListener('resize', handleResize);
+                    return () => window.removeEventListener('resize', handleResize);
+                }, []);
+
+                React.useEffect(() => {
+                    fetch('assets/element_map.json')
+                        .then(r => r.json())
+                        .then(data => setElementResources(data))
+                        .catch(e => console.error('Failed to load element map:', e));
+                }, []);
+
+                const event_poems = {
+                    "Anniversary": ["On this day, our hearts align,", "Years of love, like vintage wine,", "Together strong, through storm and shine,", "Forever yours, forever mine."],
+                    "Birthday": ["A day to cheer, a year to grow,", "With love and joy in every glow,", "Candles flicker, wishes flow,", "Happy birthday, my heart's tableau."],
+                    "Engagement": ["A promise made, a future near,", "With every step, I hold you dear,", "Bound by love, so crystal clear,", "Our journey starts, right here."],
+                    "I LOVE YOU": ["Three words simple, yet so true,", "Every beat belongs to you,", "In your eyes, my world's in view,", "I love you, through and through."],
+                    "Just Because": ["No reason needed, just to say,", "You brighten up my every day,", "With you, my heart will always stay,", "Love's pure gift, in every way."],
+                    "Valentines Day": ["Through misty trails where wild winds play,", "Our love grows strong in the softest way,", "Like petals dancing in a sunlit fray,", "We chase our dreams in this vast array."],
+                    "Wedding": ["Two souls unite, a vow so grand,", "Hand in hand, across life's land,", "With rings we pledge, by love we stand,", "A timeless bond, forever planned."],
+                    "Get Well Soon": ["Rest and heal, take time to mend,", "My love and care will never end,", "Soon you'll rise, strong once again,", "Get well, my dearest friend."],
+                    "New Home": ["New walls, new dreams, a place to start,", "Together we'll make this house a heart,", "With every room, a brand new part,", "Of our love's journey, a work of art."],
+                    "Proposal": ["A question asked, a life to share,", "Will you take this ring I bear?", "Say yes, and let our love declare,", "A future bright, beyond compare."],
+                    "First Date": ["Our first night, a spark so bright,", "Laughter shared beneath the light,", "A moment sweet, a love begun,", "Together now, two hearts as one."],
+                    "Holiday Gift": ["A gift for you this festive day,", "Wrapped with love in every way,", "Joy and cheer to light your stay,", "Happy holidays, come what may."],
+                    "Father's Day": ["Your love and strength guide us each day,", "Wisdom shared in your warm, steady way,", "Through every storm, you light our way,", "Dad, you're our hero, forever and always."],
+                    "Mother's Day": ["Your love blooms, a guiding light,", "Gentle hands mend every plight,", "Heart so warm, our safe delight,", "Mom, you're our star, shining bright."],
+                    "Congratulations": ["Your success sparks joy so grand,", "Hard work won, you take a stand,", "Bright future lies in your hand,", "Cheers to triumphs, bold and planned."],
+                    "Sweet Oath": ["Your smile ignites my heart's flame", "Every day, I'll call your name", "Bound by joy, we'll never part", "Love's adventure, a work of art"],
+                    "My Vow": ["Together we'll soar, hearts entwined", "Through every storm, love's light shines", "With you, my world is complete", "Forever yours, in victory sweet"]
+                };
+
+                const baseBackgrounds = Array.from({length: 14}, (_, i) => {
+                    const num = i + 1;
+                    return { value: `Option ${num}`, label: `Card Colour ${num}`, key: `BACKGROUNDOPTION${num}` };
+                });
+                const baseScenes = Array.from({length: 20}, (_, i) => {
+                    const num = i + 1;
+                    return { value: `Option ${num}`, label: `Scene ${num}`, key: `SCENEOPTION${num}` };
+                });
+                const baseHairStyles = [
+                    ...Array.from({length: 20}, (_, i) => {
+                        const num = i + 1;
+                        return { value: `Option ${num}`, label: `Hair Option ${num}`, key: `HAIR-OPTION${num}` };
+                    }),
+                    { value: 'No Hair', label: 'No Hair', key: 'NO HAIR' }
+                ];
+                const baseEyewear = [
+                    { value: 'None', label: 'Eyewear None' },
+                    { value: 'Blue Glasses', label: 'Eyewear Blue Glasses', key: 'BLUE GLASSES' },
+                    { value: 'Pink Glasses', label: 'Eyewear Pink Glasses', key: 'PINK GLASSES' },
+                    { value: 'Meme Glasses', label: 'Eyewear Meme Glasses', key: 'MEMEGLASSES' },
+                    { value: 'Glasses', label: 'Eyewear Glasses', key: 'GLASSES' }
+                ];
+                const baseApparel = [
+                    { value: 'Option 1', label: 'Apparel Option 1', key: 'APPARELOPTION1' },
+                    { value: 'Option 2', label: 'Apparel Option 2', key: 'APPARELOPTION2' },
+                    { value: 'Option 3', label: 'Apparel Option 3', key: 'APPARELOPTION3' },
+                    { value: 'Option 4', label: 'Apparel Option 4', key: 'APPARELOPTION4' },
+                    { value: 'Option 5', label: 'Apparel Option 5', key: 'APPARELOPTION5' },
+                    { value: 'Option 6', label: 'Apparel Option 6', key: 'APPARELOPTION6' },
+                    { value: 'Option 7', label: 'Apparel Option 7', key: 'APPARELOPTION7' },
+                    { value: 'Option 8', label: 'Apparel Option 8', key: 'APPARELOPTION8' },
+                    { value: 'Option 9', label: 'Apparel Option 9', key: 'APPARELOPTION9' },
+                    { value: 'Option 12', label: 'Apparel Option 12', key: 'APPARELOPTION12' },
+                    { value: 'Option 14', label: 'Apparel Option 14', key: 'APPARELOPTION14' },
+                    { value: 'Option 15', label: 'Apparel Option 15', key: 'APPARELOPTION15' },
+                    { value: 'Option 16', label: 'Apparel Option 16', key: 'APPARELOPTION16' },
+                    { value: 'Option 17', label: 'Apparel Option 17', key: 'APPARELOPTION17' },
+                    { value: 'Option 18', label: 'Apparel Option 18', key: 'APPARELOPTION18' },
+                    { value: 'Option 19', label: 'Apparel Option 19', key: 'APPARELOPTION19' },
+                    { value: 'Option 20', label: 'Apparel Option 20', key: 'APPARELOPTION20' },
+                    { value: 'Option 21', label: 'Apparel Option 21', key: 'APPARELOPTION21' },
+                    { value: 'Option 22', label: 'Apparel Option 22', key: 'APPARELOPTION22' },
+                    { value: 'Option 23', label: 'Apparel Option 23', key: 'APPARELOPTION23' },
+                    { value: 'Option 25', label: 'Apparel Option 25', key: 'APPARELOPTION25' },
+                    { value: 'Option 26', label: 'Apparel Option 26', key: 'APPARELOPTION26' },
+                    { value: 'Option 28', label: 'Apparel Option 28', key: 'APPARELOPTION28' },
+                    { value: 'Option 29', label: 'Apparel Option 29', key: 'APPARELOPTION29' },
+                    { value: 'Option 30', label: 'Apparel Option 30', key: 'APPARELOPTION30' },
+                    { value: 'Option 31', label: 'Apparel Option 31', key: 'APPARELOPTION31' },
+                    { value: 'Option 32', label: 'Apparel Option 32', key: 'APPARELOPTION32' },
+                    { value: 'Option 33', label: 'Apparel Option 33', key: 'APPARELOPTION33' },
+                    { value: 'Option 34', label: 'Apparel Option 34', key: 'APPARELOPTION34' },
+                    { value: 'Option 35', label: 'Apparel Option 35', key: 'APPARELOPTION35' }
+                ];
+                const baseSidekicks = [
+                    { value: 'None', label: 'None' },
+                    ...Array.from({length: 38}, (_, i) => {
+                        const num = i + 1;
+                        return { value: `Option ${num}`, label: `Sidekick Option ${num}`, key: `SIDEKICKOPTION${num}` };
+                    })
+                ];
+                const baseFacialHair = [
+                    { value: 'None', label: 'Facial Hair None' },
+                    { value: 'Option 1', label: 'Facial Hair Option 1', key: 'FACIALHAIROPTION1' },
+                    { value: 'Option 3', label: 'Facial Hair Option 3', key: 'FACIALHAIROPTION3' },
+                    { value: 'Option 4', label: 'Facial Hair Option 4', key: 'FACIALHAIROPTION4' },
+                    { value: 'Option 5', label: 'Facial Hair Option 5', key: 'FACIALHAIROPTION5' }
+                ];
+                const baseAccessories = [
+                    { value: 'None', label: 'Accessories None' },
+                    { value: 'Cap', label: 'Accessory Cap', key: 'CAP' },
+                    { value: 'PikaKap', label: 'Accessory PikaKap', key: 'PIKAKAP' },
+                    { value: 'Garland', label: 'Accessory Garland', key: 'GARLAND' },
+                    { value: 'Tiara', label: 'Accessory Tiara', key: 'TIARA' },
+                    { value: 'TopHat', label: 'Accessory TopHat', key: 'TOPHAT' },
+                    { value: 'BeachHat', label: 'Accessory BeachHat', key: 'BEACHHAT' },
+                    { value: 'RedCap', label: 'Accessory RedCap', key: 'REDCAP' },
+                    { value: 'TruckerCap', label: 'Accessory TruckerCap', key: 'TRUCKERCAP' }
+                ];
+
+                const [backgroundOptions, setBackgroundOptions] = React.useState([]);
+                const [sceneOptions, setSceneOptions] = React.useState([]);
+                const [hairStyleOptions, setHairStyleOptions] = React.useState([]);
+                const [eyewearOptions, setEyewearOptions] = React.useState([]);
+                const [apparelOptions, setApparelOptions] = React.useState([]);
+                const [sidekickOptions, setSidekickOptions] = React.useState([]);
+                const [facialHairOptions, setFacialHairOptions] = React.useState([]);
+                const [accessoryOptions, setAccessoryOptions] = React.useState([]);
+
+                React.useEffect(() => {
+                    const enhance = (base) => base.map(opt => {
+                        if (opt.key) {
+                            const path = LOADED_RESOURCES[opt.key.toUpperCase()];
+                            return { ...opt, thumbnail: path || '' };
+                        }
+                        return opt;
+                    });
+                    setBackgroundOptions(enhance(baseBackgrounds));
+                    setSceneOptions(enhance(baseScenes));
+                    setHairStyleOptions(enhance(baseHairStyles));
+                    setEyewearOptions(enhance(baseEyewear));
+                    setApparelOptions(enhance(baseApparel));
+                    setSidekickOptions(enhance(baseSidekicks));
+                    setFacialHairOptions(enhance(baseFacialHair));
+                    setAccessoryOptions(enhance(baseAccessories));
+                }, []);
+
+                const canvasRef = React.useRef(null);
+
+                const validatePoem = (text) => {
+                    const lines = text.split('\n').map(line => line.slice(0, 48));
+                    if (lines.length > 4) return lines.slice(0, 4).join('\n');
+                    return lines.join('\n');
+                };
+
+                const toTitleCase = (str) => str.replace(/\w\S*/g, txt =>
+                    txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+                );
+
+                const handleChange = (id, value) => {
+                    let newValue = value;
+                    let additionalUpdates = {};
+                    if (id === 'poemText') newValue = validatePoem(value);
+                    if (id === 'hp') newValue = value.slice(0, 6);
+                    if (id === 'poemSelection' && value === 'Add Your Own Poem') {
+                        additionalUpdates.poemTitle = '';
+                        additionalUpdates.poemText = '';
+                    }
+                    setFormData(prev => ({ ...prev, [id]: newValue, ...additionalUpdates }));
+                };
+
+                const handlePoemLineChange = (index, value) => {
+                    const lines = formData.poemText.split('\n');
+                    lines[index] = value.slice(0, 48);
+                    setFormData(prev => ({ ...prev, poemText: lines.slice(0, 4).join('\n') }));
+                };
+
+                const handleSubmit = (e) => {
+                    e.preventDefault();
+                    setIsSubmitting(true);
+                    const sheetScriptURL = 'https://script.google.com/macros/s/AKfycbw3L0deACBGUhNF0KQ3Mxb-qQXa8IdHpzgAYhaC5J0NpIcQQuXs-kPSsB2d-Ws4pBIP/exec';
+                    const isPersonalised = formData.poemSelection === 'Add Your Own Poem';
+                    const occasionMap = {
+                        'Anniversary': '1.Anniversary', 'Birthday': '2.Birthday',
+                        'Engagement': '3.Engagement', 'First Date': '4.First Date',
+                        'Holiday Gift': '5.Holiday Gift', 'I LOVE YOU': '6.I LOVE YOU',
+                        'Get Well Soon': '7.Get Well Soon', 'Just Because': '8.Just Because',
+                        'New Home': '9.New Home', 'Proposal': '10.Proposal',
+                        'Valentines Day': '11.Valentines Day', "Father's Day": "12.Father's Day",
+                        "Mother's Day": "13.Mother's Day", 'Congratulations': '14.Congratulations',
+                        'My Vow': '15.My Vow', 'Sweet Oath': '16.Sweet Oath'
+                    };
+                    const occasion = isPersonalised
+                        ? 'Add your own Poem / Select and personalise in the next section'
+                        : (occasionMap[formData.poemSelection] || formData.poemSelection);
+                    const message = isPersonalised
+                        ? `${formData.poemTitle}\n${formData.poemText}`
+                        : event_poems[formData.poemSelection].join('\n');
+                    const combinedNames = `${formData.leftCharacterColour} & ${formData.rightCharacterColour}`.trim();
+                    const randomHP = Math.floor(Math.random() * 990 + 10);
+                    const hpValue = "'" + (formData.hp || randomHP.toString());
+                    const sheetData = {
+                        'Enter Your Order Number or Character Names : )': combinedNames || 'Unknown',
+                        'Left Character': formData.leftGender || 'Male',
+                        'Left Characters First Name': formData.leftCharacterColour || 'Unknown',
+                        "Left Character's eye Colour": formData.leftEyeColor || 'Blue',
+                        'Hair Style for Left Character': formData.leftHairStyle || 'Option 8',
+                        'Hair Color for Left Character': formData.leftHairColor.replace('Ginger', 'Strawberry Blond').replace('Grey_White', 'White') || 'Brown',
+                        'Eyewear for left Character': formData.leftEyewear || 'None',
+                        "Left Character's Apparel": formData.leftApparel || 'Option 23',
+                        'Etnicity of the Left Character': formData.leftEthnicity || 'White',
+                        'Left Characters Pokemon/Pet': formData.leftSidekick || 'Option 11',
+                        'Right Character': formData.rightGender || 'Female',
+                        'Right Characters First Name': formData.rightCharacterColour || 'Unknown',
+                        "Right Character's eye Colour": formData.rightEyeColor || 'Blue',
+                        'Hair Style for Right Character': formData.rightHairStyle || 'Option 14',
+                        'Hair Color for Right Character': formData.rightHairColor.replace('Ginger', 'Strawberry Blond').replace('Grey_White', 'White') || 'Black',
+                        'Eyewear for Right Character': formData.rightEyewear || 'None',
+                        'Right Characters Apparel': formData.rightApparel || 'Option 8',
+                        'Right Characters Etnicity': formData.rightEthnicity || 'White',
+                        'Right Characters Pokemon/Pet': formData.rightSidekick || 'Option 11',
+                        'Border/Card Color': formData.borderColor.replace('Orange', 'Oange') || 'Yellow',
+                        'Card Background Color': formData.backgroundColor || 'Option 1',
+                        'Scene': formData.scene || 'Option 1',
+                        'Choose Occasion/Poem': occasion || '6.I LOVE YOU',
+                        'Add your own Personalised Message as follows; A Title 4 short lines or less for your Poem': message || event_poems['I LOVE YOU'].join('\n'),
+                        'Rear/Back of Mini PokeMon Valentine Card': 'Fixed',
+                        'Right Character Facial Hair': formData.rightFacialHair || 'None',
+                        'Left Character Facial Hair': formData.leftFacialHair || 'None',
+                        'Accessories for left Character': formData.leftAccessories || 'None',
+                        'Accessories for Right Character': formData.rightAccessories || 'None',
+                        'HP Value': hpValue,
+                        'Processed': ''
+                    };
+                    fetch(sheetScriptURL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        body: JSON.stringify(sheetData),
+                        headers: { 'Content-Type': 'application/json' }
+                    })
+                    .then(() => {
+                        setIsSubmitting(false);
+                        setShowModal(true);
+                        document.getElementById('right-character-details').removeAttribute('open');
+                    })
+                    .catch(error => {
+                        console.error('Submission error:', error);
+                        setIsSubmitting(false);
+                        alert('An error occurred. Please try again.');
+                    });
+                };
+
+                const togglePoemInputs = () => {
+                    const el = document.getElementById('poem-inputs');
+                    if (el) el.style.display = formData.poemSelection === 'Add Your Own Poem' ? 'block' : 'none';
+                };
+
+                React.useEffect(() => {
+                    togglePoemInputs();
+                    const cardDesign = document.getElementById('card-design-details');
+                    const leftCharacter = document.getElementById('left-character-details');
+                    const rightCharacter = document.getElementById('right-character-details');
+                    if (!cardDesign || !leftCharacter || !rightCharacter) return;
+                    const h1 = () => { leftCharacter.removeAttribute('open'); rightCharacter.removeAttribute('open'); };
+                    const h2 = () => { cardDesign.removeAttribute('open'); rightCharacter.removeAttribute('open'); };
+                    const h3 = () => { cardDesign.removeAttribute('open'); leftCharacter.removeAttribute('open'); };
+                    cardDesign.querySelector('summary').addEventListener('click', h1);
+                    leftCharacter.querySelector('summary').addEventListener('click', h2);
+                    rightCharacter.querySelector('summary').addEventListener('click', h3);
+                    return () => {
+                        cardDesign.querySelector('summary').removeEventListener('click', h1);
+                        leftCharacter.querySelector('summary').removeEventListener('click', h2);
+                        rightCharacter.querySelector('summary').removeEventListener('click', h3);
+                    };
+                }, [formData.poemSelection]);
+
+                React.useEffect(() => {
+                    const drawTexts = async () => {
+                        const fontName = 'Arimo';
+                        try { await document.fonts.load(`26px ${fontName}`); }
+                        catch (err) { return; }
+                        const canvas = canvasRef.current;
+                        if (!canvas) return;
+                        const ctx = canvas.getContext('2d');
+                        if (!ctx) return;
+                        const container = document.querySelector('.card-container');
+                        const containerWidth = container.offsetWidth;
+                        const scale = containerWidth / 290;
+                        canvas.width = 638 * scale;
+                        canvas.height = 1016 * scale;
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        let fontSize = isMobile ? 24 : 26;
+                        let effectiveScale = scale;
+                        if (isMobile) effectiveScale = scale + (1 - scale) * 0.2;
+                        ctx.font = `${fontSize * effectiveScale}px ${fontName}`;
+                        ctx.scale(scale, scale);
+                        let text_tag = '';
+                        let poem_lines = [];
+                        if (formData.poemSelection === 'Add Your Own Poem') {
+                            text_tag = formData.poemTitle;
+                            poem_lines = formData.poemText.split('\n').filter(l => l.trim());
+                        } else if (formData.poemSelection) {
+                            text_tag = formData.poemSelection;
+                            poem_lines = event_poems[formData.poemSelection] || event_poems["First Date"];
+                        }
+                        const leftName = toTitleCase(formData.leftCharacterColour || '');
+                        const rightName = toTitleCase(formData.rightCharacterColour || '');
+                        const randomHP = Math.floor(Math.random() * 990 + 10);
+                        const hp = formData.hp ? formData.hp + ' HP' : randomHP + ' HP';
+                        const MM_TO_PX = 300 / 25.4;
+                        const texts = [
+                            { text: text_tag, x_mm: 8.8, y_mm: 56.95, color: 'rgb(0,0,0)', align: 'left' },
+                            { text: hp, x_mm: 38.6, y_mm: 57.05, color: 'rgb(0,0,0)', align: 'left' },
+                            { text: leftName, x_start: 4.8, x_end: 18, y_mm: 4.6, color: 'rgb(180,120,0)', align: 'center' },
+                            { text: rightName, x_start: 36.3, x_end: 49.3, y_mm: 4.6, color: 'rgb(160,100,0)', align: 'center' },
+                            { text: leftName, x_start: 7.4, x_end: 20.4, y_mm: 61.95, color: 'rgb(0,0,0)', align: 'center' },
+                            { text: rightName, x_start: 32.2, x_end: 46.3, y_mm: 61.95, color: 'rgb(0,0,0)', align: 'center' }
+                        ];
+                        texts.forEach(({text, x_mm, y_mm, color, x_start, x_end}) => {
+                            if (!text) return;
+                            ctx.fillStyle = color;
+                            const metrics = ctx.measureText(text);
+                            let x = x_mm ? x_mm * MM_TO_PX : ((x_start + x_end) / 2) * MM_TO_PX - metrics.width / 2;
+                            const y = y_mm * MM_TO_PX + metrics.actualBoundingBoxAscent;
+                            ctx.fillText(text, x, y);
+                        });
+                        const poem_center_x = ((5.7 + 48.3) / 2) * MM_TO_PX;
+                        let poem_y_start = 69.0 * MM_TO_PX;
+                        const line_spacing = 3 * MM_TO_PX;
+                        const num_lines = poem_lines.length;
+                        if (num_lines < 4) {
+                            const total_height = line_spacing * 3;
+                            const used_height = line_spacing * (num_lines - 1);
+                            poem_y_start += (total_height - used_height) / 2;
+                        }
+                        poem_lines.slice(0, 4).forEach((line, i) => {
+                            ctx.fillStyle = 'rgb(0,0,0)';
+                            const metrics = ctx.measureText(line);
+                            const x = poem_center_x - metrics.width / 2;
+                            const y = poem_y_start + i * line_spacing + metrics.actualBoundingBoxAscent;
+                            ctx.fillText(line, x, y);
+                        });
+                    };
+                    drawTexts();
+                }, [formData, isMobile]);
+
+                const getElementKey = (side, component, params) => {
+                    let category = '', filename = '';
+                    const upperSide = side.toUpperCase();
+                    switch (component) {
+                        case 'apparel':
+                            category = upperSide + 'CharacterApparel';
+                            filename = params.ethnicity.toUpperCase() + upperSide + 'CharacterApparel' + params.number + '.png';
+                            break;
+                        case 'face':
+                            category = upperSide + 'FACES';
+                            filename = params.gender.toUpperCase() + params.ethnicity.toUpperCase() + upperSide + params.eyeColor.toUpperCase() + '.png';
+                            break;
+                        case 'hair':
+                            let style = params.style.replace(' ', '').toUpperCase();
+                            filename = style + params.color.toUpperCase() + upperSide + '.png';
+                            category = upperSide + 'CHARACTERWIGS';
+                            break;
+                        case 'facialHair':
+                            category = upperSide + 'FACIALHAIR';
+                            let optionNum = params.number;
+                            if (optionNum > 1) optionNum--;
+                            filename = 'OPTION' + optionNum + params.color.toUpperCase() + upperSide + '.png';
+                            break;
+                        case 'eyewear':
+                            const glassesFiles = {
+                                'Blue Glasses': 'BLUEGLASSES.png',
+                                'Pink Glasses': 'PINKGLASSES.png',
+                                'Meme Glasses': 'MEMEGLASSES.png',
+                                'Glasses': 'GLASSES.png'
+                            };
+                            const gfile = glassesFiles[params.value];
+                            if (gfile) { category = 'ACCESSORIES' + upperSide; filename = upperSide + gfile; }
+                            break;
+                        case 'accessories':
+                            const accFiles = {
+                                'Cap': upperSide + 'CAP.png',
+                                'PikaKap': upperSide + 'PIKAKAP.png',
+                                'Garland': 'GARLAND' + upperSide + '.png',
+                                'Tiara': 'TIARA' + upperSide + '.png',
+                                'TopHat': upperSide + 'TOPHAT.png',
+                                'BeachHat': upperSide + 'BEACHHAT.png',
+                                'RedCap': upperSide + 'REDCAP.png',
+                                'TruckerCap': upperSide + 'TRUCKERHAT.png'
+                            };
+                            const afile = accFiles[params.value];
+                            if (afile) { category = 'ACCESSORIES' + upperSide; filename = afile; }
+                            break;
+                        case 'sidekick':
+                            category = side.charAt(0).toUpperCase() + side.slice(1).toLowerCase() + ' Characters Pokemon:Pet';
+                            filename = params.value + '.png';
+                            break;
+                        default:
+                            return null;
+                    }
+                    return (category && filename) ? category + '/' + filename : null;
+                };
+
+                const getThumbnailUrl = (key) => elementResources[key] || '';
+
+                let leftApparelUrl = '', leftFaceUrl = '', leftHairUrl = '', leftFacialUrl = '',
+                    leftEyewearUrl = '', leftAccessoryUrl = '', leftSidekickUrl = '';
+                if (formData.leftEthnicity && formData.leftApparel) {
+                    const number = formData.leftApparel.replace('Option ', '');
+                    leftApparelUrl = getThumbnailUrl(getElementKey('LEFT', 'apparel', {ethnicity: formData.leftEthnicity, number}));
+                }
+                if (formData.leftGender && formData.leftEthnicity && formData.leftEyeColor) {
+                    leftFaceUrl = getThumbnailUrl(getElementKey('LEFT', 'face', {gender: formData.leftGender, ethnicity: formData.leftEthnicity, eyeColor: formData.leftEyeColor}));
+                }
+                if (formData.leftHairStyle && formData.leftHairStyle !== 'No Hair' && formData.leftHairColor) {
+                    const style = formData.leftHairStyle.replace('Option ', 'OPTION');
+                    leftHairUrl = getThumbnailUrl(getElementKey('LEFT', 'hair', {style, color: formData.leftHairColor}));
+                }
+                if (formData.leftFacialHair && formData.leftFacialHair !== 'None' && formData.leftHairColor) {
+                    let number = formData.leftFacialHair.replace('Option ', '');
+                    leftFacialUrl = getThumbnailUrl(getElementKey('LEFT', 'facialHair', {number, color: formData.leftHairColor}));
+                }
+                if (formData.leftEyewear && formData.leftEyewear !== 'None') {
+                    leftEyewearUrl = getThumbnailUrl(getElementKey('LEFT', 'eyewear', {value: formData.leftEyewear}));
+                }
+                if (formData.leftAccessories && formData.leftAccessories !== 'None') {
+                    leftAccessoryUrl = getThumbnailUrl(getElementKey('LEFT', 'accessories', {value: formData.leftAccessories}));
+                }
+                if (formData.leftSidekick && formData.leftSidekick !== 'None') {
+                    leftSidekickUrl = getThumbnailUrl(getElementKey('LEFT', 'sidekick', {value: formData.leftSidekick}));
+                }
+
+                let rightApparelUrl = '', rightFaceUrl = '', rightHairUrl = '', rightFacialUrl = '',
+                    rightEyewearUrl = '', rightAccessoryUrl = '', rightSidekickUrl = '';
+                if (formData.rightEthnicity && formData.rightApparel) {
+                    const number = formData.rightApparel.replace('Option ', '');
+                    rightApparelUrl = getThumbnailUrl(getElementKey('RIGHT', 'apparel', {ethnicity: formData.rightEthnicity, number}));
+                }
+                if (formData.rightGender && formData.rightEthnicity && formData.rightEyeColor) {
+                    rightFaceUrl = getThumbnailUrl(getElementKey('RIGHT', 'face', {gender: formData.rightGender, ethnicity: formData.rightEthnicity, eyeColor: formData.rightEyeColor}));
+                }
+                if (formData.rightHairStyle && formData.rightHairStyle !== 'No Hair' && formData.rightHairColor) {
+                    const style = formData.rightHairStyle.replace('Option ', 'OPTION');
+                    rightHairUrl = getThumbnailUrl(getElementKey('RIGHT', 'hair', {style, color: formData.rightHairColor}));
+                }
+                if (formData.rightFacialHair && formData.rightFacialHair !== 'None' && formData.rightHairColor) {
+                    let number = formData.rightFacialHair.replace('Option ', '');
+                    rightFacialUrl = getThumbnailUrl(getElementKey('RIGHT', 'facialHair', {number, color: formData.rightHairColor}));
+                }
+                if (formData.rightEyewear && formData.rightEyewear !== 'None') {
+                    rightEyewearUrl = getThumbnailUrl(getElementKey('RIGHT', 'eyewear', {value: formData.rightEyewear}));
+                }
+                if (formData.rightAccessories && formData.rightAccessories !== 'None') {
+                    rightAccessoryUrl = getThumbnailUrl(getElementKey('RIGHT', 'accessories', {value: formData.rightAccessories}));
+                }
+                if (formData.rightSidekick && formData.rightSidekick !== 'None') {
+                    rightSidekickUrl = getThumbnailUrl(getElementKey('RIGHT', 'sidekick', {value: formData.rightSidekick}));
+                }
+
+                const borderColors = [
+                    { value: 'Yellow', label: 'Border Yellow' },
+                    { value: 'Navy Blue', label: 'Border Navy Blue' },
+                    { value: 'Red', label: 'Border Red' },
+                    { value: 'White', label: 'Border White' },
+                    { value: 'Orange', label: 'Border Orange' },
+                    { value: 'Baby Blue', label: 'Border Baby Blue' }
+                ];
+                const poemOptions = [
+                    { value: 'Add Your Own Poem', label: 'Add Your Own Poem' },
+                    { value: 'Anniversary', label: 'Anniversary' },
+                    { value: 'Birthday', label: 'Birthday' },
+                    { value: 'Engagement', label: 'Engagement' },
+                    { value: 'I LOVE YOU', label: 'I LOVE YOU' },
+                    { value: 'Just Because', label: 'Just Because' },
+                    { value: 'Valentines Day', label: 'Valentines Day' },
+                    { value: 'Wedding', label: 'Wedding' },
+                    { value: 'Get Well Soon', label: 'Get Well Soon' },
+                    { value: 'New Home', label: 'New Home' },
+                    { value: 'Proposal', label: 'Proposal' },
+                    { value: 'First Date', label: 'First Date' },
+                    { value: 'Holiday Gift', label: 'Holiday Gift' },
+                    { value: "Father's Day", label: "Father's Day" },
+                    { value: "Mother's Day", label: "Mother's Day" },
+                    { value: 'Congratulations', label: 'Congratulations' },
+                    { value: 'Sweet Oath', label: 'Sweet Oath' },
+                    { value: 'My Vow', label: 'My Vow' }
+                ];
+                const genders = [{ value: 'Male', label: 'Male' }, { value: 'Female', label: 'Female' }];
+                const ethnicities = [{ value: 'Black', label: 'Black' }, { value: 'White', label: 'White' }];
+                const eyeColors = [{ value: 'Blue', label: 'Blue' }, { value: 'Brown', label: 'Brown' }, { value: 'Green', label: 'Green' }];
+                const hairColors = [
+                    { value: 'Black', label: 'Black' }, { value: 'Blond', label: 'Blond' },
+                    { value: 'Blue', label: 'Blue' }, { value: 'Brown', label: 'Brown' },
+                    { value: 'Ginger', label: 'Strawberry Blond' }, { value: 'Green', label: 'Green' },
+                    { value: 'Grey_White', label: 'White' }, { value: 'Pink', label: 'Pink' },
+                    { value: 'Purple', label: 'Purple' }, { value: 'Red', label: 'Red' }
+                ];
+
+                const CustomSelect = ({ id, value, options, onChange, placeholder }) => {
+                    const [isOpen, setIsOpen] = React.useState(false);
+                    const selectedOption = options.find(opt => opt.value === value) || { value: '', label: placeholder };
+                    const getDisplayText = (opt, id) => {
+                        if (id === 'poemSelection') return 'CHANGE POEM';
+                        if (!opt.value) return placeholder;
+                        if (id.endsWith('Gender') || id.endsWith('Ethnicity')) return opt.value;
+                        if (id.endsWith('EyeColor')) return `Eye Colour ${opt.value}`;
+                        if (id.endsWith('HairStyle')) return opt.value === 'No Hair' ? 'No Hair' : `Hair Style ${opt.value.replace('Option ', '')}`;
+                        if (id.endsWith('HairColor')) return `Hair Colour ${opt.label}`;
+                        if (id.endsWith('FacialHair')) return opt.label;
+                        if (id.endsWith('Eyewear')) return opt.label;
+                        if (id.endsWith('Accessories')) return opt.label;
+                        if (id.endsWith('Apparel')) return `Apparel ${opt.value.replace('Option ', '')}`;
+                        if (id.endsWith('Sidekick')) {
+                            if (opt.value === 'None') return opt.value;
+                            return `Sidekick ${opt.value.replace('Option ', '')}`;
+                        }
+                        return opt.label || opt.value;
+                    };
+                    const toggleOpen = () => {
+                        if (isOpen) { setIsOpen(false); }
+                        else { document.dispatchEvent(new Event('closeAllDropdowns')); setIsOpen(true); }
+                    };
+                    React.useEffect(() => {
+                        const close = () => setIsOpen(false);
+                        document.addEventListener('closeAllDropdowns', close);
+                        return () => document.removeEventListener('closeAllDropdowns', close);
+                    }, []);
+                    const handleSelect = (opt) => { onChange(id, opt.value); setIsOpen(false); };
+                    React.useEffect(() => {
+                        if (window.innerWidth <= 768) {
+                            document.body.style.overflow = isOpen ? 'hidden' : '';
+                            return () => { document.body.style.overflow = ''; };
+                        }
+                    }, [isOpen]);
+                    React.useEffect(() => {
+                        if (isMobile && isOpen && (id.endsWith('Sidekick') || id.endsWith('Apparel') || id.endsWith('HairStyle') || id === 'scene')) {
+                            const menu = document.querySelector('.custom-select-menu');
+                            if (menu) menu.classList.add('full-height-menu');
+                        }
+                    }, [isOpen, isMobile, id]);
+                    const isLotsOfImages = id === 'scene' || id.endsWith('HairStyle') || id.endsWith('Apparel') || id.endsWith('Sidekick');
+                    return (
+                        <div className="custom-select">
+                            <button type="button" className="custom-select-button" onClick={toggleOpen}>
+                                {getDisplayText(selectedOption, id)}
+                            </button>
+                            {isOpen && (
+                                <div className="custom-select-menu">
+                                    {options.map(opt => (
+                                        <div key={opt.value} className="custom-option" onClick={() => handleSelect(opt)}>
+                                            {opt.thumbnail ? (
+                                                <div className="iframe-container">
+                                                    <img src={opt.thumbnail} alt={opt.value} loading="lazy"
+                                                        onError={(e) => { e.target.style.display='none'; }} />
+                                                </div>
+                                            ) : (
+                                                <span className="custom-option-text">{opt.label}</span>
+                                            )}
+                                        </div>
+                                    ))}
+                                    {isLotsOfImages && isMobile && Array.from({length: 3}).map((_, i) => (
+                                        <div key={`empty-${i}`} className="custom-option"></div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    );
+                };
+
+                const borderUrl = BORDER_LOCAL_MAP[formData.borderColor] || '';
+                const backgroundKey = 'CARDBACKGROUNDOPTIONS/CARDBACKGROUNDOPTION' + formData.backgroundColor.replace('Option ', '') + '.png';
+                const backgroundUrl = getThumbnailUrl(backgroundKey);
+                const sceneKey = 'SCENE/SCENEOPTION' + formData.scene.replace('Option ', '') + '.png';
+                const sceneUrl = getThumbnailUrl(sceneKey);
+
+                const adjustHairStyles = ['Option 13', 'Option 15', 'Option 16', 'Option 18', 'Option 19'];
+                const leftHairTop = adjustHairStyles.includes(formData.leftHairStyle) ? 'calc(24.85% + 3px)' : '24.85%';
+                const rightHairTop = adjustHairStyles.includes(formData.rightHairStyle) ? 'calc(24.85% + 3px)' : '24.85%';
+                const poemLines = formData.poemText.split('\n').slice(0, 4);
+
+                return (
+                    <div>
+                        <div className="container">
+                            <div className="left-panel">
+                                <div className="dropdown-group">
+                                    <details id="card-design-details">
+                                        <summary className="emoji-label">Card Design</summary>
+                                        <CustomSelect id="borderColor" value={formData.borderColor} options={borderColors} onChange={handleChange} placeholder="Border Color" />
+                                        <CustomSelect id="backgroundColor" value={formData.backgroundColor} options={backgroundOptions} onChange={handleChange} placeholder="Card Colour" />
+                                        <CustomSelect id="scene" value={formData.scene} options={sceneOptions} onChange={handleChange} placeholder="Scene" />
+                                        {isMobile ? (
+                                            <input id="hp" type="text" placeholder="Choose your HP (optional)" value={formData.hp}
+                                                onChange={(e) => handleChange('hp', e.target.value)} style={{marginBottom: '10px'}} />
+                                        ) : (
+                                            <div style={{display: 'flex', gap: '10px', marginBottom: '10px'}}>
+                                                <input id="hp" type="text" placeholder="Choose your HP (optional)" value={formData.hp}
+                                                    onChange={(e) => handleChange('hp', e.target.value)} style={{flex: '1', height: '38px'}} />
+                                                <button type="button"
+                                                    onClick={() => setFormData(prev => ({ ...prev, hp: Math.floor(Math.random() * 990 + 10).toString() }))}
+                                                    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-10 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                                                    style={{height: '38px'}}>
+                                                    Random HP
+                                                </button>
+                                            </div>
+                                        )}
+                                        <CustomSelect id="poemSelection" value={formData.poemSelection} options={poemOptions} onChange={handleChange} placeholder="Select a Poem" />
+                                        <div id="poem-inputs" style={{marginBottom: '10px'}}>
+                                            <input id="poemTitle" type="text" placeholder="Poem Title" maxLength="22"
+                                                value={formData.poemTitle}
+                                                onChange={(e) => handleChange(e.target.id, e.target.value)}
+                                                style={{marginBottom: '10px'}} />
+                                            {formData.poemSelection === 'Add Your Own Poem' && (
+                                                isMobile ? (
+                                                    <>
+                                                        {['Line 1', 'Line 2', 'Line 3', 'Line 4'].map((placeholder, index) => (
+                                                            <textarea key={index} placeholder={placeholder} maxLength="48" rows="2"
+                                                                value={poemLines[index] || ''}
+                                                                onChange={(e) => handlePoemLineChange(index, e.target.value)}
+                                                                className="poem-line-textarea" style={{marginBottom: '10px'}} />
+                                                        ))}
+                                                    </>
+                                                ) : (
+                                                    <textarea id="poemText" placeholder="Poem" rows="4" maxLength="195"
+                                                        value={formData.poemText}
+                                                        onChange={(e) => handleChange(e.target.id, e.target.value)}
+                                                        style={{marginBottom: '10px'}} />
+                                                )
+                                            )}
+                                        </div>
+                                    </details>
+                                </div>
+                                <div className="dropdown-group">
+                                    <details id="left-character-details">
+                                        <summary className="emoji-label">Left Character</summary>
+                                        <input id="leftCharacterColour" type="text" placeholder="Character" value={formData.leftCharacterColour}
+                                            onChange={(e) => handleChange(e.target.id, e.target.value)} style={{fontSize: '1rem'}} />
+                                        <CustomSelect id="leftGender" value={formData.leftGender} options={genders} onChange={handleChange} placeholder="Gender" />
+                                        <CustomSelect id="leftEthnicity" value={formData.leftEthnicity} options={ethnicities} onChange={handleChange} placeholder="Ethnicity" />
+                                        <CustomSelect id="leftEyeColor" value={formData.leftEyeColor} options={eyeColors} onChange={handleChange} placeholder="Eye Color" />
+                                        <CustomSelect id="leftHairStyle" value={formData.leftHairStyle} options={hairStyleOptions} onChange={handleChange} placeholder="Hair Style" />
+                                        <CustomSelect id="leftHairColor" value={formData.leftHairColor} options={hairColors} onChange={handleChange} placeholder="Hair Color" />
+                                        <CustomSelect id="leftFacialHair" value={formData.leftFacialHair} options={facialHairOptions} onChange={handleChange} placeholder="Facial Hair" />
+                                        <CustomSelect id="leftEyewear" value={formData.leftEyewear} options={eyewearOptions} onChange={handleChange} placeholder="Eyewear" />
+                                        <CustomSelect id="leftAccessories" value={formData.leftAccessories} options={accessoryOptions} onChange={handleChange} placeholder="Accessories" />
+                                        <CustomSelect id="leftApparel" value={formData.leftApparel} options={apparelOptions} onChange={handleChange} placeholder="Apparel" />
+                                        <CustomSelect id="leftSidekick" value={formData.leftSidekick} options={sidekickOptions} onChange={handleChange} placeholder="Sidekick" />
+                                    </details>
+                                </div>
+                                <div className="dropdown-group">
+                                    <details id="right-character-details">
+                                        <summary className="emoji-label">Right Character</summary>
+                                        <input id="rightCharacterColour" type="text" placeholder="Character" value={formData.rightCharacterColour}
+                                            onChange={(e) => handleChange(e.target.id, e.target.value)} style={{fontSize: '1rem'}} />
+                                        <CustomSelect id="rightGender" value={formData.rightGender} options={genders} onChange={handleChange} placeholder="Gender" />
+                                        <CustomSelect id="rightEthnicity" value={formData.rightEthnicity} options={ethnicities} onChange={handleChange} placeholder="Ethnicity" />
+                                        <CustomSelect id="rightEyeColor" value={formData.rightEyeColor} options={eyeColors} onChange={handleChange} placeholder="Eye Color" />
+                                        <CustomSelect id="rightHairStyle" value={formData.rightHairStyle} options={hairStyleOptions} onChange={handleChange} placeholder="Hair Style" />
+                                        <CustomSelect id="rightHairColor" value={formData.rightHairColor} options={hairColors} onChange={handleChange} placeholder="Hair Color" />
+                                        <CustomSelect id="rightFacialHair" value={formData.rightFacialHair} options={facialHairOptions} onChange={handleChange} placeholder="Facial Hair" />
+                                        <CustomSelect id="rightEyewear" value={formData.rightEyewear} options={eyewearOptions} onChange={handleChange} placeholder="Eyewear" />
+                                        <CustomSelect id="rightAccessories" value={formData.rightAccessories} options={accessoryOptions} onChange={handleChange} placeholder="Accessories" />
+                                        <CustomSelect id="rightApparel" value={formData.rightApparel} options={apparelOptions} onChange={handleChange} placeholder="Apparel" />
+                                        <CustomSelect id="rightSidekick" value={formData.rightSidekick} options={sidekickOptions} onChange={handleChange} placeholder="Sidekick" />
+                                    </details>
+                                </div>
+                                <div className="submit-container">
+                                    <button onClick={handleSubmit} disabled={isSubmitting}
+                                        className={`bg-blue-900 text-white px-16 py-4 text-lg rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 w-full text-center ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-800'}`}>
+                                        {isSubmitting ? <div className="loading-spinner"></div> : 'SUBMIT'}
+                                    </button>
+                                </div>
+                                {showModal && (
+                                    <div className="modal">
+                                        <div className="modal-content">
+                                            <h2 className="text-2xl font-bold mb-4">Pokémon Card Power-Up!</h2>
+                                            <p className="mb-4">Thanks for crafting your Poké-powered card! I'll match it to your order using the couple's names :)</p>
+                                            <button onClick={() => setShowModal(false)}
+                                                className="bg-blue-900 text-white px-8 py-2 rounded-md hover:bg-blue-800">
+                                                OK
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                            <div className="right-panel">
+                                <div className="card-container">
+                                    <div className="card card-top">
+                                        <div style={{position: 'relative', width: '100%', height: '100%'}}>
+                                            {borderUrl && <img src={borderUrl} alt="Border" style={{position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1}} />}
+                                            {backgroundUrl && <img src={backgroundUrl} alt="Background" style={{position: 'absolute', left: '5.55%', top: '3.49%', width: '88.89%', height: '93.02%', zIndex: 2}} />}
+                                            {sceneUrl && <img src={sceneUrl} alt="Scene" style={{position: 'absolute', left: '50%', top: '9.53%', transform: 'translateX(-50%)', width: '81.5%', height: 'auto', zIndex: 3}} />}
+                                            {leftFaceUrl && <img src={leftFaceUrl} alt="Left Face" style={{position: 'absolute', left: '7.79%', top: '24.85%', width: '47.78%', height: 'auto', zIndex: 5}} />}
+                                            {rightFaceUrl && <img src={rightFaceUrl} alt="Right Face" style={{position: 'absolute', left: '43.79%', top: '24.85%', width: '47.78%', height: 'auto', zIndex: 5}} />}
+                                            {leftFacialUrl && <img src={leftFacialUrl} alt="Left Facial Hair" style={{position: 'absolute', left: '7.79%', top: '24.85%', width: '47.78%', height: 'auto', zIndex: 15}} />}
+                                            {rightFacialUrl && <img src={rightFacialUrl} alt="Right Facial Hair" style={{position: 'absolute', left: '43.79%', top: '24.85%', width: '47.78%', height: 'auto', zIndex: 15}} />}
+                                            {leftHairUrl && <img src={leftHairUrl} alt="Left Hair" style={{position: 'absolute', left: '7.79%', top: leftHairTop, width: '47.78%', height: 'auto', zIndex: 7}} />}
+                                            {rightHairUrl && <img src={rightHairUrl} alt="Right Hair" style={{position: 'absolute', left: '43.79%', top: rightHairTop, width: '47.78%', height: 'auto', zIndex: 7}} />}
+                                            {leftEyewearUrl && <img src={leftEyewearUrl} alt="Left Eyewear" style={{position: 'absolute', left: '7.79%', top: '24.85%', width: '47.78%', height: 'auto', zIndex: 8}} />}
+                                            {rightEyewearUrl && <img src={rightEyewearUrl} alt="Right Eyewear" style={{position: 'absolute', left: '43.79%', top: '24.85%', width: '47.78%', height: 'auto', zIndex: 8}} />}
+                                            {leftAccessoryUrl && <img src={leftAccessoryUrl} alt="Left Accessory" style={{position: 'absolute', left: '7.79%', top: '24.85%', width: '47.78%', height: 'auto', zIndex: 9}} />}
+                                            {rightAccessoryUrl && <img src={rightAccessoryUrl} alt="Right Accessory" style={{position: 'absolute', left: '43.79%', top: '24.85%', width: '47.78%', height: 'auto', zIndex: 9}} />}
+                                            {leftApparelUrl && <img src={leftApparelUrl} alt="Left Apparel" style={{position: 'absolute', left: '7.79%', top: '24.63%', width: '47.78%', height: 'auto', zIndex: 10}} />}
+                                            {rightApparelUrl && <img src={rightApparelUrl} alt="Right Apparel" style={{position: 'absolute', left: '43.79%', top: '24.63%', width: '47.78%', height: 'auto', zIndex: 10}} />}
+                                            <img src={FOURTH_LAYER_URL} alt="Frame" style={{position: 'absolute', left: '50%', top: '3.14%', transform: 'translateX(-50%)', width: '84%', height: 'auto', zIndex: 11}} />
+                                            {leftSidekickUrl && <img src={leftSidekickUrl} alt="Left Sidekick" style={{position: 'absolute', left: '11.45%', top: '50.44%', width: '20.6%', height: 'auto', zIndex: 12}} />}
+                                            {rightSidekickUrl && <img src={rightSidekickUrl} alt="Right Sidekick" style={{position: 'absolute', left: '68.55%', top: '50.44%', width: '20.6%', height: 'auto', zIndex: 12}} />}
+                                            <img src={SPEECH_BUBBLE_URL} alt="Speech Bubble" style={{position: 'absolute', left: '45.45%', top: '33.33%', width: '9.09%', height: 'auto', zIndex: 13}} />
+                                            <canvas ref={canvasRef} className="canvas-style" style={{position: 'absolute', top: 0, left: 0, zIndex: 14}}></canvas>
+                                        </div>
+                                        <div className="watermark-container">
+                                            {Array.from({length: 9}).map((_, i) => (
+                                                <div key={i} className="watermark" style={{top: `${Math.floor(i / 3) * 33}%`, left: `${(i % 3) * 33}%`}}>
+                                                    Preview Only
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <div className="card card-bottom">
+                                        <img src={BACK_CARD_URL} alt="Bottom Card" style={{width: '100%', height: '100%'}} />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            };
+            ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+        });
+    </script>
+</body>
+</html>
