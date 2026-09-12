@@ -385,6 +385,26 @@
     <div id="root"></div>
     <script type="text/babel" data-presets="react-classic">
         const LOADED_RESOURCES = {
+    '1STLAYERYELLOW': 'assets/thumbs/1stlayeryellow.png',
+    '1STLAYERBLUE': 'assets/thumbs/1stlayerblue.png',
+    '1STLAYERRED': 'assets/thumbs/1stlayerred.png',
+    '1STLAYERWHITE': 'assets/thumbs/1stlayerwhite.png',
+    '1STLAYERORANGE': 'assets/thumbs/1stlayerorange.png',
+    '1STLAYERBABYBLUE': 'assets/thumbs/1stlayerbabyblue.png',
+    '1STLAYERBLACK': 'assets/thumbs/1stlayerblack.png',
+    '1STLAYERBURGUNDY': 'assets/thumbs/1stlayerburgundy.png',
+    '1STLAYERDARKGREEN': 'assets/thumbs/1stlayerdarkgreen.png',
+    '1STLAYERGOLD': 'assets/thumbs/1stlayergold.png',
+    '1STLAYERGREY': 'assets/thumbs/1stlayergrey.png',
+    '1STLAYERLIGHTGREEN': 'assets/thumbs/1stlayerlightgrreen.png',
+    '1STLAYERMUSTARD': 'assets/thumbs/1stlayermustard.png',
+    '1STLAYERNIGHTFALL': 'assets/thumbs/1stlayernightfall.png',
+    '1STLAYERORANGEYELLOW': 'assets/thumbs/1stlayerorangeyellow.png',
+    '1STLAYERPINK': 'assets/thumbs/1stlayerpink.png',
+    '1STLAYERPURPLE': 'assets/thumbs/1stlayerpurple.png',
+    '1STLAYERSUNRISE': 'assets/thumbs/1stlayersunrise.png',
+    '1STLAYERTURQUOISE': 'assets/thumbs/1stlayerturquoise.png',
+    '1STLAYERWAKEUP': 'assets/thumbs/1stlayerwakeup.png',
     'SCENEOPTION21': 'assets/thumbs/sceneoption21.png',
     'SCENEOPTION20': 'assets/thumbs/sceneoption20.png',
     'SCENEOPTION19': 'assets/thumbs/sceneoption19.png',
@@ -604,6 +624,20 @@
     'White': 'assets/misc/1STLAYERWHITE.png',
     'Orange': 'assets/misc/1STLAYERORANGE.png',
     'Baby Blue': 'assets/misc/1STLAYERBABYBLUE.png',
+    'Black': 'assets/misc/1STLAYERBLACK.png',
+    'Burgundy': 'assets/misc/1STLAYERBURGUNDY.png',
+    'Dark Green': 'assets/misc/1STLAYERDARKGREEN.png',
+    'Gold': 'assets/misc/1STLAYERGOLD.png',
+    'Grey': 'assets/misc/1STLAYERGREY.png',
+    'Light Green': 'assets/misc/1STLAYERLIGHTGRREEN.png',
+    'Mustard': 'assets/misc/1STLAYERMUSTARD.png',
+    'Nightfall': 'assets/misc/1STLAYERNIGHTFALL.png',
+    'Orange Yellow': 'assets/misc/1STLAYERORANGEYELLOW.png',
+    'Pink': 'assets/misc/1STLAYERPINK.png',
+    'Purple': 'assets/misc/1STLAYERPURPLE.png',
+    'Sunrise': 'assets/misc/1STLAYERSUNRISE.png',
+    'Turquoise': 'assets/misc/1STLAYERTURQUOISE.png',
+    'Wake Up': 'assets/misc/1STLAYERWAKEUP.png',
 };
 
         const FOURTH_LAYER_URL = 'assets/misc/4THLAYER.png';
@@ -760,6 +794,30 @@
                     { value: 'TruckerCap', label: 'Accessory TruckerCap', key: 'TRUCKERCAP' }
                 ];
 
+                const baseBorders = [
+                    { value: 'Yellow', label: 'Border Yellow', key: '1STLAYERYELLOW' },
+                    { value: 'Navy Blue', label: 'Border Navy Blue', key: '1STLAYERBLUE' },
+                    { value: 'Red', label: 'Border Red', key: '1STLAYERRED' },
+                    { value: 'White', label: 'Border White', key: '1STLAYERWHITE' },
+                    { value: 'Orange', label: 'Border Orange', key: '1STLAYERORANGE' },
+                    { value: 'Baby Blue', label: 'Border Baby Blue', key: '1STLAYERBABYBLUE' },
+                    { value: 'Black', label: 'Border Black', key: '1STLAYERBLACK' },
+                    { value: 'Burgundy', label: 'Border Burgundy', key: '1STLAYERBURGUNDY' },
+                    { value: 'Dark Green', label: 'Border Dark Green', key: '1STLAYERDARKGREEN' },
+                    { value: 'Gold', label: 'Border Gold', key: '1STLAYERGOLD' },
+                    { value: 'Grey', label: 'Border Grey', key: '1STLAYERGREY' },
+                    { value: 'Light Green', label: 'Border Light Green', key: '1STLAYERLIGHTGREEN' },
+                    { value: 'Mustard', label: 'Border Mustard', key: '1STLAYERMUSTARD' },
+                    { value: 'Nightfall', label: 'Border Nightfall', key: '1STLAYERNIGHTFALL' },
+                    { value: 'Orange Yellow', label: 'Border Orange Yellow', key: '1STLAYERORANGEYELLOW' },
+                    { value: 'Pink', label: 'Border Pink', key: '1STLAYERPINK' },
+                    { value: 'Purple', label: 'Border Purple', key: '1STLAYERPURPLE' },
+                    { value: 'Sunrise', label: 'Border Sunrise', key: '1STLAYERSUNRISE' },
+                    { value: 'Turquoise', label: 'Border Turquoise', key: '1STLAYERTURQUOISE' },
+                    { value: 'Wake Up', label: 'Border Wake Up', key: '1STLAYERWAKEUP' }
+                ];
+
+                const [borderOptions, setBorderOptions] = React.useState([]);
                 const [backgroundOptions, setBackgroundOptions] = React.useState([]);
                 const [sceneOptions, setSceneOptions] = React.useState([]);
                 const [hairStyleOptions, setHairStyleOptions] = React.useState([]);
@@ -777,6 +835,7 @@
                         }
                         return opt;
                     });
+                    setBorderOptions(enhance(baseBorders));
                     setBackgroundOptions(enhance(baseBackgrounds));
                     setSceneOptions(enhance(baseScenes));
                     setHairStyleOptions(enhance(baseHairStyles));
@@ -1099,14 +1158,6 @@
                     rightSidekickUrl = getThumbnailUrl(getElementKey('RIGHT', 'sidekick', {value: formData.rightSidekick}));
                 }
 
-                const borderColors = [
-                    { value: 'Yellow', label: 'Border Yellow' },
-                    { value: 'Navy Blue', label: 'Border Navy Blue' },
-                    { value: 'Red', label: 'Border Red' },
-                    { value: 'White', label: 'Border White' },
-                    { value: 'Orange', label: 'Border Orange' },
-                    { value: 'Baby Blue', label: 'Border Baby Blue' }
-                ];
                 const poemOptions = [
                     { value: 'Add Your Own Poem', label: 'Add Your Own Poem' },
                     { value: 'Anniversary', label: 'Anniversary' },
@@ -1227,7 +1278,7 @@
                                 <div className="dropdown-group">
                                     <details id="card-design-details">
                                         <summary className="emoji-label">Card Design</summary>
-                                        <CustomSelect id="borderColor" value={formData.borderColor} options={borderColors} onChange={handleChange} placeholder="Border Color" />
+                                        <CustomSelect id="borderColor" value={formData.borderColor} options={borderOptions} onChange={handleChange} placeholder="Border Color" />
                                         <CustomSelect id="backgroundColor" value={formData.backgroundColor} options={backgroundOptions} onChange={handleChange} placeholder="Card Colour" />
                                         <CustomSelect id="scene" value={formData.scene} options={sceneOptions} onChange={handleChange} placeholder="Scene" />
                                         {isMobile ? (

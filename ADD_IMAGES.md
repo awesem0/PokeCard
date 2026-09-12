@@ -87,6 +87,30 @@ Colors: BLACK, BLOND, BLUE, BROWN, GINGER, GREEN, GREY_WHITE, PINK, PURPLE, RED
 5. In `LOADED_RESOURCES` add `'HAIR-OPTION21': 'assets/thumbs/hair-option21.png'`
 6. Commit and push
 
+## Adding a New Border/1st-Layer Colour
+
+Border colours render as image thumbnails in the dropdown (not text), so a swatch thumbnail is required alongside the full asset.
+
+1. Add full asset (~638px wide, matches existing 1STLAYER* convention) to `assets/misc/1STLAYER{NAME}.png`
+2. Add a small swatch thumbnail (~160px wide) to `assets/thumbs/1stlayer{name}.png` (lowercase)
+3. In `assets/element_map.json` add:
+   ```json
+   "1STLAYER{NAME}.png": "assets/misc/1STLAYER{NAME}.png"
+   ```
+4. In `index.html` find `BORDER_LOCAL_MAP`, add:
+   ```
+   'Colour Label': 'assets/misc/1STLAYER{NAME}.png',
+   ```
+5. In `index.html` find `LOADED_RESOURCES`, add:
+   ```
+   '1STLAYER{NAME}': 'assets/thumbs/1stlayer{name}.png',
+   ```
+6. In `index.html` find `baseBorders`, add:
+   ```
+   { value: 'Colour Label', label: 'Border Colour Label', key: '1STLAYER{NAME}' },
+   ```
+7. Commit and push
+
 ## Quick Git Commands
 
 ```bash
