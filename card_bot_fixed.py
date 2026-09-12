@@ -178,7 +178,21 @@ def process_orders():
             "White": "1STLAYERWHITE.png",
             "Yellow": "1STLAYERYELLOW.png",
             "Navy Blue": "1STLAYERBLUE.png",
-            "Oange": "1STLAYERORANGE.png"
+            "Oange": "1STLAYERORANGE.png",
+            "Black": "1STLAYERBLACK.png",
+            "Burgundy": "1STLAYERBURGUNDY.png",
+            "Dark Green": "1STLAYERDARKGREEN.png",
+            "Gold": "1STLAYERGOLD.png",
+            "Grey": "1STLAYERGREY.png",
+            "Light Green": "1STLAYERLIGHTGRREEN.png",
+            "Mustard": "1STLAYERMUSTARD.png",
+            "Nightfall": "1STLAYERNIGHTFALL.png",
+            "Oange Yellow": "1STLAYERORANGEYELLOW.png",
+            "Pink": "1STLAYERPINK.png",
+            "Purple": "1STLAYERPURPLE.png",
+            "Sunrise": "1STLAYERSUNRISE.png",
+            "Turquoise": "1STLAYERTURQUOISE.png",
+            "Wake Up": "1STLAYERWAKEUP.png"
         }
         first_layer_file = first_layer_map.get(form_data["Border/Card Color"], "1STLAYERBLUE.png")
         base_image = Image.open(os.path.join(base_path, first_layer_file)).convert("RGBA")
