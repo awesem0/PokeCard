@@ -196,6 +196,7 @@ def process_orders():
         }
         first_layer_file = first_layer_map.get(form_data["Border/Card Color"], "1STLAYERBLUE.png")
         base_image = Image.open(os.path.join(base_path, first_layer_file)).convert("RGBA")
+        base_image = base_image.resize((mm_to_px(54), mm_to_px(86)), Image.LANCZOS)
         base_width, base_height = base_image.size
         canvas.paste(base_image, (0, 0), base_image)
 
