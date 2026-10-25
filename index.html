@@ -512,7 +512,7 @@
     'SIDEKICKOPTION18.62': 'assets/thumbs/sidekickoption18.62.png',
     'SIDEKICKOPTION18.63': 'assets/thumbs/sidekickoption18.63.png',
     'SIDEKICKOPTION38': 'assets/thumbs/sidekickoption38.png',
-  'SIDEKICKOPTION39': 'assets/thumbs/sidekickoption39.png',
+  'SIDEKICKOPTION39': 'assets/thumbs/sidekickoption39.png?v=5',
     'SIDEKICKOPTION37': 'assets/thumbs/sidekickoption37.png',
     'SIDEKICKOPTION36': 'assets/thumbs/sidekickoption36.png',
     'SIDEKICKOPTION35': 'assets/thumbs/sidekickoption35.png',
@@ -551,12 +551,12 @@
     'SIDEKICKOPTION2': 'assets/thumbs/sidekickoption2.png',
     'SIDEKICKOPTION1': 'assets/thumbs/sidekickoption1.png',
     'APPARELOPTION35': 'assets/thumbs/appareloption35.png',
-  'APPARELOPTION36': 'assets/thumbs/appareloption36.png',
-  'APPARELOPTION37': 'assets/thumbs/appareloption37.png',
-  'APPARELOPTION38': 'assets/thumbs/appareloption38.png',
-  'APPARELOPTION39': 'assets/thumbs/appareloption39.png',
-  'APPARELOPTION40': 'assets/thumbs/appareloption40.png',
-  'APPARELOPTION41': 'assets/thumbs/appareloption41.png',
+  'APPARELOPTION36': 'assets/thumbs/appareloption36.png?v=5',
+  'APPARELOPTION37': 'assets/thumbs/appareloption37.png?v=5',
+  'APPARELOPTION38': 'assets/thumbs/appareloption38.png?v=5',
+  'APPARELOPTION39': 'assets/thumbs/appareloption39.png?v=5',
+  'APPARELOPTION40': 'assets/thumbs/appareloption40.png?v=5',
+  'APPARELOPTION41': 'assets/thumbs/appareloption41.png?v=5',
     'APPARELOPTION34': 'assets/thumbs/appareloption34.png',
     'APPARELOPTION33': 'assets/thumbs/appareloption33.png',
     'APPARELOPTION32': 'assets/thumbs/appareloption32.png',
@@ -593,9 +593,9 @@
     'CAP': 'assets/thumbs/cap.png',
     'TRUCKERCAP': 'assets/thumbs/truckercap.png',
     'BEACHHAT': 'assets/thumbs/beachhat.png',
-  'SANTAHAT': 'assets/thumbs/santahat.png',
-  'PLUSHANTLERS': 'assets/thumbs/plushantlers.png',
-  'XMASPRESSIES': 'assets/thumbs/xmaspressies.png',
+  'SANTAHAT': 'assets/thumbs/santahat.png?v=5',
+  'PLUSHANTLERS': 'assets/thumbs/plushantlers.png?v=5',
+  'XMASPRESSIES': 'assets/thumbs/xmaspressies.png?v=5',
     'REDCAP': 'assets/thumbs/redcap.png',
     'PINK GLASSES': 'assets/thumbs/pink_glasses.png',
     'MEMEGLASSES': 'assets/thumbs/memeglasses.png',
@@ -782,7 +782,7 @@
                 }, []);
 
                 React.useEffect(() => {
-                    fetch('assets/element_map.json?v=4')
+                    fetch('assets/element_map.json?v=5')
                         .then(r => r.json())
                         .then(data => setElementResources(data))
                         .catch(e => console.error('Failed to load element map:', e));
@@ -1526,10 +1526,10 @@
                                             {rightHairUrl && <img src={rightHairUrl} alt="Right Hair" style={{position: 'absolute', left: '43.79%', top: rightHairTop, width: '47.78%', height: 'auto', zIndex: 7}} />}
                                             {leftEyewearUrl && <img src={leftEyewearUrl} alt="Left Eyewear" style={{position: 'absolute', left: '7.79%', top: '24.85%', width: '47.78%', height: 'auto', zIndex: 8}} />}
                                             {rightEyewearUrl && <img src={rightEyewearUrl} alt="Right Eyewear" style={{position: 'absolute', left: '43.79%', top: '24.85%', width: '47.78%', height: 'auto', zIndex: 8}} />}
-                                            {leftAccessoryUrl && <img src={leftAccessoryUrl} alt="Left Accessory" style={{position: 'absolute', left: '7.79%', top: '24.85%', width: '47.78%', height: 'auto', zIndex: 11}} />}
-                                            {rightAccessoryUrl && <img src={rightAccessoryUrl} alt="Right Accessory" style={{position: 'absolute', left: '43.79%', top: '24.85%', width: '47.78%', height: 'auto', zIndex: 9}} />}
                                             {leftApparelUrl && <img src={leftApparelUrl} alt="Left Apparel" style={{position: 'absolute', left: '7.79%', top: '24.63%', width: '47.78%', height: 'auto', zIndex: 10}} />}
                                             {rightApparelUrl && <img src={rightApparelUrl} alt="Right Apparel" style={{position: 'absolute', left: '43.79%', top: '24.63%', width: '47.78%', height: 'auto', zIndex: 10}} />}
+                                            {leftAccessoryUrl && <img src={leftAccessoryUrl} alt="Left Accessory" style={{position: 'absolute', left: '7.79%', top: '24.36%', width: '47.78%', height: 'auto', zIndex: 10}} />}
+                                            {rightAccessoryUrl && <img src={rightAccessoryUrl} alt="Right Accessory" style={{position: 'absolute', left: '43.79%', top: '24.36%', width: '47.78%', height: 'auto', zIndex: 10}} />}
                                             <img src={FOURTH_LAYER_URL} alt="Frame" style={{position: 'absolute', left: '50%', top: '3.14%', transform: 'translateX(-50%)', width: '84%', height: 'auto', zIndex: 11}} />
                                             {leftSidekickUrl && <img src={leftSidekickUrl} alt="Left Sidekick" style={{position: 'absolute', left: '11.45%', top: '50.44%', width: '20.6%', height: 'auto', zIndex: 12}} />}
                                             {rightSidekickUrl && <img src={rightSidekickUrl} alt="Right Sidekick" style={{position: 'absolute', left: '68.55%', top: '50.44%', width: '20.6%', height: 'auto', zIndex: 12}} />}
