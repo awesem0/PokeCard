@@ -512,6 +512,7 @@
     'SIDEKICKOPTION18.62': 'assets/thumbs/sidekickoption18.62.png',
     'SIDEKICKOPTION18.63': 'assets/thumbs/sidekickoption18.63.png',
     'SIDEKICKOPTION38': 'assets/thumbs/sidekickoption38.png',
+  'SIDEKICKOPTION39': 'assets/thumbs/sidekickoption39.png',
     'SIDEKICKOPTION37': 'assets/thumbs/sidekickoption37.png',
     'SIDEKICKOPTION36': 'assets/thumbs/sidekickoption36.png',
     'SIDEKICKOPTION35': 'assets/thumbs/sidekickoption35.png',
@@ -550,6 +551,12 @@
     'SIDEKICKOPTION2': 'assets/thumbs/sidekickoption2.png',
     'SIDEKICKOPTION1': 'assets/thumbs/sidekickoption1.png',
     'APPARELOPTION35': 'assets/thumbs/appareloption35.png',
+  'APPARELOPTION36': 'assets/thumbs/appareloption36.png',
+  'APPARELOPTION37': 'assets/thumbs/appareloption37.png',
+  'APPARELOPTION38': 'assets/thumbs/appareloption38.png',
+  'APPARELOPTION39': 'assets/thumbs/appareloption39.png',
+  'APPARELOPTION40': 'assets/thumbs/appareloption40.png',
+  'APPARELOPTION41': 'assets/thumbs/appareloption41.png',
     'APPARELOPTION34': 'assets/thumbs/appareloption34.png',
     'APPARELOPTION33': 'assets/thumbs/appareloption33.png',
     'APPARELOPTION32': 'assets/thumbs/appareloption32.png',
@@ -586,6 +593,9 @@
     'CAP': 'assets/thumbs/cap.png',
     'TRUCKERCAP': 'assets/thumbs/truckercap.png',
     'BEACHHAT': 'assets/thumbs/beachhat.png',
+  'SANTAHAT': 'assets/thumbs/santahat.png',
+  'PLUSHANTLERS': 'assets/thumbs/plushantlers.png',
+  'XMASPRESSIES': 'assets/thumbs/xmaspressies.png',
     'REDCAP': 'assets/thumbs/redcap.png',
     'PINK GLASSES': 'assets/thumbs/pink_glasses.png',
     'MEMEGLASSES': 'assets/thumbs/memeglasses.png',
@@ -761,6 +771,7 @@
                 });
                 const [showModal, setShowModal] = React.useState(false);
                 const [isSubmitting, setIsSubmitting] = React.useState(false);
+                const [hasSubmitted, setHasSubmitted] = React.useState(false);
                 const [elementResources, setElementResources] = React.useState({});
                 const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768);
 
@@ -771,7 +782,7 @@
                 }, []);
 
                 React.useEffect(() => {
-                    fetch('assets/element_map.json?v=3')
+                    fetch('assets/element_map.json?v=4')
                         .then(r => r.json())
                         .then(data => setElementResources(data))
                         .catch(e => console.error('Failed to load element map:', e));
@@ -849,7 +860,13 @@
                     { value: 'Option 32', label: 'Apparel Option 32', key: 'APPARELOPTION32' },
                     { value: 'Option 33', label: 'Apparel Option 33', key: 'APPARELOPTION33' },
                     { value: 'Option 34', label: 'Apparel Option 34', key: 'APPARELOPTION34' },
-                    { value: 'Option 35', label: 'Apparel Option 35', key: 'APPARELOPTION35' }
+                    { value: 'Option 35', label: 'Apparel Option 35', key: 'APPARELOPTION35' },
+        { value: 'Option 36', label: 'Apparel Option 36', key: 'APPARELOPTION36' },
+        { value: 'Option 37', label: 'Apparel Option 37', key: 'APPARELOPTION37' },
+        { value: 'Option 38', label: 'Apparel Option 38', key: 'APPARELOPTION38' },
+        { value: 'Option 39', label: 'Apparel Option 39', key: 'APPARELOPTION39' },
+        { value: 'Option 40', label: 'Apparel Option 40', key: 'APPARELOPTION40' },
+        { value: 'Option 41', label: 'Apparel Option 41', key: 'APPARELOPTION41' }
                 ];
                 const baseSidekicks = [
                     { value: 'None', label: 'None' },
@@ -860,7 +877,7 @@
                     ...[1,2,3,4,5,6,7,8,9,11,12,13,14,15,16,17,18,19,21,22,23,24,25,26,27,28,29,31,32,33,34,35,36,37,38,39,41,42,43,44,45,46,47,48,49,51,52,53,54,55,56,57,58,59,61,62,63].map(n => (
                         { value: `Option 18.${n}`, label: `Sidekick Option 18.${n}`, key: `SIDEKICKOPTION18.${n}` }
                     )),
-                    ...Array.from({length: 20}, (_, i) => {
+                    ...Array.from({length: 21}, (_, i) => {
                         const num = i + 19;
                         return { value: `Option ${num}`, label: `Sidekick Option ${num}`, key: `SIDEKICKOPTION${num}` };
                     })
@@ -880,6 +897,9 @@
                     { value: 'Tiara', label: 'Accessory Tiara', key: 'TIARA' },
                     { value: 'TopHat', label: 'Accessory TopHat', key: 'TOPHAT' },
                     { value: 'BeachHat', label: 'Accessory BeachHat', key: 'BEACHHAT' },
+        { value: 'SantaHat', label: 'Accessory SantaHat', key: 'SANTAHAT' },
+        { value: 'PlushAntlers', label: 'Accessory PlushAntlers', key: 'PLUSHANTLERS' },
+        { value: 'XmasPressies', label: 'Accessory XmasPressies', key: 'XMASPRESSIES' },
                     { value: 'RedCap', label: 'Accessory RedCap', key: 'REDCAP' },
                     { value: 'TruckerCap', label: 'Accessory TruckerCap', key: 'TRUCKERCAP' }
                 ];
@@ -1044,6 +1064,7 @@
                     })
                     .then(() => {
                         setIsSubmitting(false);
+                        setHasSubmitted(true);
                         setShowModal(true);
                         document.getElementById('right-character-details').removeAttribute('open');
                     })
@@ -1190,7 +1211,10 @@
                                 'TopHat': upperSide + 'TOPHAT.png',
                                 'BeachHat': upperSide + 'BEACHHAT.png',
                                 'RedCap': upperSide + 'REDCAP.png',
-                                'TruckerCap': upperSide + 'TRUCKERHAT.png'
+                                'TruckerCap': upperSide + 'TRUCKERHAT.png',
+                                'SantaHat': upperSide + 'SANTAHAT.png',
+                                'PlushAntlers': upperSide + 'PLUSHANTLERS.png',
+                                'XmasPressies': upperSide + 'XMASPRESSIES.png'
                             };
                             const afile = accFiles[params.value];
                             if (afile) { category = 'ACCESSORIES' + upperSide; filename = afile; }
@@ -1463,6 +1487,15 @@
                                     <button onClick={handleSubmit} disabled={isSubmitting}
                                         className={`bg-blue-900 text-white px-16 py-4 text-lg rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 w-full text-center ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-800'}`}>
                                         {isSubmitting ? <div className="loading-spinner"></div> : 'SUBMIT'}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        disabled={!hasSubmitted}
+                                        onClick={() => { if (hasSubmitted) window.open('https://adventureidlab.etsy.com', '_blank', 'noopener,noreferrer'); }}
+                                        style={{ marginTop: '10px' }}
+                                        className={`px-16 py-4 text-lg rounded-md focus:outline-none w-full text-center font-bold transition-colors ${hasSubmitted ? 'bg-green-700 text-white hover:bg-green-800 cursor-pointer focus:ring-2 focus:ring-green-500 focus:ring-opacity-50' : 'bg-gray-400 text-gray-200 opacity-50 cursor-not-allowed'}`}
+                                    >
+                                        BUY CARD
                                     </button>
                                 </div>
                                 {showModal && (
